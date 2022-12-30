@@ -1,3 +1,4 @@
+import * as React from "react";
 import { useState } from "react";
 import {
   DataGrid,
@@ -5,11 +6,18 @@ import {
   GridToolbar,
   GridRenderCellParams,
   useGridApiContext,
+  GridRowModel,
 } from "@mui/x-data-grid";
 import { Box, Stack, Button, TextField, Typography } from "@mui/material";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Snackbar from "@mui/material/Snackbar";
+import Alert, { AlertProps } from "@mui/material/Alert";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { selectStoreList } from "../selectors/user";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { addStoreToStoreList, editStore } from "../actions/UserActions";
 
 interface formikValues {
   store: string;
@@ -22,34 +30,24 @@ interface TypeValues {
   addShop: boolean;
 }
 
-interface ArrayTypes {
+interface StoreTypes {
   id: number;
-  col1: string;
-  col2: string;
-  col3: string;
-  col4?: string;
+  number: string;
+  type: string;
+  status: string;
+  info?: string;
 }
 
 const ShopListPage = () => {
+  const dispatch = useDispatch<any>();
+  const storeList: any = useSelector<any>(selectStoreList);
   const [addShop, setAddShop] = useState<TypeValues["addShop"]>(false);
-  const [rowsArr, setRowsArr] = useState<ArrayTypes[]>([
-    {
-      id: 1,
-      col1: "A88",
-      col2: "Franczyza",
-      col3: "Nowy",
-      col4: "Wykaz placówek handowych_20150101",
-    },
-    {
-      id: 2,
-      col1: "A88",
-      col2: "Franczyza",
-      col3: "Nowy",
-      col4: "Wykaz placówek handowych_20150101",
-    },
-    { id: 3, col1: "A99", col2: "Centrala", col3: "Zamknięty" },
-    { id: 4, col1: "G99", col2: "Multisambo", col3: "Otwarty" },
-  ]);
+  const [snackbar, setSnackbar] = React.useState<Pick<
+    AlertProps,
+    "children" | "severity"
+  > | null>(null);
+
+  const handleCloseSnackbar = () => setSnackbar(null);
 
   const formikAddShop = useFormik({
     validationSchema: yup.object().shape({
@@ -69,16 +67,26 @@ const ShopListPage = () => {
       info: "",
     },
 
-    onSubmit: (values: formikValues, { resetForm }) => {
-      let newRow = {
-        id: rowsArr.length + 1,
-        col1: values.store,
-        col2: values.storeType,
-        col3: values.status,
-        col4: values.info && values.info,
+    onSubmit: async (values: formikValues, { resetForm }) => {
+      let newStore = {
+        id: storeList.length + 1,
+        number: values.store,
+        type: values.storeType,
+        status: values.status,
+        info: values.info && values.info,
       };
-      setRowsArr((prevRows) => [...prevRows, newRow]);
-      resetForm();
+      let storeExist: boolean = false;
+      storeList.map((store: StoreTypes) => {
+        if (store.number === newStore.number) {
+          storeExist = true;
+        }
+      });
+      if (storeExist) {
+        alert("Sklep o tym numerze istnieje w tabeli");
+      } else {
+        await dispatch(addStoreToStoreList(newStore));
+        resetForm();
+      }
     },
   });
 
@@ -91,11 +99,8 @@ const ShopListPage = () => {
     const apiRef = useGridApiContext();
 
     const handleChange = async (event: SelectChangeEvent) => {
-      await apiRef.current.setEditCellValue({
-        id,
-        field,
-        value: event.target.value,
-      });
+      let newValue = { id, field, value: event.target.value };
+      await apiRef.current.setEditCellValue(newValue);
       apiRef.current.stopCellEditMode({ id, field });
     };
 
@@ -120,11 +125,8 @@ const ShopListPage = () => {
     const apiRef = useGridApiContext();
 
     const handleChange = async (event: SelectChangeEvent) => {
-      await apiRef.current.setEditCellValue({
-        id,
-        field,
-        value: event.target.value,
-      });
+      let newValue = { id, field, value: event.target.value };
+      await apiRef.current.setEditCellValue(newValue);
       apiRef.current.stopCellEditMode({ id, field });
     };
 
@@ -154,23 +156,48 @@ const ShopListPage = () => {
   };
 
   const columns: GridColDef[] = [
-    { field: "col1", headerName: "Sklep", width: 120, editable: true },
+    { field: "number", headerName: "Sklep", width: 120 },
     {
-      field: "col2",
+      field: "type",
       headerName: "Typ sklepu",
       renderEditCell: renderSelectEditStoreTypeCell,
       width: 150,
       editable: true,
     },
     {
-      field: "col3",
+      field: "status",
       headerName: "Status",
       renderEditCell: renderSelectEditStatusCell,
       width: 120,
       editable: true,
     },
-    { field: "col4", headerName: "Informacje", width: 540, editable: true },
+    {
+      field: "info",
+      headerName: "Informacje",
+      width: 540,
+      editable: true,
+    },
   ];
+
+  const processRowUpdate = React.useCallback(async (editRow: GridRowModel) => {
+    let newStore = {
+      id: editRow.id,
+      number: editRow.number,
+      type: editRow.type,
+      status: editRow.status,
+      info: editRow.info === undefined ? "" : editRow.info,
+    };
+    await dispatch(editStore(newStore));
+    setSnackbar({
+      children: "Store successfully saved",
+      severity: "success",
+    });
+    return editRow;
+  }, []);
+
+  const handleProcessRowUpdateError = React.useCallback((error: Error) => {
+    setSnackbar({ children: error.message, severity: "error" });
+  }, []);
 
   return (
     <Box
@@ -299,7 +326,7 @@ const ShopListPage = () => {
         </Box>
       )}
       <DataGrid
-        rows={rowsArr}
+        rows={storeList}
         columns={columns}
         density={"compact"}
         components={{ Toolbar: GridToolbar }}
@@ -310,10 +337,22 @@ const ShopListPage = () => {
         disableColumnSelector={true}
         initialState={{
           sorting: {
-            sortModel: [{ field: "col1", sort: "asc" }],
+            sortModel: [{ field: "number", sort: "asc" }],
           },
         }}
+        processRowUpdate={processRowUpdate}
+        onProcessRowUpdateError={handleProcessRowUpdateError}
       />
+      {!!snackbar && (
+        <Snackbar
+          open
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          onClose={handleCloseSnackbar}
+          autoHideDuration={6000}
+        >
+          <Alert {...snackbar} onClose={handleCloseSnackbar} />
+        </Snackbar>
+      )}
     </Box>
   );
 };
