@@ -19,6 +19,8 @@ import {
   ListItemIcon,
   ListItemButton,
 } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { getStoreList } from "../actions/UserActions";
 
 interface Values {
   tab: string;
@@ -26,6 +28,8 @@ interface Values {
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch<any>();
+  dispatch(getStoreList());
 
   const handleLogout = () => {
     navigate({ pathname: "/" });
