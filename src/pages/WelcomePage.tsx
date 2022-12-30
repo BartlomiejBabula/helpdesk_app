@@ -181,7 +181,7 @@ const RegisterComponent = ({ formik, navigateToLogin }: any) => {
 
 const WelcomePage = () => {
   const navigate = useNavigate();
-  const formik = useFormik({
+  const formikLogin = useFormik({
     validationSchema: yup.object().shape({
       login: yup
         .string()
@@ -200,7 +200,8 @@ const WelcomePage = () => {
     },
 
     onSubmit: (values: LoginValues) => {
-      alert(JSON.stringify(values, null, 2));
+      // alert(JSON.stringify(values, null, 2));
+      navigate({ pathname: "/dashboard" });
     },
   });
 
@@ -264,9 +265,8 @@ const WelcomePage = () => {
             display: "flex",
             flexDirection: "column",
             paddingTop: "14%",
-            backgroundImage:
-              "linear-gradient(to bottom right, #42a5f5, #1976d2)",
-            // backgroundColor: "primary.main",
+            // backgroundImage:"linear-gradient(to bottom right, #42a5f5, #1976d2)",
+            backgroundColor: "primary.main",
             width: "45%",
             color: "white",
             textAlign: "center",
@@ -295,10 +295,10 @@ const WelcomePage = () => {
         </Box>
         <Routes>
           <Route
-            path='*'
+            path='/'
             element={
               <LoginComponent
-                formik={formik}
+                formik={formikLogin}
                 navigateToRegister={navigateToRegister}
               />
             }
