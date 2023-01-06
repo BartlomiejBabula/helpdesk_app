@@ -1,72 +1,36 @@
-import express, { Request, Response } from "express";
+import { createServer } from "http";
+import { app } from "./app";
+import { sequelize } from "./sequelize";
+import { faker } from "@faker-js/faker";
+import xlsx from "node-xlsx";
 
-// const express = require("express");
-const cors = require("cors");
-const app = express();
+const port = process.env.NODE_DOCKER_PORT;
 
-app.use(cors());
-app.use(express.json());
+const workSheetsFromFile = xlsx.parse(`${__dirname}/config/lista-sklepow.xlsx`);
 
-let storeList = [
-  {
-    id: 1,
-    number: "A88",
-    type: "Franczyza",
-    status: "Nowy",
-    info: "Wykaz placówek handowych_20150101",
-  },
-  {
-    id: 2,
-    number: "A88",
-    type: "Franczyza",
-    status: "Nowy",
-    info: "Wykaz placówek handowych_20150101",
-  },
-  { id: 3, number: "A99", type: "Centrala", status: "Zamknięty" },
-  { id: 4, number: "G99", type: "Multisambo", status: "Otwarty" },
-];
+(async () => {
+  await sequelize.sync({ force: true });
+  createServer(app).listen(port, () =>
+    console.info(`Server running on port ${port}`)
+  );
 
-let userList = [
-  {
-    id: 1,
-    login: "admin",
-    password: "admin123",
-  },
-];
+  //DEV FAKE DATA
+  const users = [...Array(20)].map((user) => ({
+    email: faker.internet.email(),
+    password: faker.internet.password(6),
+  }));
+  await sequelize.models.User.bulkCreate(users);
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Helpdesk_APP");
-});
-
-app.post("/login", (req: Request, res: Response) => {
-  res.send("GET request to homepage");
-});
-
-app.get("/shoplist/", (req: Request, res: Response) => {
-  res.json(storeList);
-});
-
-storeList.map((store, id) => {
-  app.get(`/shoplist/${store.id}`, (req: Request, res: Response) => {
-    res.json(store);
+  let stores: any = [];
+  workSheetsFromFile[0].data.map((store: any, id) => {
+    if (id !== 0) {
+      stores.push({
+        storeNumber: store[0],
+        storeType: store[2],
+        status: store[3],
+        information: store[1] ? store[1] : "",
+      });
+    }
   });
-});
-
-storeList.map((store, id) => {
-  app.patch(`/shoplist/${store.id}`, (req: Request, res: Response) => {
-    let newList = storeList.map((store) =>
-      store.id === req.body.id ? req.body : store
-    );
-    res.status(200).end();
-    storeList = newList;
-  });
-});
-
-app.post("/shoplist/add", (req: Request, res: Response) => {
-  storeList.push(req.body);
-  res.status(200).end();
-});
-
-app.listen(8888, () => {
-  console.log("Aplikacja działa na porcie 8888");
-});
+  await sequelize.models.Store.bulkCreate(stores);
+})();
