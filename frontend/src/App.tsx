@@ -31,6 +31,7 @@ const App = () => {
             backgroundColor: "#f7faff",
             height: "100%",
             width: "100%",
+            minWidth: 1200,
             zIndex: "-1",
           }}
         />
