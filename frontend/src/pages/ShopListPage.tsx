@@ -20,10 +20,10 @@ import { useDispatch } from "react-redux";
 import { addStoreToStoreList, editStore } from "../actions/UserActions";
 
 interface formikValues {
-  store: string;
+  storeNumber: string;
   storeType: string;
   status: string;
-  info: string;
+  information: string;
 }
 
 interface TypeValues {
@@ -32,10 +32,10 @@ interface TypeValues {
 
 interface StoreTypes {
   id: number;
-  number: string;
-  type: string;
+  storeNumber: string;
+  storeType: string;
   status: string;
-  info?: string;
+  information?: string;
 }
 
 const ShopListPage = () => {
@@ -51,41 +51,48 @@ const ShopListPage = () => {
 
   const formikAddShop = useFormik({
     validationSchema: yup.object().shape({
-      store: yup
+      storeNumber: yup
         .string()
         .min(3, "Niepoprawna wartość")
-        .max(4, "Niepoprawna wartość")
+        .max(3, "Niepoprawna wartość")
         .required("Pole obowiązkowe"),
       storeType: yup.string().required("Pole obowiązkowe"),
       status: yup.string().required("Pole obowiązkowe"),
     }),
 
     initialValues: {
-      store: "",
+      storeNumber: "",
       storeType: "",
       status: "",
-      info: "",
+      information: "",
     },
 
     onSubmit: async (values: formikValues, { resetForm }) => {
       let newStore = {
         id: storeList.length + 1,
-        number: values.store,
-        type: values.storeType,
+        storeNumber: values.storeNumber,
+        storeType: values.storeType,
         status: values.status,
-        info: values.info && values.info,
+        information: values.information && values.information,
       };
       let storeExist: boolean = false;
       storeList.map((store: StoreTypes) => {
-        if (store.number === newStore.number) {
+        if (store.storeNumber === newStore.storeNumber) {
           storeExist = true;
         }
       });
       if (storeExist) {
-        alert("Sklep o tym numerze istnieje w tabeli");
+        setSnackbar({
+          children: "Sklep z tym numerem istnieje",
+          severity: "error",
+        });
       } else {
         await dispatch(addStoreToStoreList(newStore));
         resetForm();
+        setSnackbar({
+          children: "Utworzono sklep",
+          severity: "success",
+        });
       }
     },
   });
@@ -156,9 +163,9 @@ const ShopListPage = () => {
   };
 
   const columns: GridColDef[] = [
-    { field: "number", headerName: "Sklep", width: 120 },
+    { field: "storeNumber", headerName: "Sklep", width: 120 },
     {
-      field: "type",
+      field: "storeType",
       headerName: "Typ sklepu",
       renderEditCell: renderSelectEditStoreTypeCell,
       width: 150,
@@ -172,7 +179,7 @@ const ShopListPage = () => {
       editable: true,
     },
     {
-      field: "info",
+      field: "information",
       headerName: "Informacje",
       width: 540,
       editable: true,
@@ -182,14 +189,14 @@ const ShopListPage = () => {
   const processRowUpdate = React.useCallback(async (editRow: GridRowModel) => {
     let newStore = {
       id: editRow.id,
-      number: editRow.number,
-      type: editRow.type,
+      storeNumber: editRow.storeNumber,
+      storeType: editRow.storeType,
       status: editRow.status,
-      info: editRow.info === undefined ? "" : editRow.info,
+      information: editRow.information === undefined ? "" : editRow.information,
     };
     await dispatch(editStore(newStore));
     setSnackbar({
-      children: "Store successfully saved",
+      children: "Zapisano zmiany",
       severity: "success",
     });
     return editRow;
@@ -237,20 +244,21 @@ const ShopListPage = () => {
               <TextField
                 label='Sklep'
                 size='small'
-                id='store'
-                name='store'
+                id='storeNumber'
+                name='storeNumber'
                 type='text'
                 onChange={formikAddShop.handleChange}
-                value={formikAddShop.values.store}
+                value={formikAddShop.values.storeNumber}
                 onBlur={formikAddShop.handleBlur}
                 error={
-                  formikAddShop.touched.store &&
-                  Boolean(formikAddShop.errors.store)
+                  formikAddShop.touched.storeNumber &&
+                  Boolean(formikAddShop.errors.storeNumber)
                 }
                 helperText={
-                  formikAddShop.touched.store && formikAddShop.errors.store
+                  formikAddShop.touched.storeNumber &&
+                  formikAddShop.errors.storeNumber
                 }
-                sx={{ width: 175 }}
+                sx={{ width: 205 }}
               />
               <Select
                 size='small'
@@ -294,18 +302,19 @@ const ShopListPage = () => {
               <TextField
                 label='Informacje'
                 size='small'
-                id='info'
-                name='info'
+                id='information'
+                name='information'
                 type='text'
                 onChange={formikAddShop.handleChange}
-                value={formikAddShop.values.info}
+                value={formikAddShop.values.information}
                 onBlur={formikAddShop.handleBlur}
                 error={
-                  formikAddShop.touched.info &&
-                  Boolean(formikAddShop.errors.info)
+                  formikAddShop.touched.information &&
+                  Boolean(formikAddShop.errors.information)
                 }
                 helperText={
-                  formikAddShop.touched.info && formikAddShop.errors.info
+                  formikAddShop.touched.information &&
+                  formikAddShop.errors.information
                 }
                 sx={{ width: "70%" }}
               />

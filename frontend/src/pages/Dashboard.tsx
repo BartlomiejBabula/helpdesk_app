@@ -20,7 +20,8 @@ import {
   ListItemButton,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { getStoreList } from "../actions/UserActions";
+import { logOutAction } from "../actions/UserActions";
+import api from "../api/api";
 
 interface Values {
   tab: string;
@@ -29,10 +30,14 @@ interface Values {
 const Dashboard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<any>();
-  dispatch(getStoreList());
 
   const handleLogout = () => {
-    navigate({ pathname: "/" });
+    const refreshToken = { refresh: localStorage.refresh };
+    dispatch(logOutAction());
+    localStorage.removeItem("refresh");
+    localStorage.removeItem("access");
+    api.post("/logout", refreshToken);
+    navigate({ pathname: "/" }, { replace: true });
   };
 
   const changeTab = (tab: Values["tab"]) => {
@@ -44,7 +49,7 @@ const Dashboard = () => {
         navigate({ pathname: "./shoplist" });
         break;
       case "services":
-        navigate({ pathname: "./external-services" });
+        navigate({ pathname: "./" });
         break;
       default:
         break;
@@ -141,7 +146,7 @@ const Dashboard = () => {
           <Routes>
             <Route path='/shoplist' element={<ShopListPage />} />
             <Route path='/monit' element={<MonitPage />} />
-            <Route path='/external-services' element={<HomePage />} />
+            <Route path='/' element={<HomePage />} />
           </Routes>
         </Box>
       </Card>
