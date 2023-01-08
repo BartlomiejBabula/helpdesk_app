@@ -1,8 +1,12 @@
 import express, { Application, Request, Response } from "express";
-import { users } from "./routes/users";
+import { users, login, auth, logout } from "./routes/users";
 import { stores } from "./routes/stores";
+
 const cors = require("cors");
 require("dotenv").config();
+
+export const TOKEN = process.env.TOKEN;
+export const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 
 export const app: Application = express();
 app.use(cors());
@@ -25,3 +29,6 @@ app.get("/", async (req: Request, res: Response): Promise<Response> => {
 
 app.use("/users", users);
 app.use("/stores", stores);
+app.use("/login", login);
+app.use("/logout", logout);
+app.use("/refresh-token", auth);

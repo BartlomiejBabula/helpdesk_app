@@ -1,7 +1,13 @@
 import { useFormik } from "formik";
+import * as React from "react";
 import * as yup from "yup";
 import { Routes, Route } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import Snackbar from "@mui/material/Snackbar";
+import api, { setAuthHeader } from "../api/api";
+import { useDispatch } from "react-redux";
+import Alert, { AlertProps } from "@mui/material/Alert";
+import { logInAction } from "../actions/UserActions";
 import {
   Card,
   Box,
@@ -13,12 +19,12 @@ import {
 } from "@mui/material";
 
 interface LoginValues {
-  login: string;
+  email: string;
   password: string;
 }
 
 interface RegisterValues {
-  login: string;
+  email: string;
   password: string;
   rePassword: string;
 }
@@ -35,16 +41,16 @@ const LoginComponent = ({ formik, navigateToRegister }: any) => {
       <form onSubmit={formik.handleSubmit}>
         <Stack spacing={2}>
           <TextField
-            label='Login'
+            label='Email'
             variant='standard'
-            id='login'
-            name='login'
+            id='email'
+            name='email'
             type='text'
             onChange={formik.handleChange}
-            value={formik.values.login}
+            value={formik.values.email}
             onBlur={formik.handleBlur}
-            error={formik.touched.login && Boolean(formik.errors.login)}
-            helperText={formik.touched.login && formik.errors.login}
+            error={formik.touched.email && Boolean(formik.errors.email)}
+            helperText={formik.touched.email && formik.errors.email}
           />
           <TextField
             label='Hasło'
@@ -106,16 +112,16 @@ const RegisterComponent = ({ formik, navigateToLogin }: any) => {
       <form onSubmit={formik.handleSubmit}>
         <Stack spacing={1}>
           <TextField
-            label='Login'
+            label='Email'
             variant='standard'
-            id='login'
-            name='login'
+            id='email'
+            name='email'
             type='text'
             onChange={formik.handleChange}
-            value={formik.values.login}
+            value={formik.values.email}
             onBlur={formik.handleBlur}
-            error={formik.touched.login && Boolean(formik.errors.login)}
-            helperText={formik.touched.login && formik.errors.login}
+            error={formik.touched.email && Boolean(formik.errors.email)}
+            helperText={formik.touched.email && formik.errors.email}
           />
           <TextField
             label='Hasło'
@@ -180,13 +186,19 @@ const RegisterComponent = ({ formik, navigateToLogin }: any) => {
 };
 
 const WelcomePage = () => {
+  const [snackbar, setSnackbar] = React.useState<Pick<
+    AlertProps,
+    "children" | "severity"
+  > | null>(null);
+  const dispatch = useDispatch<any>();
   const navigate = useNavigate();
   const formikLogin = useFormik({
     validationSchema: yup.object().shape({
-      login: yup
+      email: yup
         .string()
-        .min(4, "Login musi zawierać przynajmniej 4 liter")
-        .max(16, "Za długi login - maksymalnie 16 liter")
+        .email("Błędny adress email")
+        .min(6, "Login musi zawierać przynajmniej 6 liter")
+        .max(28, "Za długi login - maksymalnie 28 liter")
         .required("Pole obowiązkowe"),
       password: yup
         .string()
@@ -195,22 +207,38 @@ const WelcomePage = () => {
     }),
 
     initialValues: {
-      login: "",
+      email: "",
       password: "",
     },
 
-    onSubmit: (values: LoginValues) => {
-      // alert(JSON.stringify(values, null, 2));
-      navigate({ pathname: "/dashboard" });
+    onSubmit: async (values: LoginValues) => {
+      const user = { email: values.email, password: values.password };
+      api
+        .post("/login", user)
+        .then((response) => {
+          localStorage.setItem("refresh", response.data.refreshToken);
+          localStorage.setItem("access", response.data.token);
+          setAuthHeader(response.data.token);
+          dispatch(logInAction());
+          navigate({ pathname: "/dashboard" });
+        })
+        .catch((error) => {
+          setSnackbar({
+            children: "Błędny login lub hasło",
+            severity: "error",
+          });
+        });
     },
   });
 
+  const handleCloseSnackbar = () => setSnackbar(null);
   const formikRegister = useFormik({
     validationSchema: yup.object().shape({
-      login: yup
+      email: yup
         .string()
-        .min(4, "Login musi zawierać przynajmniej 4 liter")
-        .max(16, "Za długi login - maksymalnie 16 liter")
+        .email("Błędny adress email")
+        .min(6, "Login musi zawierać przynajmniej 6 liter")
+        .max(28, "Za długi login - maksymalnie 28 liter")
         .required("Pole obowiązkowe"),
       password: yup
         .string()
@@ -223,13 +251,32 @@ const WelcomePage = () => {
     }),
 
     initialValues: {
-      login: "",
+      email: "",
       password: "",
       rePassword: "",
     },
 
-    onSubmit: (values: RegisterValues) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async (values: RegisterValues, { resetForm }) => {
+      const newUser = {
+        email: values.email,
+        password: values.password,
+      };
+      await api
+        .post("/users", newUser)
+        .then((res) => {
+          console.log(res);
+          setSnackbar({
+            children: "Konto zostało utworzone",
+            severity: "success",
+          });
+          resetForm();
+        })
+        .catch((e) => {
+          setSnackbar({
+            children: e.response.data,
+            severity: "error",
+          });
+        });
     },
   });
 
@@ -314,6 +361,16 @@ const WelcomePage = () => {
           />
         </Routes>
       </Card>
+      {!!snackbar && (
+        <Snackbar
+          open
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          onClose={handleCloseSnackbar}
+          autoHideDuration={6000}
+        >
+          <Alert {...snackbar} onClose={handleCloseSnackbar} />
+        </Snackbar>
+      )}
     </Container>
   );
 };
