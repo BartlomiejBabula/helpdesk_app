@@ -1,7 +1,6 @@
 import { createServer } from "http";
 import { app } from "./app";
 import { sequelize } from "./sequelize";
-import { faker } from "@faker-js/faker";
 import xlsx from "node-xlsx";
 
 const port = process.env.NODE_DOCKER_PORT;
@@ -15,15 +14,10 @@ const workSheetsFromFile = xlsx.parse(`${__dirname}/config/lista-sklepow.xlsx`);
   );
 
   //DEV FAKE DATA
-  const users = [...Array(20)].map((user) => ({
-    email: faker.internet.email(),
-    password: faker.internet.password(6),
-  }));
   const admin = {
     email: "admin@admin.com",
     password: "fadada",
   };
-  await sequelize.models.User.bulkCreate(users);
   await sequelize.models.User.bulkCreate([admin]);
 
   let stores: any = [];

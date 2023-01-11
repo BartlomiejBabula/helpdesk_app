@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import { users, login, auth, logout } from "./routes/users";
 import { stores } from "./routes/stores";
+import { reports } from "./routes/reports";
 
 const cors = require("cors");
 require("dotenv").config();
@@ -32,3 +33,4 @@ app.use("/stores", stores);
 app.use("/login", login);
 app.use("/logout", logout);
 app.use("/refresh-token", auth);
+app.use("/reports", reports);
