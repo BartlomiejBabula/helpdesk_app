@@ -1,15 +1,14 @@
 import { useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-
-interface ArrayTypes {
-  id: number;
-  col1: string;
-  col2: string;
-  col3: string;
-  col4: string;
-  col5?: string;
-}
+import Snackbar from "@mui/material/Snackbar";
+import Alert, { AlertProps } from "@mui/material/Alert";
+import { selectErrorJobs, selectJobs } from "../selectors/user";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { getJobsWithError, getJobs } from "../actions/UserActions";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 
 interface ReplicationTypes {
   id: number;
@@ -19,41 +18,38 @@ interface ReplicationTypes {
   col4: string;
 }
 
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role='tabpanel'
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
 const MonitPage = () => {
-  const [processRows, setProcessRows] = useState<ArrayTypes[]>([
-    {
-      id: 1,
-      col1: "A88",
-      col2: "PerformOperationQueue",
-      col3: "B",
-      col4: "2022-11-13 12:51:23",
-      col5: "Error 1721. There is a problem with this Windows Installer package. A program required for this install to complete could not be run. Contact your support or package vendor",
-    },
-    {
-      id: 2,
-      col1: "A53",
-      col2: "SentEdiQueue",
-      col3: "P",
-      col4: "2022-12-13 23:51:23",
-      col5: "Error 1721. There is a problem with this Windows Installer package. A program required for this install to complete could not be run. Contact your support or package vendor",
-    },
-    {
-      id: 3,
-      col1: "A99",
-      col2: "SentEdiQueue",
-      col3: "P",
-      col4: "2022-12-03 14:51:23",
-      col5: "Error 1721. There is a problem with this Windows Installer package. A program required for this install to complete could not be run. Contact your support or package vendor",
-    },
-    {
-      id: 4,
-      col1: "G99",
-      col2: "PerformOperationQueue",
-      col3: "W",
-      col4: "2022-12-13 22:51:23",
-      col5: "Error 1721. There is a problem with this Windows Installer package. A program required for this install to complete could not be run. Contact your support or package vendor",
-    },
-  ]);
+  const dispatch = useDispatch<any>();
+  let jobs: any = useSelector<any>(selectJobs);
+  let errorJobs: any = useSelector<any>(selectErrorJobs);
+  const [tab, setTab] = useState<number>(0);
+
   const [replicationRows, setReplicationRows] = useState<ReplicationTypes[]>([
     {
       id: 1,
@@ -64,20 +60,28 @@ const MonitPage = () => {
     },
   ]);
 
+  const [snackbar, setSnackbar] = useState<Pick<
+    AlertProps,
+    "children" | "severity"
+  > | null>(null);
+
+  const handleCloseSnackbar = () => setSnackbar(null);
+
   const columnsProcess: GridColDef[] = [
-    { field: "col1", headerName: "Sklep", width: 120 },
+    { field: "ID", headerName: "JobID", width: 100 },
+    { field: "STORE_NUMBER", headerName: "Sklep", width: 60 },
     {
-      field: "col2",
+      field: "QUEUE",
       headerName: "Typ operacji",
       width: 200,
     },
     {
-      field: "col3",
+      field: "STATUS",
       headerName: "Status",
-      width: 70,
+      width: 65,
     },
-    { field: "col4", headerName: "Start Procesu", width: 180 },
-    { field: "col5", headerName: "Error", width: 540 },
+    { field: "TM_START", headerName: "Start Procesu", width: 200 },
+    { field: "ERROR_MESSAGE", headerName: "Error", width: 515 },
   ];
 
   const columnsReplication: GridColDef[] = [
@@ -99,12 +103,37 @@ const MonitPage = () => {
     },
   ];
 
-  const handleGetProcessWithErrors = () => {
-    alert("pobieram procesy z błędami");
+  const handleGetProcessWithErrors = async () => {
+    switch (tab) {
+      case 0:
+        setSnackbar({
+          children: "Pobieram procesy - operacja może potrwać kilka minut",
+          severity: "success",
+        });
+        await dispatch(getJobsWithError());
+        break;
+      case 1:
+        setSnackbar({
+          children: "Pobieram procesy - operacja może potrwać kilka minut",
+          severity: "success",
+        });
+        await dispatch(getJobs());
+        break;
+      case 2:
+        setSnackbar({
+          children:
+            "Pobieram dane o replikacji - operacja może potrwać kilka minut",
+          severity: "success",
+        });
+        console.log("test");
+        break;
+      default:
+        break;
+    }
   };
 
-  const handleGetReplication = () => {
-    alert("pobieram dane o replikacji");
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTab(newValue);
   };
 
   return (
@@ -116,65 +145,68 @@ const MonitPage = () => {
         padding: 2,
       }}
     >
-      <Box sx={{ position: "relative", height: "80%" }}>
+      <Box sx={{ position: "relative" }}>
         <Button
           onClick={handleGetProcessWithErrors}
-          sx={{ position: "absolute", top: 0, right: 0 }}
+          sx={{ position: "absolute", top: 5, right: 20, zIndex: 1 }}
         >
-          pobierz aktywne procesy z błędemi
+          pobierz aktualne dane
         </Button>
-        <Typography
-          variant='h6'
-          sx={{
-            letterSpacing: 2,
-            color: "primary.main",
-            marginBottom: 1,
-            marginLeft: 1,
-          }}
-        >
-          Procesy z błędem
-        </Typography>
-        <DataGrid
-          rows={processRows}
-          columns={columnsProcess}
-          // hideFooter
-          disableColumnMenu={true}
-          initialState={{
-            sorting: {
-              sortModel: [{ field: "col4", sort: "asc" }],
-            },
-          }}
-          pageSize={25}
-          density={"compact"}
-        />
+        <Tabs value={tab} onChange={handleChange}>
+          <Tab label='Procesy z błędem' />
+          <Tab label='Wszystkie procesy' />
+          <Tab label='Replikacja' />
+        </Tabs>
+        <TabPanel value={tab} index={0}>
+          <Box style={{ height: 580 }}>
+            <DataGrid
+              rows={errorJobs ? errorJobs : []}
+              columns={columnsProcess}
+              // hideFooter
+              disableColumnMenu={true}
+              pageSize={25}
+              density={"compact"}
+            />
+          </Box>
+        </TabPanel>
+        <TabPanel value={tab} index={1}>
+          <Box style={{ height: 580 }}>
+            <DataGrid
+              rows={jobs ? jobs : []}
+              columns={columnsProcess}
+              // hideFooter
+              disableColumnMenu={true}
+              initialState={{
+                sorting: {
+                  sortModel: [{ field: "col4", sort: "asc" }],
+                },
+              }}
+              pageSize={25}
+              density={"compact"}
+            />
+          </Box>
+        </TabPanel>
+        <TabPanel value={tab} index={2}>
+          <DataGrid
+            sx={{ height: 110 }}
+            rows={replicationRows}
+            columns={columnsReplication}
+            hideFooter
+            disableColumnMenu={true}
+            density={"compact"}
+          />
+        </TabPanel>
       </Box>
-      <Box sx={{ position: "relative", height: "25%", marginTop: 15 }}>
-        <Button
-          onClick={handleGetReplication}
-          sx={{ position: "absolute", top: 0, right: 0 }}
+      {!!snackbar && (
+        <Snackbar
+          open
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          onClose={handleCloseSnackbar}
+          autoHideDuration={6000}
         >
-          pobierz aktualne dane o replikacji
-        </Button>
-        <Typography
-          variant='h6'
-          sx={{
-            letterSpacing: 2,
-            color: "primary.main",
-            marginBottom: 1,
-            marginLeft: 1,
-          }}
-        >
-          Replikacja
-        </Typography>
-        <DataGrid
-          sx={{ height: 77 }}
-          rows={replicationRows}
-          columns={columnsReplication}
-          hideFooter
-          disableColumnMenu={true}
-          density={"compact"}
-        />
-      </Box>
+          <Alert {...snackbar} onClose={handleCloseSnackbar} />
+        </Snackbar>
+      )}
     </Box>
   );
 };

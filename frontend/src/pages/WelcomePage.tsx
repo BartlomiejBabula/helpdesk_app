@@ -7,7 +7,7 @@ import Snackbar from "@mui/material/Snackbar";
 import api, { setAuthHeader } from "../api/api";
 import { useDispatch } from "react-redux";
 import Alert, { AlertProps } from "@mui/material/Alert";
-import { logInAction } from "../actions/UserActions";
+import { logInAction, getUserProfile } from "../actions/UserActions";
 import {
   Card,
   Box,
@@ -220,6 +220,7 @@ const WelcomePage = () => {
           localStorage.setItem("access", response.data.token);
           setAuthHeader(response.data.token);
           dispatch(logInAction());
+          dispatch(getUserProfile());
           navigate({ pathname: "/dashboard" });
         })
         .catch((error) => {

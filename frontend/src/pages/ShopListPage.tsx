@@ -40,7 +40,7 @@ interface StoreTypes {
 
 const ShopListPage = () => {
   const dispatch = useDispatch<any>();
-  const storeList: any = useSelector<any>(selectStoreList);
+  let storeList: any = useSelector<any>(selectStoreList);
   const [addShop, setAddShop] = useState<TypeValues["addShop"]>(false);
   const [snackbar, setSnackbar] = React.useState<Pick<
     AlertProps,
@@ -344,11 +344,6 @@ const ShopListPage = () => {
         disableColumnMenu={true}
         disableDensitySelector={true}
         disableColumnSelector={true}
-        initialState={{
-          sorting: {
-            sortModel: [{ field: "number", sort: "asc" }],
-          },
-        }}
         processRowUpdate={processRowUpdate}
         onProcessRowUpdateError={handleProcessRowUpdateError}
       />

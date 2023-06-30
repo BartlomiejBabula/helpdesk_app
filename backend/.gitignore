@@ -4,12 +4,16 @@
 /node_modules
 /.pnp
 .pnp.js
+*.py
+*.env
 
 # testing
 /coverage
 
 # production
 /build
+
+/src/oracle/instantclient_19_19
 
 # misc
 .DS_Store
