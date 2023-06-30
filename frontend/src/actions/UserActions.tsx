@@ -5,6 +5,9 @@ export const UPDATE_STORELIST = "UPDATE_STORELIST";
 export const EDIT_STORE = "EDIT_STORE";
 export const USER_LOGGED_OUT = "USER_LOGGED_OUT";
 export const USER_LOGGED_IN = "USER_LOGGED_IN";
+export const GET_ERROR_JOBS_LIST = "GET_ERROR_JOBS_LIST";
+export const GET_JOBS = "GET_JOBS";
+export const BLOCK_REPORT = "BLOCK_REPORT";
 
 interface StoreTypes {
   id: number;
@@ -68,6 +71,49 @@ export const editStore = (store: StoreTypes) => (dispatch: any) => {
     dispatch({
       type: EDIT_STORE,
       payload: store,
+    });
+  });
+};
+
+export const getJobs = () => (dispatch: any) => {
+  api.get(`/reports/jobs`).then((response) => {
+    let jobList = response.data.map((job: any, i: number) => {
+      return (job = {
+        ...job,
+        id: i + 1,
+      });
+    });
+    dispatch({
+      type: GET_JOBS,
+      payload: jobList,
+    });
+  });
+};
+
+export const getJobsWithError = () => (dispatch: any) => {
+  api.get(`/reports/jobs-with-error`).then((response) => {
+    let jobList = response.data.map((job: any, i: number) => {
+      return (job = {
+        ...job,
+        id: i + 1,
+      });
+    });
+    dispatch({
+      type: GET_ERROR_JOBS_LIST,
+      payload: jobList,
+    });
+  });
+};
+
+export const getBlockRaport = () => (dispatch: any) => {
+  api.get(`/reports/blocked`).then((response) => {
+    let blockedRaports: any[] = [];
+    response.data.map(
+      (item: any) => (blockedRaports = [...blockedRaports, item.name])
+    );
+    dispatch({
+      type: BLOCK_REPORT,
+      payload: blockedRaports,
     });
   });
 };

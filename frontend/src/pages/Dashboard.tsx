@@ -60,12 +60,12 @@ const Dashboard = () => {
     <Container
       maxWidth='xl'
       sx={{
-        minHeight: 850,
         minWidth: 1200,
-        marginTop: 5,
+        marginTop: 2,
+        marginBottom: 2,
       }}
     >
-      <Card sx={{ height: 800, display: "flex" }}>
+      <Card sx={{ height: 700, display: "flex" }}>
         <Box
           sx={{
             backgroundColor: "primary.main",
@@ -126,7 +126,7 @@ const Dashboard = () => {
               <Box
                 sx={{
                   display: "flex",
-                  height: "67%",
+                  height: "63%",
                 }}
               >
                 <ListItem disablePadding sx={{ alignSelf: "flex-end" }}>

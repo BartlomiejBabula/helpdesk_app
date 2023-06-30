@@ -23,24 +23,25 @@ const App = () => {
     <ThemeProvider theme={appTheme}>
       <BrowserRouter>
         <CssBaseline />
-        <Box
+        <div
           style={{
             position: "absolute",
             top: 0,
             left: 0,
-            backgroundColor: "#f7faff",
             height: "100%",
             width: "100%",
-            minWidth: 1200,
-            zIndex: "-1",
+            minWidth: 1500,
+            minHeight: 740,
+            backgroundColor: "#f7faff",
           }}
-        />
-        <Routes>
-          <Route path='/*' element={<WelcomePage />} />
-          {user.isLogged && (
-            <Route path='/dashboard/*' element={<Dashboard />} />
-          )}
-        </Routes>
+        >
+          <Routes>
+            <Route path='/*' element={<WelcomePage />} />
+            {user.isLogged && (
+              <Route path='/dashboard/*' element={<Dashboard />} />
+            )}
+          </Routes>
+        </div>
       </BrowserRouter>
     </ThemeProvider>
   );

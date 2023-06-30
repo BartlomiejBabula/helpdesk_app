@@ -1,6 +1,21 @@
+import { useState, useEffect } from "react";
 import { Box, Button, Typography, Stack } from "@mui/material";
+import api from "../api/api";
+import Alert, { AlertProps } from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
+import { selectBlockReports } from "../selectors/user";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { getBlockRaport } from "../actions/UserActions";
 
 const HomePage = () => {
+  const dispatch = useDispatch<any>();
+  let blockReports: any = useSelector<any>(selectBlockReports);
+  const [snackbar, setSnackbar] = useState<Pick<
+    AlertProps,
+    "children" | "severity"
+  > | null>(null);
+
   const buttonList: string[] = [
     "JIRA SKG",
     "WIKI",
@@ -18,7 +33,17 @@ const HomePage = () => {
     "DEVELOPERSKIE",
   ];
 
-  const raportList: string[] = ["RAPORT PORANNY", "RAPORT WOLUMETRYKA"];
+  const raportList: { name: string; btt: string }[] = [
+    { name: "RAPORT PORANNY", btt: "morning" },
+    { name: "RAPORT WOLUMETRYKA", btt: "volumetrics" },
+  ];
+
+  const seleniumList: { name: string; btt: string }[] = [
+    { name: "ŚRODOWISKO DEV", btt: "selenium_dev" },
+    { name: "ŚRODOWISKO TEST", btt: "selenium" },
+  ];
+
+  const handleCloseSnackbar = () => setSnackbar(null);
 
   const handleGoToExternalServices = (button: string) => {
     switch (button) {
@@ -60,18 +85,62 @@ const HomePage = () => {
     }
   };
 
-  const handleRaportGenerate = (button: string) => {
+  const handleRaportGenerate = async (button: string) => {
     switch (button) {
       case "RAPORT PORANNY":
-        alert("Generuje raport poranny");
+        await api.get(`/reports/morning`);
+        dispatch(getBlockRaport());
+        setSnackbar({
+          children:
+            "Zlecono generacje raportu - raport zostanie wysłany na twojego maila",
+          severity: "success",
+        });
         break;
       case "RAPORT WOLUMETRYKA":
-        alert("Generuje raport wolumetryki serwerów");
+        await api.get(`/reports/volumetrics`);
+        dispatch(getBlockRaport());
+        setSnackbar({
+          children:
+            "Zlecono generacje raportu - raport zostanie wysłany na twojego maila",
+          severity: "success",
+        });
         break;
       default:
         break;
     }
   };
+
+  const handleTestGenerate = async (button: string) => {
+    switch (button) {
+      case "ŚRODOWISKO DEV":
+        await api.get(`/reports/selenium-dev`);
+        dispatch(getBlockRaport());
+        setSnackbar({
+          children:
+            "Uruchomiono selenium - raport zostanie wysłany na twojego maila",
+          severity: "success",
+        });
+        break;
+      case "ŚRODOWISKO TEST":
+        await api.get(`/reports/selenium`);
+        dispatch(getBlockRaport());
+        setSnackbar({
+          children:
+            "Uruchomiono selenium - raport zostanie wysłany na twojego maila",
+          severity: "success",
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      dispatch(getBlockRaport());
+    }, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <Box
@@ -89,7 +158,7 @@ const HomePage = () => {
           sx={{
             letterSpacing: 2,
             color: "primary.main",
-            marginBottom: 3,
+            marginBottom: 2,
             marginLeft: 1,
           }}
         >
@@ -102,11 +171,41 @@ const HomePage = () => {
               variant='contained'
               size='large'
               style={{ marginBottom: 10, width: 400 }}
+              disabled={blockReports.includes(raport.btt)}
               onClick={() => {
-                handleRaportGenerate(raport);
+                handleRaportGenerate(raport.name);
               }}
             >
-              {raport}
+              {raport.name}
+            </Button>
+          ))}
+        </Stack>
+      </Box>
+      <Box sx={{ marginBottom: 3 }}>
+        <Typography
+          variant='h6'
+          sx={{
+            letterSpacing: 2,
+            color: "primary.main",
+            marginBottom: 2,
+            marginLeft: 1,
+          }}
+        >
+          Testy selenium
+        </Typography>
+        <Stack direction={"row"} spacing={4}>
+          {seleniumList.map((test, id) => (
+            <Button
+              key={id}
+              variant='contained'
+              size='large'
+              style={{ marginBottom: 10, width: 400 }}
+              disabled={blockReports.includes(test.btt)}
+              onClick={() => {
+                handleTestGenerate(test.name);
+              }}
+            >
+              {test.name}
             </Button>
           ))}
         </Stack>
@@ -118,7 +217,7 @@ const HomePage = () => {
             sx={{
               letterSpacing: 2,
               color: "primary.main",
-              marginBottom: 3,
+              marginBottom: 2,
               marginLeft: 1,
             }}
           >
@@ -169,6 +268,16 @@ const HomePage = () => {
           </Stack>
         </Box>
       </Box>
+      {!!snackbar && (
+        <Snackbar
+          open
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          onClose={handleCloseSnackbar}
+          autoHideDuration={6000}
+        >
+          <Alert {...snackbar} onClose={handleCloseSnackbar} />
+        </Snackbar>
+      )}
     </Box>
   );
 };

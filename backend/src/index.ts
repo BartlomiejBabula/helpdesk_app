@@ -15,7 +15,7 @@ const workSheetsFromFile = xlsx.parse(`${__dirname}/config/lista-sklepow.xlsx`);
 
   //DEV FAKE DATA
   const admin = {
-    email: "admin@admin.com",
+    email: "babula.bartlomiej@gmail.com",
     password: "fadada",
   };
   await sequelize.models.User.bulkCreate([admin]);
