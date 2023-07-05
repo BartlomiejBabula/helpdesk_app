@@ -8,6 +8,7 @@ export const USER_LOGGED_IN = "USER_LOGGED_IN";
 export const GET_ERROR_JOBS_LIST = "GET_ERROR_JOBS_LIST";
 export const GET_JOBS = "GET_JOBS";
 export const BLOCK_REPORT = "BLOCK_REPORT";
+export const GET_REPLICATION = "GET_REPLICATION";
 
 interface StoreTypes {
   id: number;
@@ -114,6 +115,16 @@ export const getBlockRaport = () => (dispatch: any) => {
     dispatch({
       type: BLOCK_REPORT,
       payload: blockedRaports,
+    });
+  });
+};
+
+export const getReplication = () => (dispatch: any) => {
+  api.get(`/reports/replication`).then((response) => {
+    let replication = response.data;
+    dispatch({
+      type: GET_REPLICATION,
+      payload: replication,
     });
   });
 };
