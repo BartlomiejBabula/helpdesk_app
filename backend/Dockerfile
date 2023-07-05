@@ -68,7 +68,7 @@ RUN npm install
 # Oracle database
 RUN apt-get install -y libaio1
 RUN apt-get install -y unzip
-RUN cd /usr/src/app/src/oracle && unzip instantclient -d /usr/src/app/src/oracle
+# RUN cd /usr/src/app/src/oracle && unzip instantclient -d /usr/src/app/src/oracle
 RUN sh -c "echo /usr/src/app/src/oracle/instantclient_19_19 > /etc/ld.so.conf.d/oracle-instantclient.conf"
 RUN ldconfig
 

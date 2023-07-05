@@ -2,6 +2,7 @@ import { Request, Router, Response, NextFunction } from "express";
 import { User } from "../models/User";
 import { AuthToken } from "./../models/AuthToken";
 import { TOKEN, REFRESH_TOKEN } from "../app";
+// import bcrypt from "bcrypt";
 
 export const users = Router();
 export const login = Router();
@@ -9,6 +10,7 @@ export const logout = Router();
 export const auth = Router();
 
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 export const authJWTMiddleware = (
   req: any,
@@ -30,6 +32,7 @@ export const authJWTMiddleware = (
 
 users.post("/", async (req: Request, res: Response, next) => {
   try {
+    const salt = await bcrypt.genSalt(10);
     const newUser = req.body;
     let newUserExist: boolean = false;
     if (newUser.email && newUser.password) {
@@ -41,7 +44,12 @@ users.post("/", async (req: Request, res: Response, next) => {
       if (newUserExist) {
         res.status(400).json(`User exist with email address: ${newUser.email}`);
       } else {
-        const user = await User.create(req.body);
+        let newUser: any = {
+          email: req.body.email,
+          password: await bcrypt.hash(req.body.password, salt),
+        };
+        const user = await User.create(newUser);
+        // const user = await User.create(req.body);
         res.status(201).json(user);
       }
     } else {
@@ -131,7 +139,11 @@ login.post("/", async (req: Request, res: Response, next) => {
   try {
     const user = await User.findOne({ where: { email: req.body.email } });
     if (user) {
-      if (user.password === req.body.password) {
+      const password_valid = await bcrypt.compare(
+        req.body.password,
+        user.password
+      );
+      if (password_valid) {
         const payload = { id: user.id, email: user.email };
         const token = jwt.sign(payload, TOKEN, { expiresIn: "300s" });
         const refreshToken = jwt.sign(payload, REFRESH_TOKEN);

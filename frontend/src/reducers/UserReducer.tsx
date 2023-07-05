@@ -7,6 +7,7 @@ import { GET_USER } from "../actions/UserActions";
 import { GET_ERROR_JOBS_LIST } from "../actions/UserActions";
 import { GET_JOBS } from "../actions/UserActions";
 import { BLOCK_REPORT } from "../actions/UserActions";
+import { GET_REPLICATION } from "../actions/UserActions";
 
 interface StoreTypes {
   id: number;
@@ -58,6 +59,9 @@ export const userReducer = (state = initState, action: any) => {
     }
     case GET_ERROR_JOBS_LIST: {
       return { ...state, errorJobs: action.payload };
+    }
+    case GET_REPLICATION: {
+      return { ...state, replication: action.payload };
     }
     case BLOCK_REPORT: {
       return {
