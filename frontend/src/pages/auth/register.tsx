@@ -23,7 +23,8 @@ export const RegisterComponent = () => {
     validationSchema: yup.object().shape({
       email: yup
         .string()
-        .email("Błędny adress email")
+        .email("Błędny adres email")
+        .matches(/@asseco.pl/, "Adres email musi być w domenie asseco.pl")
         .min(6, "Login musi zawierać przynajmniej 6 liter")
         .max(28, "Za długi login - maksymalnie 28 liter")
         .required("Pole obowiązkowe"),
