@@ -6,6 +6,7 @@
 .pnp.js
 *.py
 *.env
+*.env.sample
 
 # testing
 /coverage

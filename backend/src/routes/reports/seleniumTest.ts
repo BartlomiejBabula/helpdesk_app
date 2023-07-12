@@ -9,6 +9,49 @@ import {
   FRANCHISE_STORE,
 } from "../../app";
 
+const deleteFiles = () => {
+  const fs = require("fs");
+  const files = [
+    "/usr/src/app/src/selenium/tests/report.html",
+    "/usr/src/app/src/selenium/tests/log.html",
+    // "/usr/src/app/src/selenium/tests/geckodriver-1.log",
+    // "/usr/src/app/src/selenium/tests/selenium-screenshot-1.png",
+    "/usr/src/app/src/selenium/tests/output.xml",
+  ];
+  files.forEach(
+    (path) =>
+      fs.existsSync(path) &&
+      fs.unlink(path, (err: any) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+      })
+  );
+  for (let i = 1; i < 100; i++) {
+    let deleteGecko = `/usr/src/app/src/selenium/tests/geckodriver-${i}.log`;
+    if (fs.existsSync(deleteGecko)) {
+      fs.unlink(deleteGecko, (err: any) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+      });
+    } else break;
+  }
+  for (let i = 1; i < 200; i++) {
+    let deleteScreenshot = `/usr/src/app/src/selenium/tests/selenium-screenshot-${i}.png`;
+    if (fs.existsSync(deleteScreenshot)) {
+      fs.unlink(deleteScreenshot, (err: any) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+      });
+    } else break;
+  }
+};
+
 const runSelenium = async (
   environment: "TEST" | "DEV",
   req: Request,
@@ -26,11 +69,11 @@ const runSelenium = async (
   }
   const email = await getUserEmail(req);
   setBlockRaport(blockRep, req, res, next);
-  const fs = require("fs");
   const path = require("path");
   let child_process = require("child_process");
   child_process.exec(
-    `cd src/selenium/tests && robot --variable SERVER:${envIP} --variable BROWSER:headlessfirefox --variable VALID_USER:${SELENIUM_USER} --variable VALID_PASSWORD:${SELENIUM_PASSWORD} --variable FRANCHISE_STORE:${FRANCHISE_STORE} --suite Login .`,
+    `cd src/selenium/tests && robot --variable SERVER:${envIP} --variable BROWSER:headlessfirefox --variable VALID_USER:${SELENIUM_USER} --variable VALID_PASSWORD:${SELENIUM_PASSWORD} --variable FRANCHISE_STORE:${FRANCHISE_STORE} .`,
+
     function (err: any, stdout: any, stderr: any) {
       if (err) {
         console.log("child processes failed with error code: " + err);
@@ -56,22 +99,7 @@ const runSelenium = async (
         })
         .then((info: any) => {
           console.log("Message was sent");
-          const files = [
-            "/usr/src/app/src/selenium/tests/report.html",
-            "/usr/src/app/src/selenium/tests/log.html",
-            "/usr/src/app/src/selenium/tests/geckodriver-1.log",
-            "/usr/src/app/src/selenium/tests/output.xml",
-          ];
-          files.forEach(
-            (path) =>
-              fs.existsSync(path) &&
-              fs.unlink(path, (err: any) => {
-                if (err) {
-                  console.error(err);
-                  return;
-                }
-              })
-          );
+          deleteFiles();
           unBlockRaport(blockRep);
         })
         .catch(console.error);
