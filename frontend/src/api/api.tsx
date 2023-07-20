@@ -8,8 +8,10 @@ import { logInAction } from "../actions/UserActions";
 // export default axiosInstance;
 
 const axiosInstance = axios.create();
-axiosInstance.defaults.baseURL = "http://127.0.0.1:8888";
-export const AppURL = "http://127.0.0.1:8888";
+// axiosInstance.defaults.baseURL = "http://127.0.0.1:8888";
+// export const AppURL = "http://127.0.0.1:8888";
+axiosInstance.defaults.baseURL = "http://10.5.0.84:8888";
+export const AppURL = "http://10.5.0.84:8888";
 
 export const setAuthHeader = (token: any) => {
   axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
