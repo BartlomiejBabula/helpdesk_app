@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { transporter } from "../../config/nodemailer";
 import xlsx from "node-xlsx";
 import { samboDbConfig } from "../../app";
-
 import { unBlockRaport, setBlockRaport, getUserEmail } from "./reports";
 
 const oracledb = require("oracledb");
@@ -271,3 +270,83 @@ export const generateMorningReport = async (
     next(e);
   }
 };
+
+const schedule = require("node-schedule");
+
+const automaticMorningReport = schedule.scheduleJob(
+  "0 45 5 * * *",
+  async () => {
+    const year = new Date().getFullYear();
+    const month = String(new Date().getMonth() + 1).padStart(2, "0");
+    const day = String(new Date().getDate()).padStart(2, "0");
+    const day2 = String(new Date().getDate() - 1).padStart(2, "0");
+    let today = `${year}-${month}-${day}`;
+    let yest = `${year}-${month}-${day2}`;
+    let orders_txt = await getOrders();
+    let mandala_txt = await getMandala();
+    let buffer = await getWS(today, yest);
+    let gica = await getGICA(today, yest);
+    let gicaHiperStores = await getGICAEndStores(yest, "H");
+    let gicaNetworkStores = await getGICAEndStores(yest, "N");
+    transporter
+      .sendMail({
+        attachments: [
+          {
+            filename: "WS.xlsx",
+            content: buffer,
+          },
+        ],
+        from: '"Bartek Babula" <babula.software@gmail.com>',
+        to: "babula.bartlomiej@gmail.com",
+        subject: "Raport procesu generowania zamówień ESAMBO - automat",
+        text: "There is a new article. It's about sending emails, check it out!",
+        html: `<p>Witam,</p>
+              <p>${orders_txt}</p>
+              <p>${mandala_txt}</p>
+              <p>3. Zestawienie przetworzenia WS - załącznik w formacie xlsx</p>`,
+      })
+      .then((info: any) => {
+        console.log({ info });
+      })
+      .catch(console.error);
+
+    if (gica !== null) {
+      transporter
+        .sendMail({
+          attachments: [
+            {
+              filename: "Lista.xlsx",
+              content: gica,
+            },
+          ],
+          from: '"Bartek Babula" <babula.software@gmail.com>',
+          to: "babula.bartlomiej@gmail.com",
+          subject: "Transfer GICA vs. integracja danych w eSambo - automat",
+          text: "There is a new article. It's about sending emails, check it out!",
+          html: `<p>Witam,</p>
+            <p>1. W załączeniu przesyłam listę sklepów, gdzie aktualizacja danych w sklepie zakończyła się po północy.</p>
+            <p>2. Aktualizacja danych na sklepach sieciowych i franczyzowych zakończyła się: ${gicaNetworkStores}.</p>
+            <p>3. Aktualizacja na hipermarketach zakończyła się: ${gicaHiperStores}.</p>`,
+        })
+        .then((info: any) => {
+          console.log({ info });
+        })
+        .catch(console.error);
+    } else {
+      transporter
+        .sendMail({
+          from: '"Bartek Babula" <babula.software@gmail.com>',
+          to: "babula.bartlomiej@gmail.com",
+          subject: "Transfer GICA vs. integracja danych w eSambo - automat",
+          text: "There is a new article. It's about sending emails, check it out!",
+          html: `<p>Witam,</p>
+            <p>1. Aktualizacja danych na sklepach sieciowych i franczyzowych zakończyła się: ${gicaNetworkStores}.</p>
+            <p>2. Aktualizacja na hipermarketach zakończyła się: ${gicaHiperStores}.</p>`,
+        })
+        .then((info: any) => {
+          console.log({ info });
+        })
+        .catch(console.error);
+    }
+  }
+);

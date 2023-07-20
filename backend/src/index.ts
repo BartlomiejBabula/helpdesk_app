@@ -6,7 +6,9 @@ import { Store } from "./models/Store";
 
 const port = process.env.NODE_DOCKER_PORT;
 
-const workSheetsFromFile = xlsx.parse(`${__dirname}/config/lista-sklepow.xlsx`);
+const workSheetsFromFile = xlsx.parse(
+  `/usr/src/app/src/config/lista-sklepow.xlsx`
+);
 
 (async () => {
   await sequelize
