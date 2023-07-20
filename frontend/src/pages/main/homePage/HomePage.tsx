@@ -10,6 +10,10 @@ const HomePage = () => {
   const dispatch = useDispatch<any>();
 
   useEffect(() => {
+    dispatch(getBlockRaport());
+  }, []);
+
+  useEffect(() => {
     const interval = setInterval(() => {
       dispatch(getBlockRaport());
     }, 30000);
