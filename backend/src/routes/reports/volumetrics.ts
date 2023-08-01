@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { getUserEmail, setBlockRaport, unBlockRaport } from "./reports";
-import { transporter } from "../../config/nodemailer";
+import { EMAIL, transporter } from "../../config/nodemailer";
 require("dotenv").config();
 
 const oracledb = require("oracledb");
@@ -37,7 +37,7 @@ export const runVolumetrics = async (
                 path: path.join("/usr/src/app/src/scripts/Wolumetryka.xlsx"),
               },
             ],
-            from: '"Bartek Babula" <babula.software@gmail.com>',
+            from: EMAIL,
             to: email,
             subject: "Dane do Wolumetryki",
             text: "There is a new article. It's about sending emails, check it out!",
@@ -86,7 +86,7 @@ const automaticVolumetrics = schedule.scheduleJob("0 45 5 * * 6", async () => {
               path: path.join("/usr/src/app/src/scripts/Wolumetryka.xlsx"),
             },
           ],
-          from: '"Bartek Babula" <babula.software@gmail.com>',
+          from: EMAIL,
           to: "babula.bartlomiej@gmail.com",
           subject: "Dane do Wolumetryki",
           text: "There is a new article. It's about sending emails, check it out!",
