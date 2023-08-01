@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { transporter } from "../../config/nodemailer";
+import { EMAIL, transporter } from "../../config/nodemailer";
 import xlsx from "node-xlsx";
 import { samboDbConfig } from "../../app";
 import { unBlockRaport, setBlockRaport, getUserEmail } from "./reports";
@@ -213,7 +213,7 @@ export const generateMorningReport = async (
             content: buffer,
           },
         ],
-        from: '"Bartek Babula" <babula.software@gmail.com>',
+        from: EMAIL,
         to: email,
         subject: "Raport procesu generowania zamówień ESAMBO - automat",
         text: "There is a new article. It's about sending emails, check it out!",
@@ -236,7 +236,7 @@ export const generateMorningReport = async (
               content: gica,
             },
           ],
-          from: '"Bartek Babula" <babula.software@gmail.com>',
+          from: EMAIL,
           to: email,
           subject: "Transfer GICA vs. integracja danych w eSambo - automat",
           text: "There is a new article. It's about sending emails, check it out!",
@@ -252,7 +252,7 @@ export const generateMorningReport = async (
     } else {
       transporter
         .sendMail({
-          from: '"Bartek Babula" <babula.software@gmail.com>',
+          from: EMAIL,
           to: email,
           subject: "Transfer GICA vs. integracja danych w eSambo - automat",
           text: "There is a new article. It's about sending emails, check it out!",
@@ -296,7 +296,7 @@ const automaticMorningReport = schedule.scheduleJob(
             content: buffer,
           },
         ],
-        from: '"Bartek Babula" <babula.software@gmail.com>',
+        from: EMAIL,
         to: "babula.bartlomiej@gmail.com",
         subject: "Raport procesu generowania zamówień ESAMBO - automat",
         text: "There is a new article. It's about sending emails, check it out!",
@@ -319,7 +319,7 @@ const automaticMorningReport = schedule.scheduleJob(
               content: gica,
             },
           ],
-          from: '"Bartek Babula" <babula.software@gmail.com>',
+          from: EMAIL,
           to: "babula.bartlomiej@gmail.com",
           subject: "Transfer GICA vs. integracja danych w eSambo - automat",
           text: "There is a new article. It's about sending emails, check it out!",
@@ -335,7 +335,7 @@ const automaticMorningReport = schedule.scheduleJob(
     } else {
       transporter
         .sendMail({
-          from: '"Bartek Babula" <babula.software@gmail.com>',
+          from: EMAIL,
           to: "babula.bartlomiej@gmail.com",
           subject: "Transfer GICA vs. integracja danych w eSambo - automat",
           text: "There is a new article. It's about sending emails, check it out!",

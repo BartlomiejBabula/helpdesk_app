@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { setBlockRaport, getUserEmail, unBlockRaport } from "./reports";
-import { transporter } from "../../config/nodemailer";
+import { transporter, EMAIL } from "../../config/nodemailer";
 import {
   SAMBO_DEV_IP,
   SAMBO_TEST_IP,
@@ -90,7 +90,7 @@ const runSelenium = async (
               path: path.join("/usr/src/app/src/selenium/tests/log.html"),
             },
           ],
-          from: '"Bartek Babula" <babula.software@gmail.com>',
+          from: EMAIL,
           to: email,
           subject: `Selenium środowisko ${environment}`,
           text: "There is a new article. It's about sending emails, check it out!",
