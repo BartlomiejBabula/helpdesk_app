@@ -1,11 +1,15 @@
-import { createTheme } from "@mui/material/styles";
+import { createTheme, alpha, getContrastRatio } from "@mui/material/styles";
+
+const mainBlueBase = "#457b9d";
+const blueMain = alpha(mainBlueBase, 1);
 
 export const appTheme = createTheme({
   palette: {
     primary: {
-      light: "rgba(168, 218, 220, 1)",
-      main: "rgba(69, 123, 157, 1)",
-      dark: "rgba(29, 53, 87, 1)",
+      main: blueMain,
+      light: alpha(mainBlueBase, 0.7),
+      contrastText:
+        getContrastRatio(mainBlueBase, "#fff") > 4.5 ? "#fff" : "#111",
     },
     secondary: {
       main: "rgba(230, 57, 70, 1)",

@@ -105,6 +105,8 @@ export const LoginComponent = () => {
             width: "100%",
             marginTop: 5,
             letterSpacing: 2,
+            backgroundImage:
+              "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
           }}
           type='submit'
           variant='contained'
@@ -121,7 +123,7 @@ export const LoginComponent = () => {
           }}
         >
           <Typography
-            sx={{ color: "primary.main", fontSize: 16, marginRight: 1 }}
+            sx={{ color: "rgba(0, 0, 0, 0.6)", fontSize: 16, marginRight: 1 }}
           >
             Nie masz konta?
           </Typography>

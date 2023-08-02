@@ -28,8 +28,9 @@ const WelcomePage = () => {
             display: "flex",
             flexDirection: "column",
             paddingTop: "14%",
-            // backgroundImage:"linear-gradient(to bottom right, #42a5f5, #1976d2)",
-            backgroundColor: "primary.main",
+            backgroundImage:
+              "linear-gradient(to bottom right, #4098cf, #457b9d)",
+            // backgroundColor: "primary.main",
             width: "45%",
             color: "white",
             textAlign: "center",

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import Alert, { AlertProps } from "@mui/material/Alert";
@@ -48,6 +48,12 @@ const MonitPage = () => {
     AlertProps,
     "children" | "severity"
   > | null>(null);
+
+  useEffect(() => {
+    dispatch(getJobsWithError());
+    dispatch(getJobs());
+    // dispatch(getReplication());
+  }, []);
 
   const handleCloseSnackbar = () => setSnackbar(null);
 

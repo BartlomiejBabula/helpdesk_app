@@ -65,7 +65,7 @@ export const ExternalServices = () => {
           variant='h6'
           sx={{
             letterSpacing: 2,
-            color: "primary.main",
+            color: "rgba(0, 0, 0, 0.6)",
             marginBottom: 2,
             marginLeft: 1,
           }}
@@ -78,7 +78,12 @@ export const ExternalServices = () => {
               key={id}
               variant='contained'
               size='large'
-              style={{ marginBottom: 10, width: 400 }}
+              style={{
+                marginBottom: 10,
+                width: 400,
+                backgroundImage:
+                  "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
+              }}
               onClick={() => {
                 handleGoToExternalServices(esambo);
               }}
@@ -93,8 +98,8 @@ export const ExternalServices = () => {
           variant='h6'
           sx={{
             letterSpacing: 2,
-            color: "primary.main",
-            marginBottom: 3,
+            color: "rgba(0, 0, 0, 0.6)",
+            marginBottom: 2,
             marginLeft: 1,
           }}
         >
@@ -106,7 +111,12 @@ export const ExternalServices = () => {
               key={id}
               variant='contained'
               size='large'
-              style={{ marginBottom: 10, width: 400 }}
+              style={{
+                marginBottom: 10,
+                width: 400,
+                backgroundImage:
+                  "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
+              }}
               onClick={() => {
                 handleGoToExternalServices(button);
               }}
