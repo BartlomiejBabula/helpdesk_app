@@ -51,7 +51,7 @@ export const LeftMenu = () => {
   return (
     <Box
       sx={{
-        backgroundColor: "primary.main",
+        backgroundImage: "linear-gradient(to bottom right, #4098cf, #457b9d)",
         width: 220,
         height: "100%",
         color: "white",

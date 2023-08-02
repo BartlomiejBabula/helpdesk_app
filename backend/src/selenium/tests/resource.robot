@@ -1,6 +1,6 @@
 *** Settings ***
 Library           SeleniumLibrary
-
+Library           Collections
 *** Variables ***
 
 @{_tmp}
@@ -14,11 +14,14 @@ ${LOGIN URL}         http://${SERVER}/esambo/login?0
 ${INVALID USER}      invalidUser
 ${INVALID PASSWORD}  invalidPass
   
-# robot --variable SERVER:10.5.1.125:17013 --variable BROWSER:headlessfirefox --variable VALID_USER:bartlomiej.babula.001 --variable VALID_PASSWORD:Szakal666 --variable FRANCHISE_STORE:A88  --suite orders .
-
+# robot --variable SERVER:10.5.1.125:17013 --variable BROWSER:headlessfirefox --variable VALID_USER:bartlomiej.babula.001 --variable VALID_PASSWORD:Szakal666 --variable FRANCHISE_STORE:A88  --suite login .
 
 *** Keywords ***
 Open Browser To Login Page
+    # ${caps}=  Evaluate  sys.modules['selenium.webdriver'].DesiredCapabilities.FIREFOX  sys, selenium.webdriver
+    # ${proxy}=  Create dictionary  proxyType=MANUAL  httpProxy=http://proxy-rze.asseco.pl:8080
+    # Set to dictionary  ${caps}  proxy=${proxy}
+    # Open Browser  browser=${BROWSER}   desired_capabilities=${caps}    url=${LOGIN URL}
     Open Browser    ${LOGIN URL}    ${BROWSER}    
     Maximize Browser Window
     Set Selenium Speed    ${DELAY}

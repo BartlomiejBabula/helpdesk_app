@@ -54,7 +54,7 @@ export const Report = () => {
         variant='h6'
         sx={{
           letterSpacing: 2,
-          color: "primary.main",
+          color: "rgba(0, 0, 0, 0.6)",
           marginBottom: 2,
           marginLeft: 1,
         }}
@@ -67,7 +67,12 @@ export const Report = () => {
             key={id}
             variant='contained'
             size='large'
-            style={{ marginBottom: 10, width: 400 }}
+            style={{
+              marginBottom: 10,
+              width: 400,
+              backgroundImage:
+                "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
+            }}
             disabled={blockReports ? blockReports.includes(raport.btt) : null}
             onClick={() => {
               handleRaportGenerate(raport.name);
