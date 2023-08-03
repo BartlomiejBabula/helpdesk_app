@@ -46,6 +46,7 @@ export const appTheme = createTheme({
         root: {
           paddingTop: 6,
           paddingBottom: 6,
+          paddingRight: 0,
         },
       },
     },
