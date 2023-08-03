@@ -29,8 +29,7 @@ const App = () => {
             left: 0,
             height: "100%",
             width: "100%",
-            minWidth: 1500,
-            minHeight: 740,
+            minWidth: 1130,
             backgroundColor: "#f7faff",
           }}
         >

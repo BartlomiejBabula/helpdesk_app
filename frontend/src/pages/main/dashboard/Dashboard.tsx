@@ -10,15 +10,14 @@ const Dashboard = () => {
     <Container
       maxWidth='xl'
       sx={{
-        minWidth: 1200,
         marginTop: 2,
         marginBottom: 2,
       }}
     >
-      <Card sx={{ height: 700, display: "flex" }}>
+      <Card sx={{ display: "flex", height: 700 }}>
         <LeftMenu />
         <Divider orientation='vertical' />
-        <Box sx={{ width: "85%", height: "100%", padding: 0.5 }}>
+        <Box sx={{ width: "100%", height: "100%" }}>
           <Routes>
             <Route path='/shoplist' element={<ShopListPage />} />
             <Route path='/monit' element={<MonitPage />} />

@@ -27,6 +27,25 @@ export const appTheme = createTheme({
       styleOverrides: {
         root: {
           color: "white",
+          minWidth: 0,
+          marginRight: 16,
+        },
+      },
+    },
+    MuiListItemText: {
+      defaultProps: {
+        primaryTypographyProps: {
+          variant: "subtitle2",
+          fontWeight: "normal",
+          letterSpacing: 0.5,
+        },
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          paddingTop: 6,
+          paddingBottom: 6,
         },
       },
     },
