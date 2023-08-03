@@ -16,7 +16,6 @@ const Dashboard = () => {
     >
       <Card sx={{ display: "flex", height: 700 }}>
         <LeftMenu />
-        <Divider orientation='vertical' />
         <Box sx={{ width: "100%", height: "100%" }}>
           <Routes>
             <Route path='/shoplist' element={<ShopListPage />} />

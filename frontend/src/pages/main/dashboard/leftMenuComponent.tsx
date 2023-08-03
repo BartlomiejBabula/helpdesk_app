@@ -75,10 +75,6 @@ export const LeftMenu = () => {
         <List sx={{ width: "100%" }}>
           <ListItem disablePadding>
             <ListItemButton
-              sx={{
-                backgroundColor:
-                  tab === "services" ? "rgba(64, 152, 207,  0.7)" : null,
-              }}
               onClick={() => {
                 changeTab("services");
                 setTab("services");
@@ -88,14 +84,22 @@ export const LeftMenu = () => {
                 <HomeIcon sx={{ fontSize: 20 }} />
               </ListItemIcon>
               <ListItemText primary='Home' />
+              <Box
+                sx={{
+                  display: tab === "services" ? null : "none",
+                  alignSelf: "flex-end",
+                  width: 0,
+                  height: 0,
+                  borderTop: "9px solid transparent",
+                  borderBottom: "9px solid transparent",
+                  borderRight: "9px solid white",
+                  marginBottom: "5px",
+                }}
+              />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
             <ListItemButton
-              sx={{
-                backgroundColor:
-                  tab === "monitoring" ? "rgba(64, 152, 207,  0.7)" : null,
-              }}
               onClick={() => {
                 changeTab("monitoring");
                 setTab("monitoring");
@@ -105,14 +109,22 @@ export const LeftMenu = () => {
                 <MonitIcon sx={{ fontSize: 20 }} />
               </ListItemIcon>
               <ListItemText primary='Monitoring' />
+              <Box
+                sx={{
+                  display: tab === "monitoring" ? null : "none",
+                  alignSelf: "flex-end",
+                  width: 0,
+                  height: 0,
+                  borderTop: "9px solid transparent",
+                  borderBottom: "9px solid transparent",
+                  borderRight: "9px solid white",
+                  marginBottom: "5px",
+                }}
+              />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
             <ListItemButton
-              sx={{
-                backgroundColor:
-                  tab === "shopList" ? "rgba(64, 152, 207,  0.7)" : null,
-              }}
               onClick={() => {
                 changeTab("shopList");
                 setTab("shopList");
@@ -122,6 +134,18 @@ export const LeftMenu = () => {
                 <ListIcon sx={{ fontSize: 20 }} />
               </ListItemIcon>
               <ListItemText primary='Lista sklepów' />
+              <Box
+                sx={{
+                  display: tab === "shopList" ? null : "none",
+                  alignSelf: "flex-end",
+                  width: 0,
+                  height: 0,
+                  borderTop: "9px solid transparent",
+                  borderBottom: "9px solid transparent",
+                  borderRight: "9px solid white",
+                  marginBottom: "5px",
+                }}
+              />
             </ListItemButton>
           </ListItem>
           <Box
