@@ -59,7 +59,7 @@ export const Report = () => {
           marginLeft: 1,
         }}
       >
-        Manualne generowanie
+        Manualne generowanie raportów
       </Typography>
       <Stack direction={"row"} spacing={4}>
         {raportList.map((raport, id) => (

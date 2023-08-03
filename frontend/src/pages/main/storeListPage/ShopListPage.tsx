@@ -199,15 +199,16 @@ const ShopListPage = () => {
         height: "100%",
         position: "relative",
         padding: 2,
+        paddingLeft: 5,
       }}
     >
       <Typography
         variant='h6'
         sx={{
           letterSpacing: 2,
-          color: "primary.main",
+          color: "rgba(0, 0, 0, 0.6)",
           marginLeft: 1,
-          marginBottom: 1,
+          marginBottom: 2,
         }}
       >
         Lista Sklepów

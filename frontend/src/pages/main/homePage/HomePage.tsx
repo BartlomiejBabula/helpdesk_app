@@ -28,6 +28,7 @@ const HomePage = () => {
         height: "100%",
         position: "relative",
         padding: 2,
+        paddingLeft: 5,
       }}
     >
       <Report />
