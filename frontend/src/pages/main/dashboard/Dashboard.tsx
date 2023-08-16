@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import ShopListPage from "../storeListPage/ShopListPage";
 import MonitPage from "../monitPage/MonitPage";
 import HomePage from "../homePage/HomePage";
-import { Card, Box, Container, Divider } from "@mui/material";
+import { Card, Box, Container } from "@mui/material";
 import { LeftMenu } from "./leftMenuComponent";
 
 const Dashboard = () => {

@@ -8,28 +8,16 @@ import { GET_ERROR_JOBS_LIST } from "../actions/UserActions";
 import { GET_JOBS } from "../actions/UserActions";
 import { BLOCK_REPORT } from "../actions/UserActions";
 import { GET_REPLICATION } from "../actions/UserActions";
+import { ActionTypes } from "../actions/types";
+import { StateTypes, StoreTypes } from "../types";
 
-interface StoreTypes {
-  id: number;
-  number: string;
-  type: string;
-  status: string;
-  info?: string;
-}
-
-interface State {
-  isLogged: boolean;
-  storeList?: [StoreTypes] | any;
-  reportsBlock: string[];
-}
-
-const initState: State = {
+export const initState: StateTypes = {
   isLogged: false,
   storeList: [],
   reportsBlock: [],
 };
 
-export const userReducer = (state = initState, action: any) => {
+export const userReducer = (state = initState, action: ActionTypes) => {
   switch (action.type) {
     case USER_LOGGED_IN: {
       return { ...state, isLogged: true };

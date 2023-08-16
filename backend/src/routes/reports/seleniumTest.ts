@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { setBlockRaport, getUserEmail, unBlockRaport } from "./reports";
 import { transporter, EMAIL } from "../../config/nodemailer";
 import {
@@ -56,7 +56,7 @@ const runSelenium = async (
   environment: "TEST" | "DEV",
   req: Request,
   res: Response,
-  next: any
+  next: NextFunction
 ) => {
   let envIP: string | undefined;
   let blockRep = "";

@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { getUserEmail, setBlockRaport, unBlockRaport } from "./reports";
 import { EMAIL, transporter } from "../../config/nodemailer";
 require("dotenv").config();
@@ -15,7 +15,7 @@ let dbSID = process.env.SAMBODB_SID;
 export const runVolumetrics = async (
   req: Request,
   res: Response,
-  next: any
+  next: NextFunction
 ) => {
   try {
     setBlockRaport("volumetrics", req, res, next);
@@ -87,7 +87,7 @@ const automaticVolumetrics = schedule.scheduleJob("0 45 5 * * 6", async () => {
             },
           ],
           from: EMAIL,
-          to: "babula.bartlomiej@gmail.com",
+          to: "esambo_hd@asseco.pl",
           subject: "Dane do Wolumetryki",
           text: "There is a new article. It's about sending emails, check it out!",
           html: `<p>Cześć,</p>

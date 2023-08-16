@@ -1,10 +1,14 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
 const oracledb = require("oracledb");
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 import { samboDbConfig } from "../../app";
 
-export const getJobs = async (req: Request, res: Response, next: any) => {
+export const getJobs = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     let conn = await oracledb.getConnection(samboDbConfig);
     const result = await conn.execute(

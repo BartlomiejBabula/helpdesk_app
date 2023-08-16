@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { EMAIL, transporter } from "../../config/nodemailer";
 import xlsx from "node-xlsx";
 import { samboDbConfig } from "../../app";
@@ -187,7 +187,7 @@ const getGICAEndStores = async (yest: string, storeType: "N" | "H") => {
 export const generateMorningReport = async (
   req: Request,
   res: Response,
-  next: any
+  next: NextFunction
 ) => {
   try {
     const year = new Date().getFullYear();
@@ -297,7 +297,7 @@ const automaticMorningReport = schedule.scheduleJob(
           },
         ],
         from: EMAIL,
-        to: "babula.bartlomiej@gmail.com",
+        to: "esambo_hd@asseco.pl",
         subject: "Raport procesu generowania zamówień ESAMBO - automat",
         text: "There is a new article. It's about sending emails, check it out!",
         html: `<p>Witam,</p>
@@ -320,7 +320,7 @@ const automaticMorningReport = schedule.scheduleJob(
             },
           ],
           from: EMAIL,
-          to: "babula.bartlomiej@gmail.com",
+          to: "esambo_hd@asseco.pl",
           subject: "Transfer GICA vs. integracja danych w eSambo - automat",
           text: "There is a new article. It's about sending emails, check it out!",
           html: `<p>Witam,</p>
@@ -336,7 +336,7 @@ const automaticMorningReport = schedule.scheduleJob(
       transporter
         .sendMail({
           from: EMAIL,
-          to: "babula.bartlomiej@gmail.com",
+          to: "esambo_hd@asseco.pl",
           subject: "Transfer GICA vs. integracja danych w eSambo - automat",
           text: "There is a new article. It's about sending emails, check it out!",
           html: `<p>Witam,</p>

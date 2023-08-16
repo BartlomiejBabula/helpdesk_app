@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { replicationDbConfig } from "../../app";
 
 const oracledb = require("oracledb");
@@ -7,7 +7,7 @@ oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 export const getReplication = async (
   req: Request,
   res: Response,
-  next: any
+  next: NextFunction
 ) => {
   try {
     let conn = await oracledb.getConnection(replicationDbConfig);

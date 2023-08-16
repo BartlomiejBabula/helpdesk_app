@@ -12,10 +12,10 @@ import {
   ListItemIcon,
   ListItemButton,
 } from "@mui/material";
-import { useDispatch } from "react-redux";
 import { logOutAction } from "../../../actions/UserActions";
 import api from "../../../api/api";
 import { useState } from "react";
+import { Dispatcher, useAppDispatch } from "../../../store/AppStore";
 
 interface Values {
   tab: string;
@@ -24,7 +24,7 @@ interface Values {
 export const LeftMenu = () => {
   const [tab, setTab] = useState("");
   const navigate = useNavigate();
-  const dispatch = useDispatch<any>();
+  const dispatch: Dispatcher = useAppDispatch();
 
   const handleLogout = () => {
     const refreshToken = { refresh: localStorage.refresh };

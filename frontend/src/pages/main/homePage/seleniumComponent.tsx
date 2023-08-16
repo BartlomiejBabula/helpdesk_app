@@ -4,9 +4,12 @@ import api from "../../../api/api";
 import Alert, { AlertProps } from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import { selectBlockReports } from "../../../selectors/user";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
 import { getBlockRaport } from "../../../actions/UserActions";
+import {
+  Dispatcher,
+  useAppDispatch,
+  useAppSelector,
+} from "../../../store/AppStore";
 
 const seleniumList: { name: string; btt: string }[] = [
   { name: "ŚRODOWISKO DEV", btt: "selenium_dev" },
@@ -14,8 +17,8 @@ const seleniumList: { name: string; btt: string }[] = [
 ];
 
 export const Selenium = () => {
-  const dispatch = useDispatch<any>();
-  let blockReports: any = useSelector<any>(selectBlockReports);
+  const dispatch: Dispatcher = useAppDispatch();
+  let blockReports: string[] = useAppSelector(selectBlockReports);
   const [snackbar, setSnackbar] = useState<Pick<
     AlertProps,
     "children" | "severity"
@@ -73,7 +76,7 @@ export const Selenium = () => {
               backgroundImage:
                 "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
             }}
-            disabled={blockReports ? blockReports.includes(test.btt) : null}
+            disabled={blockReports?.includes(test.btt) ? true : false}
             onClick={() => {
               handleTestGenerate(test.name);
             }}

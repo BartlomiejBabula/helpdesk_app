@@ -1,17 +1,10 @@
 import axios from "axios";
-import { logInAction } from "../actions/UserActions";
-
-// export const AppURL = "http://127.0.0.1:8888";
-
-// const axiosInstance = axios.create();
-// axiosInstance.defaults.baseURL = "http://127.0.0.1:8888";
-// export default axiosInstance;
 
 const axiosInstance = axios.create();
-// axiosInstance.defaults.baseURL = "http://127.0.0.1:8888";
-// export const AppURL = "http://127.0.0.1:8888";
-axiosInstance.defaults.baseURL = "http://10.5.0.84:8888";
-export const AppURL = "http://10.5.0.84:8888";
+// axiosInstance.defaults.baseURL = "https://esambohd-bck.skg.pl";
+// export const AppURL = "https://esambohd-bck.skg.pl";
+axiosInstance.defaults.baseURL = process.env.BACKEND;
+export const AppURL = process.env.BACKEND;
 
 export const setAuthHeader = (token: any) => {
   axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;

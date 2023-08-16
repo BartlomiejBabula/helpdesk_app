@@ -20,12 +20,6 @@ const workSheetsFromFile = xlsx.parse(
     console.info(`Server running on port ${port}`)
   );
 
-  // const admin = {
-  //   email: "babula.bartlomiej@gmail.com",
-  //   password: "fadada",
-  // };
-  // await sequelize.models.User.bulkCreate([admin]);
-
   let getStores = await Store.findAll();
   if (getStores[0] === undefined) {
     let stores: any = [];

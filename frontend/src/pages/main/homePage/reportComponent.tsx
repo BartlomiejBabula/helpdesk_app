@@ -4,9 +4,12 @@ import api from "../../../api/api";
 import Alert, { AlertProps } from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import { selectBlockReports } from "../../../selectors/user";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
 import { getBlockRaport } from "../../../actions/UserActions";
+import {
+  Dispatcher,
+  useAppDispatch,
+  useAppSelector,
+} from "../../../store/AppStore";
 
 const raportList: { name: string; btt: string }[] = [
   { name: "RAPORT PORANNY", btt: "morning" },
@@ -14,8 +17,8 @@ const raportList: { name: string; btt: string }[] = [
 ];
 
 export const Report = () => {
-  const dispatch = useDispatch<any>();
-  let blockReports: any = useSelector<any>(selectBlockReports);
+  const dispatch: Dispatcher = useAppDispatch();
+  let blockReports: string[] = useAppSelector(selectBlockReports);
   const [snackbar, setSnackbar] = useState<Pick<
     AlertProps,
     "children" | "severity"
@@ -73,7 +76,7 @@ export const Report = () => {
               backgroundImage:
                 "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
             }}
-            disabled={blockReports ? blockReports.includes(raport.btt) : null}
+            disabled={blockReports?.includes(raport.btt) ? true : false}
             onClick={() => {
               handleRaportGenerate(raport.name);
             }}
