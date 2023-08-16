@@ -87,7 +87,7 @@ const automaticVolumetrics = schedule.scheduleJob("0 45 5 * * 6", async () => {
             },
           ],
           from: EMAIL,
-          to: "babula.bartlomiej@gmail.com",
+          to: "esambo_hd@asseco.pl",
           subject: "Dane do Wolumetryki",
           text: "There is a new article. It's about sending emails, check it out!",
           html: `<p>Cześć,</p>
