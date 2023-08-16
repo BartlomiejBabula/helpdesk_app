@@ -4,10 +4,10 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import Snackbar from "@mui/material/Snackbar";
 import api, { setAuthHeader } from "../../api/api";
-import { useDispatch } from "react-redux";
 import Alert, { AlertProps } from "@mui/material/Alert";
 import { logInAction, getUserProfile } from "../../actions/UserActions";
 import { Box, Stack, Button, TextField, Typography } from "@mui/material";
+import { Dispatcher, useAppDispatch } from "../../store/AppStore";
 
 interface LoginValues {
   email: string;
@@ -19,7 +19,7 @@ export const LoginComponent = () => {
     AlertProps,
     "children" | "severity"
   > | null>(null);
-  const dispatch = useDispatch<any>();
+  const dispatch: Dispatcher = useAppDispatch();
   const navigate = useNavigate();
   const formik = useFormik({
     validationSchema: yup.object().shape({
@@ -53,8 +53,11 @@ export const LoginComponent = () => {
           navigate({ pathname: "/dashboard" });
         })
         .catch((error) => {
+          if (error.response.status === 403) {
+            error.message = "Błędny login lub hasło";
+          }
           setSnackbar({
-            children: "Błędny login lub hasło",
+            children: error.message,
             severity: "error",
           });
         });

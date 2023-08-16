@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { EMAIL, transporter } from "../../config/nodemailer";
 import xlsx from "node-xlsx";
 import { samboDbConfig } from "../../app";
@@ -187,7 +187,7 @@ const getGICAEndStores = async (yest: string, storeType: "N" | "H") => {
 export const generateMorningReport = async (
   req: Request,
   res: Response,
-  next: any
+  next: NextFunction
 ) => {
   try {
     const year = new Date().getFullYear();

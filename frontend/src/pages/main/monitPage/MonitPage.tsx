@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import Alert, { AlertProps } from "@mui/material/Alert";
-import { useDispatch } from "react-redux";
 import {
   getJobsWithError,
   getJobs,
@@ -13,6 +12,7 @@ import Tab from "@mui/material/Tab";
 import { JobsComponent } from "./jobsComponent";
 import { JobsWithErrorComponent } from "./jobsWithErrorComponent";
 import { ReplicationComponent } from "./replicationComponent";
+import { Dispatcher, useAppDispatch } from "../../../store/AppStore";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -41,7 +41,7 @@ function TabPanel(props: TabPanelProps) {
 }
 
 const MonitPage = () => {
-  const dispatch = useDispatch<any>();
+  const dispatch: Dispatcher = useAppDispatch();
   const [tab, setTab] = useState<number>(0);
 
   const [snackbar, setSnackbar] = useState<Pick<
@@ -64,14 +64,14 @@ const MonitPage = () => {
           children: "Pobieram procesy - operacja może potrwać kilka minut",
           severity: "success",
         });
-        await dispatch(getJobsWithError());
+        dispatch(getJobsWithError());
         break;
       case 1:
         setSnackbar({
           children: "Pobieram procesy - operacja może potrwać kilka minut",
           severity: "success",
         });
-        await dispatch(getJobs());
+        dispatch(getJobs());
         break;
       case 2:
         setSnackbar({
@@ -79,7 +79,7 @@ const MonitPage = () => {
             "Pobieram dane o replikacji - operacja może potrwać kilka minut",
           severity: "success",
         });
-        await dispatch(getReplication());
+        dispatch(getReplication());
         break;
       default:
         break;

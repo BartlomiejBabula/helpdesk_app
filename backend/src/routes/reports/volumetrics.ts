@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { getUserEmail, setBlockRaport, unBlockRaport } from "./reports";
 import { EMAIL, transporter } from "../../config/nodemailer";
 require("dotenv").config();
@@ -15,7 +15,7 @@ let dbSID = process.env.SAMBODB_SID;
 export const runVolumetrics = async (
   req: Request,
   res: Response,
-  next: any
+  next: NextFunction
 ) => {
   try {
     setBlockRaport("volumetrics", req, res, next);

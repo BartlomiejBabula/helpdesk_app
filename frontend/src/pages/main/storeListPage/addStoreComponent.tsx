@@ -6,9 +6,13 @@ import Alert, { AlertProps } from "@mui/material/Alert";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { selectStoreList } from "../../../selectors/user";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
 import { addStoreToStoreList } from "../../../actions/UserActions";
+import {
+  Dispatcher,
+  useAppDispatch,
+  useAppSelector,
+} from "../../../store/AppStore";
+import { StoreTypes } from "../../../types";
 
 interface formikValues {
   storeNumber: string;
@@ -17,17 +21,9 @@ interface formikValues {
   information: string;
 }
 
-interface StoreTypes {
-  id: number;
-  storeNumber: string;
-  storeType: string;
-  status: string;
-  information?: string;
-}
-
 export const AddShop = () => {
-  const dispatch = useDispatch<any>();
-  let storeList: any = useSelector<any>(selectStoreList);
+  const dispatch: Dispatcher = useAppDispatch();
+  let storeList: StoreTypes[] = useAppSelector(selectStoreList);
   const [snackbar, setSnackbar] = React.useState<Pick<
     AlertProps,
     "children" | "severity"
@@ -62,7 +58,7 @@ export const AddShop = () => {
         information: values.information && values.information,
       };
       let storeExist: boolean = false;
-      storeList.map((store: StoreTypes) => {
+      storeList.forEach((store: StoreTypes) => {
         if (store.storeNumber === newStore.storeNumber) {
           storeExist = true;
         }
@@ -73,7 +69,7 @@ export const AddShop = () => {
           severity: "error",
         });
       } else {
-        await dispatch(addStoreToStoreList(newStore));
+        dispatch(addStoreToStoreList(newStore));
         resetForm();
         setSnackbar({
           children: "Utworzono sklep",
@@ -175,6 +171,8 @@ export const AddShop = () => {
             height: 42,
             width: 200,
             marginBottom: 4,
+            backgroundImage:
+              "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
           }}
           type='submit'
           variant='contained'

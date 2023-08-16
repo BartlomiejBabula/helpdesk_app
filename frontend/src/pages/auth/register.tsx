@@ -59,9 +59,9 @@ export const RegisterComponent = () => {
           });
           resetForm();
         })
-        .catch((e) => {
+        .catch((error) => {
           setSnackbar({
-            children: e.response.data,
+            children: error.message,
             severity: "error",
           });
         });

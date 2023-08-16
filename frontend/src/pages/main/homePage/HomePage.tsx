@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { Box } from "@mui/material";
-import { useDispatch } from "react-redux";
 import { getBlockRaport } from "../../../actions/UserActions";
 import { Report } from "./reportComponent";
 import { Selenium } from "./seleniumComponent";
 import { ExternalServices } from "./redirectComponent";
+import { Dispatcher, useAppDispatch } from "../../../store/AppStore";
 
 const HomePage = () => {
-  const dispatch = useDispatch<any>();
+  const dispatch: Dispatcher = useAppDispatch();
 
   useEffect(() => {
     dispatch(getBlockRaport());

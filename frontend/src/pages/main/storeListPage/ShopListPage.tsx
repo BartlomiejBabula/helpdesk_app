@@ -14,73 +14,24 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert, { AlertProps } from "@mui/material/Alert";
 import { selectStoreList } from "../../../selectors/user";
 import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
 import { editStore } from "../../../actions/UserActions";
 import { AddShop } from "./addStoreComponent";
-
-interface TypeValues {
-  addShop: boolean;
-}
+import { StoreTypes } from "../../../types";
+import { Dispatcher, useAppDispatch } from "../../../store/AppStore";
 
 const ShopListPage = () => {
-  const dispatch = useDispatch<any>();
-  let storeList: any = useSelector<any>(selectStoreList);
-  const [addShop, setAddShop] = useState<TypeValues["addShop"]>(false);
-  const [snackbar, setSnackbar] = React.useState<Pick<
+  const dispatch: Dispatcher = useAppDispatch();
+  let storeList: StoreTypes[] = useSelector(selectStoreList);
+  const [addStore, setAddStore] = useState(false);
+  const [snackbar, setSnackbar] = useState<Pick<
     AlertProps,
     "children" | "severity"
   > | null>(null);
 
   const handleCloseSnackbar = () => setSnackbar(null);
-  //   validationSchema: yup.object().shape({
-  //     storeNumber: yup
-  //       .string()
-  //       .min(3, "Niepoprawna wartość")
-  //       .max(3, "Niepoprawna wartość")
-  //       .required("Pole obowiązkowe"),
-  //     storeType: yup.string().required("Pole obowiązkowe"),
-  //     status: yup.string().required("Pole obowiązkowe"),
-  //   }),
 
-  //   initialValues: {
-  //     storeNumber: "",
-  //     storeType: "",
-  //     status: "",
-  //     information: "",
-  //   },
-
-  //   onSubmit: async (values: formikValues, { resetForm }) => {
-  //     let newStore = {
-  //       id: storeList.length + 1,
-  //       storeNumber: values.storeNumber,
-  //       storeType: values.storeType,
-  //       status: values.status,
-  //       information: values.information && values.information,
-  //     };
-  //     let storeExist: boolean = false;
-  //     storeList.map((store: StoreTypes) => {
-  //       if (store.storeNumber === newStore.storeNumber) {
-  //         storeExist = true;
-  //       }
-  //     });
-  //     if (storeExist) {
-  //       setSnackbar({
-  //         children: "Sklep z tym numerem istnieje",
-  //         severity: "error",
-  //       });
-  //     } else {
-  //       await dispatch(addStoreToStoreList(newStore));
-  //       resetForm();
-  //       setSnackbar({
-  //         children: "Utworzono sklep",
-  //         severity: "success",
-  //       });
-  //     }
-  //   },
-  // });
-
-  const toggleAddShop = () => {
-    setAddShop(!addShop);
+  const toggleAddStore = () => {
+    setAddStore(!addStore);
   };
 
   const SelectEditStatusCell = (props: GridRenderCellParams) => {
@@ -169,7 +120,7 @@ const ShopListPage = () => {
 
   const processRowUpdate = React.useCallback(
     async (editRow: GridRowModel) => {
-      let newStore = {
+      let newStore: StoreTypes = {
         id: editRow.id,
         storeNumber: editRow.storeNumber,
         storeType: editRow.storeType,
@@ -177,6 +128,7 @@ const ShopListPage = () => {
         information:
           editRow.information === undefined ? "" : editRow.information,
       };
+
       await dispatch(editStore(newStore));
       setSnackbar({
         children: "Zapisano zmiany",
@@ -215,11 +167,11 @@ const ShopListPage = () => {
       </Typography>
       <Button
         sx={{ position: "absolute", top: 15, right: 15 }}
-        onClick={toggleAddShop}
+        onClick={toggleAddStore}
       >
-        Dodaj Sklep
+        Dodaj sklep
       </Button>
-      {addShop && <AddShop />}
+      {addStore && <AddShop />}
       <DataGrid
         rows={storeList}
         columns={columns}

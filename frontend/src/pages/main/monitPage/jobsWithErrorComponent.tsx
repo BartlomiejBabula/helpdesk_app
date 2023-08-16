@@ -1,7 +1,8 @@
 import { Box } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { selectErrorJobs } from "../../../selectors/user";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../../store/AppStore";
+import { JobTypes } from "../../../types";
 
 const columnsProcess: GridColDef[] = [
   { field: "ID", headerName: "JobID", width: 100 },
@@ -21,7 +22,7 @@ const columnsProcess: GridColDef[] = [
 ];
 
 export const JobsWithErrorComponent = () => {
-  let errorJobs: any = useSelector<any>(selectErrorJobs);
+  let errorJobs: JobTypes[] = useAppSelector(selectErrorJobs);
   return (
     <Box style={{ height: 580 }}>
       <DataGrid

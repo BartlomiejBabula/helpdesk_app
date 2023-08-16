@@ -18,11 +18,7 @@ ${INVALID PASSWORD}  invalidPass
 
 *** Keywords ***
 Open Browser To Login Page
-    # ${caps}=  Evaluate  sys.modules['selenium.webdriver'].DesiredCapabilities.FIREFOX  sys, selenium.webdriver
-    # ${proxy}=  Create dictionary  proxyType=MANUAL  httpProxy=http://proxy-rze.asseco.pl:8080
-    # Set to dictionary  ${caps}  proxy=${proxy}
-    # Open Browser  browser=${BROWSER}   desired_capabilities=${caps}    url=${LOGIN URL}
-    Open Browser    ${LOGIN URL}    ${BROWSER}    
+    Open Browser    ${LOGIN URL}    ${BROWSER} 
     Maximize Browser Window
     Set Selenium Speed    ${DELAY}
     Login Page Should Be Open

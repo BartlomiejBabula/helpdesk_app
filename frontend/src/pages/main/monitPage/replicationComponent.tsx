@@ -1,6 +1,7 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { selectReplication } from "../../../selectors/user";
-import { useSelector } from "react-redux";
+import { ReplicationTypes } from "../../../types";
+import { useAppSelector } from "../../../store/AppStore";
 
 const columnsReplication: GridColDef[] = [
   {
@@ -21,7 +22,7 @@ const columnsReplication: GridColDef[] = [
 ];
 
 export const ReplicationComponent = () => {
-  let replication: any = useSelector<any>(selectReplication);
+  let replication: ReplicationTypes[] = useAppSelector(selectReplication);
   return (
     <DataGrid
       getRowId={(row) => row.SYSDATE}

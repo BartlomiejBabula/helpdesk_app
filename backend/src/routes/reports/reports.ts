@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { authJWTMiddleware } from "../users";
 import { Report } from "../../models/Report";
 import { Model } from "sequelize-typescript";
@@ -33,10 +33,10 @@ reports.get(
 );
 
 export const setBlockRaport = async (
-  raportName: any,
+  raportName: string,
   req: Request,
   res: Response,
-  next: any
+  next: NextFunction
 ) => {
   try {
     let newReport = { name: raportName, block: true };
