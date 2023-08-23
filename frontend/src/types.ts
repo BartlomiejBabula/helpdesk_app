@@ -12,6 +12,7 @@ export interface StateTypes {
   isLogged: boolean;
   storeList?: [StoreTypes] | any;
   reportsBlock: string[];
+  jira?: JiraTypes;
 }
 
 export interface UserTypes {
@@ -58,4 +59,9 @@ export interface ReplicationTypes {
   C: number;
   DANE_ZREPLIKOWANE: string;
   SYSDATE: string;
+}
+
+export interface JiraTypes {
+  jiraKey: string;
+  auto: boolean;
 }

@@ -5,7 +5,7 @@ import { useAppSelector } from "../../../store/AppStore";
 import { JobTypes } from "../../../types";
 
 const columnsProcess: GridColDef[] = [
-  { field: "ID", headerName: "JobID", width: 100 },
+  { field: "ID", headerName: "JobID", width: 110 },
   { field: "STORE_NUMBER", headerName: "Sklep", width: 60 },
   {
     field: "QUEUE",
@@ -18,7 +18,7 @@ const columnsProcess: GridColDef[] = [
     width: 65,
   },
   { field: "TM_START", headerName: "Start Procesu", width: 200 },
-  { field: "ERROR_MESSAGE", headerName: "Error", width: 515 },
+  { field: "ERROR_MESSAGE", headerName: "Error", width: 560 },
 ];
 
 export const JobsWithErrorComponent = () => {
@@ -29,7 +29,7 @@ export const JobsWithErrorComponent = () => {
         rows={errorJobs ? errorJobs : []}
         columns={columnsProcess}
         disableColumnMenu={true}
-        pageSize={25}
+        // pageSize={25}
         density={"compact"}
       />
     </Box>

@@ -93,9 +93,8 @@ const runSelenium = async (
           from: EMAIL,
           to: email,
           subject: `Selenium środowisko ${environment}`,
-          text: "There is a new article. It's about sending emails, check it out!",
-          html: `<p>Cześć,</p>
-                <p>w załączniku przesyłam raport z wykonania testów selenium</p>`,
+          html: `<p>Cześć,</br>
+w załączniku przesyłam raport z wykonania testów selenium</p>`,
         })
         .then((info: any) => {
           console.log("Message was sent");

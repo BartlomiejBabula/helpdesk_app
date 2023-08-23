@@ -4,6 +4,7 @@ import MonitPage from "../monitPage/MonitPage";
 import HomePage from "../homePage/HomePage";
 import { Card, Box, Container } from "@mui/material";
 import { LeftMenu } from "./leftMenuComponent";
+import JiraPage from "../jiraPage/jiraPage";
 
 const Dashboard = () => {
   return (
@@ -18,6 +19,7 @@ const Dashboard = () => {
         <LeftMenu />
         <Box sx={{ width: "100%", height: "100%" }}>
           <Routes>
+            <Route path='/jira' element={<JiraPage />} />
             <Route path='/shoplist' element={<ShopListPage />} />
             <Route path='/monit' element={<MonitPage />} />
             <Route path='/' element={<HomePage />} />

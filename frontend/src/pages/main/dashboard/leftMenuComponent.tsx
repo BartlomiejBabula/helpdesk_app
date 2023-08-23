@@ -1,6 +1,7 @@
 import MonitIcon from "@mui/icons-material/MonitorHeart";
 import ListIcon from "@mui/icons-material/List";
 import LogoutIcon from "@mui/icons-material/Logout";
+import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import HomeIcon from "@mui/icons-material/Home";
 import { useNavigate } from "react-router-dom";
 import {
@@ -45,6 +46,9 @@ export const LeftMenu = () => {
         break;
       case "services":
         navigate({ pathname: "./" });
+        break;
+      case "jira":
+        navigate({ pathname: "./jira" });
         break;
       default:
         break;
@@ -93,7 +97,7 @@ export const LeftMenu = () => {
                   borderTop: "9px solid transparent",
                   borderBottom: "9px solid transparent",
                   borderRight: "9px solid white",
-                  marginBottom: "5px",
+                  marginBottom: "7px",
                 }}
               />
             </ListItemButton>
@@ -118,7 +122,7 @@ export const LeftMenu = () => {
                   borderTop: "9px solid transparent",
                   borderBottom: "9px solid transparent",
                   borderRight: "9px solid white",
-                  marginBottom: "5px",
+                  marginBottom: "7px",
                 }}
               />
             </ListItemButton>
@@ -143,7 +147,32 @@ export const LeftMenu = () => {
                   borderTop: "9px solid transparent",
                   borderBottom: "9px solid transparent",
                   borderRight: "9px solid white",
-                  marginBottom: "5px",
+                  marginBottom: "7px",
+                }}
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => {
+                changeTab("jira");
+                setTab("jira");
+              }}
+            >
+              <ListItemIcon>
+                <DriveFileRenameOutlineIcon sx={{ fontSize: 20 }} />
+              </ListItemIcon>
+              <ListItemText primary='Automat JIRA' />
+              <Box
+                sx={{
+                  display: tab === "jira" ? null : "none",
+                  alignSelf: "flex-end",
+                  width: 0,
+                  height: 0,
+                  borderTop: "9px solid transparent",
+                  borderBottom: "9px solid transparent",
+                  borderRight: "9px solid white",
+                  marginBottom: "7px",
                 }}
               />
             </ListItemButton>
@@ -151,7 +180,7 @@ export const LeftMenu = () => {
           <Box
             sx={{
               display: "flex",
-              height: "68%",
+              height: "60%",
             }}
           >
             <ListItem disablePadding sx={{ alignSelf: "flex-end" }}>

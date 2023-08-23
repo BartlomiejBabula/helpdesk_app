@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from "express";
 import { users, login, auth, logout } from "./routes/users";
 import { stores } from "./routes/stores";
 import { reports } from "./routes/reports/reports";
+import { jira } from "./routes/jira";
 
 const cors = require("cors");
 require("dotenv").config();
@@ -48,3 +49,4 @@ app.use("/login", login);
 app.use("/logout", logout);
 app.use("/refresh-token", auth);
 app.use("/reports", reports);
+app.use("/jira", jira);

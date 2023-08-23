@@ -40,9 +40,8 @@ export const runVolumetrics = async (
             from: EMAIL,
             to: email,
             subject: "Dane do Wolumetryki",
-            text: "There is a new article. It's about sending emails, check it out!",
-            html: `<p>Cześć,</p>
-                  <p>w załączniku przesyłam pliki z danymi do raportu Wolumetryki</p>`,
+            html: `<p>Cześć,</br>
+w załączniku przesyłam pliki z danymi do raportu Wolumetryki</p>`,
           })
           .then((info: any) => {
             console.log({ info });
@@ -89,9 +88,8 @@ const automaticVolumetrics = schedule.scheduleJob("0 45 5 * * 6", async () => {
           from: EMAIL,
           to: "esambo_hd@asseco.pl",
           subject: "Dane do Wolumetryki",
-          text: "There is a new article. It's about sending emails, check it out!",
-          html: `<p>Cześć,</p>
-                  <p>w załączniku przesyłam pliki z danymi do raportu Wolumetryki</p>`,
+          html: `<p>Cześć,</br>
+          w załączniku przesyłam pliki z danymi do raportu Wolumetryki</p>`,
         })
         .then((info: any) => {
           console.log({ info });
