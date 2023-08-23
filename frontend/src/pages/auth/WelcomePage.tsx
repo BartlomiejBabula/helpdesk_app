@@ -56,6 +56,15 @@ const WelcomePage = () => {
           >
             Siemanko, tu znajdziesz wszystko co potrzeba do sprawnej pracy
           </Typography>
+          <Typography
+            variant='subtitle2'
+            sx={{
+              letterSpacing: 2,
+              marginTop: 14,
+            }}
+          >
+            Wersja 1.0
+          </Typography>
         </Box>
         <Routes>
           <Route path='/' element={<LoginComponent />} />

@@ -1,10 +1,17 @@
 import api from "../api/api";
 import { Dispatch } from "react";
-import { JobTypes, ReplicationTypes, StoreTypes, UserTypes } from "../types";
+import {
+  JobTypes,
+  ReplicationTypes,
+  StoreTypes,
+  UserTypes,
+  JiraTypes,
+} from "../types";
 import {
   ActionAddStoreToStoreListTypes,
   ActionEditStoreTypes,
   ActionGetBlockRaport,
+  ActionGetJira,
   ActionGetJobsTypes,
   ActionGetJobsWithError,
   ActionGetReplication,
@@ -21,6 +28,7 @@ export const GET_ERROR_JOBS_LIST = "GET_ERROR_JOBS_LIST";
 export const GET_JOBS = "GET_JOBS";
 export const BLOCK_REPORT = "BLOCK_REPORT";
 export const GET_REPLICATION = "GET_REPLICATION";
+export const GET_JIRA = "GET_JIRA";
 
 export const logOutAction = () => ({
   type: USER_LOGGED_OUT,
@@ -43,6 +51,13 @@ export const getUserProfile =
         dispatch({
           type: GET_STORELIST,
           payload: storeList,
+        });
+        api.get(`/jira`).then((response) => {
+          let jira: JiraTypes = response.data[0];
+          dispatch({
+            type: GET_JIRA,
+            payload: jira,
+          });
         });
       });
     });
@@ -138,4 +153,29 @@ export const getReplication =
         payload: replication,
       });
     });
+  };
+
+export const getJira = () => (dispatch: Dispatch<ActionGetJira>) => {
+  api.get(`/jira`).then((response) => {
+    let jira: JiraTypes = response.data[0];
+    dispatch({
+      type: GET_JIRA,
+      payload: jira,
+    });
+  });
+};
+
+export const editJira =
+  (jira: JiraTypes) => (dispatch: Dispatch<ActionGetJira>) => {
+    api
+      .post(`/jira`, jira)
+      .then((response) => {
+        dispatch({
+          type: GET_JIRA,
+          payload: response.data,
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };

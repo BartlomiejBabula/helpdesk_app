@@ -8,6 +8,7 @@ import { GET_ERROR_JOBS_LIST } from "../actions/UserActions";
 import { GET_JOBS } from "../actions/UserActions";
 import { BLOCK_REPORT } from "../actions/UserActions";
 import { GET_REPLICATION } from "../actions/UserActions";
+import { GET_JIRA } from "../actions/UserActions";
 import { ActionTypes } from "../actions/types";
 import { StateTypes, StoreTypes } from "../types";
 
@@ -27,6 +28,9 @@ export const userReducer = (state = initState, action: ActionTypes) => {
     }
     case GET_USER: {
       return { ...state, isLogged: true, ...action.payload };
+    }
+    case GET_JIRA: {
+      return { ...state, jira: action.payload };
     }
     case GET_STORELIST: {
       return { ...state, storeList: action.payload };

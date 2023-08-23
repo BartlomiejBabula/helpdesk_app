@@ -9,9 +9,9 @@ oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 
 interface SQL_STORE {
   STORE_NUMBER: string;
-  ISSUE_DATE: string;
+
   CLOSE_OP_DATE: string;
-  DTIMESTMP: string;
+  CREATE_DATE: string;
   DOC_SYMBOL: string;
 }
 interface SQL_GICA {
@@ -74,9 +74,7 @@ const getWS = async (today: string, yest: string) => {
     `alter session set NLS_DATE_FORMAT = 'yyyy-mm-dd HH24:MI:SS'`
   );
   const WSRequest = await conn.execute(
-    `select h.store_number, h.issue_date, h.close_op_date,
-      (select max(dtimestmp) from logging_event le where le.doc_id = h.doc_id) as dtimestmp,
-      h.doc_symbol
+    `select h.store_number, h.create_date, h.close_op_date,h.doc_symbol
       from es_doc_headers h
       -- where h.store_number in (select store_number from es_stores where org_id in (select org_id from ep_org_units where master_org_id in (18279650, 18361650)))
       where h.store_number in (select store_number from es_stores where store_type = 'N' and status = 'A')
@@ -96,15 +94,26 @@ const getWS = async (today: string, yest: string) => {
   let WS = await rs.getRows();
   let WS_data: any = [["STORE", "DOC_SYMBOL", "CREATE_DATE", "CLOSE_OP_DATE"]];
   WS.map((sql_store: SQL_STORE) => {
+    let dateStart = formatDate(new Date(sql_store.CREATE_DATE));
+    let dateEnd = formatDate(new Date(sql_store.CLOSE_OP_DATE));
+
     let newWS = [
       sql_store.STORE_NUMBER,
       sql_store.DOC_SYMBOL,
-      sql_store.DTIMESTMP,
-      sql_store.CLOSE_OP_DATE,
+      dateStart,
+      dateEnd,
     ];
     WS_data = [...WS_data, newWS];
   });
-  let buffer = xlsx.build([{ name: "WS", data: WS_data, options: {} }]);
+  let buffer = xlsx.build([
+    {
+      name: "WS",
+      data: WS_data,
+      options: {
+        "!cols": [{ width: 7 }, { width: 14 }, { width: 19 }, { width: 19 }],
+      },
+    },
+  ]);
   await rs.close();
   await conn.close();
   return buffer;
@@ -138,10 +147,20 @@ const getGICA = async (today: string, yest: string) => {
   let GICA = await rs.getRows();
   let GICA_data: any = [["SHOP", "START", "END"]];
   GICA.map((sql_gica: SQL_GICA, key: number) => {
-    let newWS = [sql_gica.STORE_NUMBER, sql_gica.TM_START, sql_gica.TM_END];
+    let gicaStart = formatDate(new Date(sql_gica.TM_START));
+    let gicaEnd = formatDate(new Date(sql_gica.TM_END));
+    let newWS = [sql_gica.STORE_NUMBER, gicaStart, gicaEnd];
     GICA_data = [...GICA_data, newWS];
   });
-  let buffer = xlsx.build([{ name: "Sheet", data: GICA_data, options: {} }]);
+  let buffer = xlsx.build([
+    {
+      name: "Sheet",
+      data: GICA_data,
+      options: {
+        "!cols": [{ width: 7 }, { width: 19 }, { width: 19 }],
+      },
+    },
+  ]);
   await rs.close();
   await conn.close();
   if (GICA_data.length > 1) {
@@ -216,11 +235,11 @@ export const generateMorningReport = async (
         from: EMAIL,
         to: email,
         subject: "Raport procesu generowania zamówień ESAMBO - automat",
-        text: "There is a new article. It's about sending emails, check it out!",
-        html: `<p>Witam,</p>
-              <p>${orders_txt}</p>
-              <p>${mandala_txt}</p>
-              <p>3. Zestawienie przetworzenia WS - załącznik w formacie xlsx</p>`,
+        html: `<p>Witam,<br />
+        <br />
+${orders_txt}<br />
+${mandala_txt}<br />
+3. Zestawienie przetworzenia WS - załącznik w formacie xlsx</p>`,
       })
       .then((info: any) => {
         console.log({ info });
@@ -239,11 +258,11 @@ export const generateMorningReport = async (
           from: EMAIL,
           to: email,
           subject: "Transfer GICA vs. integracja danych w eSambo - automat",
-          text: "There is a new article. It's about sending emails, check it out!",
-          html: `<p>Witam,</p>
-            <p>1. W załączeniu przesyłam listę sklepów, gdzie aktualizacja danych w sklepie zakończyła się po północy.</p>
-            <p>2. Aktualizacja danych na sklepach sieciowych i franczyzowych zakończyła się: ${gicaNetworkStores}.</p>
-            <p>3. Aktualizacja na hipermarketach zakończyła się: ${gicaHiperStores}.</p>`,
+          text: `Witam,
+
+1. W załączeniu przesyłam listę sklepów, gdzie aktualizacja danych w sklepie zakończyła się po północy.
+2. Aktualizacja danych na sklepach sieciowych i franczyzowych zakończyła się: ${gicaNetworkStores}.
+3. Aktualizacja na hipermarketach zakończyła się: ${gicaHiperStores}.`,
         })
         .then((info: any) => {
           console.log({ info });
@@ -255,10 +274,10 @@ export const generateMorningReport = async (
           from: EMAIL,
           to: email,
           subject: "Transfer GICA vs. integracja danych w eSambo - automat",
-          text: "There is a new article. It's about sending emails, check it out!",
-          html: `<p>Witam,</p>
-            <p>1. Aktualizacja danych na sklepach sieciowych i franczyzowych zakończyła się: ${gicaNetworkStores}.</p>
-            <p>2. Aktualizacja na hipermarketach zakończyła się: ${gicaHiperStores}.</p>`,
+          text: `Witam,
+
+1. Aktualizacja danych na sklepach sieciowych i franczyzowych zakończyła się: ${gicaNetworkStores}.
+2. Aktualizacja na hipermarketach zakończyła się: ${gicaHiperStores}.`,
         })
         .then((info: any) => {
           console.log({ info });
@@ -299,11 +318,11 @@ const automaticMorningReport = schedule.scheduleJob(
         from: EMAIL,
         to: "esambo_hd@asseco.pl",
         subject: "Raport procesu generowania zamówień ESAMBO - automat",
-        text: "There is a new article. It's about sending emails, check it out!",
-        html: `<p>Witam,</p>
-              <p>${orders_txt}</p>
-              <p>${mandala_txt}</p>
-              <p>3. Zestawienie przetworzenia WS - załącznik w formacie xlsx</p>`,
+        html: `<p>Witam,<br />
+        <br />
+${orders_txt}<br />
+${mandala_txt}<br />
+3. Zestawienie przetworzenia WS - załącznik w formacie xlsx</p>`,
       })
       .then((info: any) => {
         console.log({ info });
@@ -322,11 +341,11 @@ const automaticMorningReport = schedule.scheduleJob(
           from: EMAIL,
           to: "esambo_hd@asseco.pl",
           subject: "Transfer GICA vs. integracja danych w eSambo - automat",
-          text: "There is a new article. It's about sending emails, check it out!",
-          html: `<p>Witam,</p>
-            <p>1. W załączeniu przesyłam listę sklepów, gdzie aktualizacja danych w sklepie zakończyła się po północy.</p>
-            <p>2. Aktualizacja danych na sklepach sieciowych i franczyzowych zakończyła się: ${gicaNetworkStores}.</p>
-            <p>3. Aktualizacja na hipermarketach zakończyła się: ${gicaHiperStores}.</p>`,
+          text: `Witam,
+
+1. W załączeniu przesyłam listę sklepów, gdzie aktualizacja danych w sklepie zakończyła się po północy.
+2. Aktualizacja danych na sklepach sieciowych i franczyzowych zakończyła się: ${gicaNetworkStores}.
+3. Aktualizacja na hipermarketach zakończyła się: ${gicaHiperStores}.`,
         })
         .then((info: any) => {
           console.log({ info });
@@ -338,10 +357,10 @@ const automaticMorningReport = schedule.scheduleJob(
           from: EMAIL,
           to: "esambo_hd@asseco.pl",
           subject: "Transfer GICA vs. integracja danych w eSambo - automat",
-          text: "There is a new article. It's about sending emails, check it out!",
-          html: `<p>Witam,</p>
-            <p>1. Aktualizacja danych na sklepach sieciowych i franczyzowych zakończyła się: ${gicaNetworkStores}.</p>
-            <p>2. Aktualizacja na hipermarketach zakończyła się: ${gicaHiperStores}.</p>`,
+          text: `Witam,
+
+1. Aktualizacja danych na sklepach sieciowych i franczyzowych zakończyła się: ${gicaNetworkStores}.
+2. Aktualizacja na hipermarketach zakończyła się: ${gicaHiperStores}.`,
         })
         .then((info: any) => {
           console.log({ info });
@@ -350,3 +369,22 @@ const automaticMorningReport = schedule.scheduleJob(
     }
   }
 );
+
+export function formatDate(date: Date) {
+  let d = new Date(date),
+    month = "" + (d.getMonth() + 1),
+    day = "" + d.getDate(),
+    year = d.getFullYear(),
+    hour = d.getHours(),
+    minutes = "" + d.getMinutes(),
+    sec = "" + d.getSeconds();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+  if (sec.length < 2) sec = "0" + sec;
+  if (minutes.length < 2) minutes = "0" + minutes;
+
+  var formattedDate =
+    day + "." + month + "." + year + " " + hour + ":" + minutes + ":" + sec;
+  return formattedDate;
+}

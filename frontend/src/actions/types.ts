@@ -1,4 +1,10 @@
-import { JobTypes, ReplicationTypes, StoreTypes, UserTypes } from "../types";
+import {
+  JiraTypes,
+  JobTypes,
+  ReplicationTypes,
+  StoreTypes,
+  UserTypes,
+} from "../types";
 import {
   GET_STORELIST,
   GET_USER,
@@ -10,6 +16,7 @@ import {
   GET_ERROR_JOBS_LIST,
   BLOCK_REPORT,
   GET_REPLICATION,
+  GET_JIRA,
 } from "./UserActions";
 
 export type ActionTypes =
@@ -21,11 +28,17 @@ export type ActionTypes =
   | ActionAddStoreToStoreListTypes
   | ActionGetBlockRaport
   | ActionGetReplication
-  | ActionGetJobsWithError;
+  | ActionGetJobsWithError
+  | ActionGetJira;
 
 export type ActionGetReplication = {
   type: typeof GET_REPLICATION;
   payload: ReplicationTypes;
+};
+
+export type ActionGetJira = {
+  type: typeof GET_JIRA;
+  payload: JiraTypes;
 };
 
 export type ActionGetBlockRaport = {
@@ -49,8 +62,8 @@ export type ActionAddStoreToStoreListTypes = {
 };
 
 export type ActionGetUserProfileTypes = {
-  type: typeof GET_USER | typeof GET_STORELIST;
-  payload: UserTypes | StoreTypes[];
+  type: typeof GET_USER | typeof GET_STORELIST | typeof GET_JIRA;
+  payload: UserTypes | StoreTypes[] | JiraTypes;
 };
 
 export type ActionGetStoreList = {
