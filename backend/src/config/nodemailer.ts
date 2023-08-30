@@ -32,6 +32,7 @@ export const configImap = {
     port: 993,
     tls: true,
     authTimeout: 10000,
+    connTimeout: 30000,
     tlsOptions: { rejectUnauthorized: false },
   },
 };

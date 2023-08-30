@@ -3,6 +3,7 @@ import ListIcon from "@mui/icons-material/List";
 import LogoutIcon from "@mui/icons-material/Logout";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import HomeIcon from "@mui/icons-material/Home";
+import ShortcutIcon from "@mui/icons-material/Shortcut";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -50,6 +51,9 @@ export const LeftMenu = () => {
       case "jira":
         navigate({ pathname: "./jira" });
         break;
+      case "redirection":
+        navigate({ pathname: "./redirection" });
+        break;
       default:
         break;
     }
@@ -87,7 +91,7 @@ export const LeftMenu = () => {
               <ListItemIcon>
                 <HomeIcon sx={{ fontSize: 20 }} />
               </ListItemIcon>
-              <ListItemText primary='Home' />
+              <ListItemText primary='Strona głowna' />
               <Box
                 sx={{
                   display: tab === "services" ? null : "none",
@@ -177,10 +181,35 @@ export const LeftMenu = () => {
               />
             </ListItemButton>
           </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => {
+                changeTab("redirection");
+                setTab("redirection");
+              }}
+            >
+              <ListItemIcon>
+                <ShortcutIcon sx={{ fontSize: 20 }} />
+              </ListItemIcon>
+              <ListItemText primary='Przekierwowania' />
+              <Box
+                sx={{
+                  display: tab === "redirection" ? null : "none",
+                  alignSelf: "flex-end",
+                  width: 0,
+                  height: 0,
+                  borderTop: "9px solid transparent",
+                  borderBottom: "9px solid transparent",
+                  borderRight: "9px solid white",
+                  marginBottom: "7px",
+                }}
+              />
+            </ListItemButton>
+          </ListItem>
           <Box
             sx={{
               display: "flex",
-              height: "60%",
+              height: "54%",
             }}
           >
             <ListItem disablePadding sx={{ alignSelf: "flex-end" }}>

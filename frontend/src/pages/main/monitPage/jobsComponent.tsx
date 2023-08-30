@@ -18,13 +18,16 @@ const columnsProcess: GridColDef[] = [
     width: 65,
   },
   { field: "TM_START", headerName: "Start Procesu", width: 200 },
+  { field: "TM_RESTART", headerName: "Restart Procesu", width: 200 },
+  { field: "DOC_ID", headerName: "DOC_ID", width: 110 },
+  { field: "ORDERED", headerName: "Zlecony przez", width: 200 },
   { field: "ERROR_MESSAGE", headerName: "Error", width: 560 },
 ];
 
 export const JobsComponent = () => {
   let jobs: JobTypes[] = useAppSelector(selectJobs);
   return (
-    <Box style={{ height: 580 }}>
+    <Box style={{ height: 523 }}>
       <DataGrid
         rows={jobs ? jobs : []}
         columns={columnsProcess}

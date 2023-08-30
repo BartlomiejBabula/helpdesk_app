@@ -172,18 +172,20 @@ const ShopListPage = () => {
         Dodaj sklep
       </Button>
       {addStore && <AddShop />}
-      <DataGrid
-        rows={storeList}
-        columns={columns}
-        density={"compact"}
-        components={{ Toolbar: GridToolbar }}
-        experimentalFeatures={{ newEditingApi: true }}
-        disableColumnMenu={true}
-        disableDensitySelector={true}
-        disableColumnSelector={true}
-        processRowUpdate={processRowUpdate}
-        onProcessRowUpdateError={handleProcessRowUpdateError}
-      />
+      <Box style={{ height: 595 }}>
+        <DataGrid
+          rows={storeList}
+          columns={columns}
+          density={"compact"}
+          components={{ Toolbar: GridToolbar }}
+          experimentalFeatures={{ newEditingApi: true }}
+          disableColumnMenu={true}
+          disableDensitySelector={true}
+          disableColumnSelector={true}
+          processRowUpdate={processRowUpdate}
+          onProcessRowUpdateError={handleProcessRowUpdateError}
+        />
+      </Box>
       {!!snackbar && (
         <Snackbar
           open
