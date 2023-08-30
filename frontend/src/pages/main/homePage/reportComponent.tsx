@@ -14,6 +14,7 @@ import {
 const raportList: { name: string; btt: string }[] = [
   { name: "RAPORT PORANNY", btt: "morning" },
   { name: "RAPORT WOLUMETRYKA", btt: "volumetrics" },
+  { name: "RAPORT SELENIUM", btt: "selenium" },
 ];
 
 export const Report = () => {
@@ -46,23 +47,33 @@ export const Report = () => {
           severity: "success",
         });
         break;
+      case "RAPORT SELENIUM":
+        await api.get(`/reports/selenium`); // dla dev /reports/selenium-dev
+        dispatch(getBlockRaport());
+        setSnackbar({
+          children:
+            "Uruchomiono selenium - raport zostanie wysłany na twojego maila",
+          severity: "success",
+        });
+        break;
       default:
         break;
     }
   };
 
   return (
-    <Box sx={{ marginBottom: 3 }}>
+    <Box sx={{ marginTop: 4 }}>
       <Typography
-        variant='h6'
+        variant='subtitle1'
         sx={{
-          letterSpacing: 2,
-          color: "rgba(0, 0, 0, 0.6)",
-          marginBottom: 2,
           marginLeft: 1,
+          letterSpacing: 1,
+          color: "rgba(0, 0, 0, 0.6)",
+          marginBottom: 1,
+          fontWeight: "medium",
         }}
       >
-        Manualne generowanie raportów
+        Generowanie ręczne raportów
       </Typography>
       <Stack direction={"row"} spacing={4}>
         {raportList.map((raport, id) => (
@@ -72,7 +83,7 @@ export const Report = () => {
             size='large'
             style={{
               marginBottom: 10,
-              width: 400,
+              width: 250,
               backgroundImage:
                 "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
             }}

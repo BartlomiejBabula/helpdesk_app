@@ -49,11 +49,11 @@ const MonitPage = () => {
     "children" | "severity"
   > | null>(null);
 
-  useEffect(() => {
-    dispatch(getJobsWithError());
-    dispatch(getJobs());
-    // dispatch(getReplication());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(getJobsWithError());
+  //   dispatch(getJobs());
+  //   dispatch(getReplication());
+  // }, []);
 
   const handleCloseSnackbar = () => setSnackbar(null);
 
@@ -100,6 +100,17 @@ const MonitPage = () => {
       }}
     >
       <Box sx={{ position: "relative" }}>
+        <Typography
+          variant='h6'
+          sx={{
+            letterSpacing: 2,
+            color: "rgba(0, 0, 0, 0.6)",
+            marginBottom: 2,
+            marginLeft: 4,
+          }}
+        >
+          Monitoring
+        </Typography>
         <Button
           onClick={handleGetProcessWithErrors}
           sx={{ position: "absolute", top: 5, right: 20, zIndex: 1 }}

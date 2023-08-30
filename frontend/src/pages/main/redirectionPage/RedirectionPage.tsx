@@ -17,7 +17,7 @@ const eSamboList: string[] = [
   "DEVELOPERSKIE",
 ];
 
-export const ExternalServices = () => {
+const RedirectionPage = () => {
   const handleGoToExternalServices = (button: string) => {
     switch (button) {
       case "JIRA SKG":
@@ -59,7 +59,16 @@ export const ExternalServices = () => {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        height: "100%",
+        position: "relative",
+        padding: 2,
+        paddingLeft: 5,
+      }}
+    >
       <Box>
         <Typography
           variant='h6'
@@ -93,7 +102,7 @@ export const ExternalServices = () => {
           ))}
         </Stack>
       </Box>
-      <Box sx={{ marginLeft: 4 }}>
+      <Box sx={{ marginLeft: 8 }}>
         <Typography
           variant='h6'
           sx={{
@@ -129,3 +138,5 @@ export const ExternalServices = () => {
     </Box>
   );
 };
+
+export default RedirectionPage;

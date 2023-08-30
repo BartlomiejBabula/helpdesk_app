@@ -9,7 +9,6 @@ oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 
 interface SQL_STORE {
   STORE_NUMBER: string;
-
   CLOSE_OP_DATE: string;
   CREATE_DATE: string;
   DOC_SYMBOL: string;
@@ -217,11 +216,13 @@ export const generateMorningReport = async (
     let yest = `${year}-${month}-${day2}`;
 
     setBlockRaport("morning", req, res, next);
+    console.log("generuje raport poranny");
     let orders_txt = await getOrders();
     let mandala_txt = await getMandala();
-    let buffer = await getWS(today, yest);
     let email = await getUserEmail(req);
     let gica = await getGICA(today, yest);
+    let buffer = await getWS(today, yest);
+    console.log("wysyłka raportu");
     let gicaHiperStores = await getGICAEndStores(yest, "H");
     let gicaNetworkStores = await getGICAEndStores(yest, "N");
     transporter
@@ -375,7 +376,7 @@ export function formatDate(date: Date) {
     month = "" + (d.getMonth() + 1),
     day = "" + d.getDate(),
     year = d.getFullYear(),
-    hour = d.getHours(),
+    hour = "" + d.getHours(),
     minutes = "" + d.getMinutes(),
     sec = "" + d.getSeconds();
 
@@ -383,6 +384,7 @@ export function formatDate(date: Date) {
   if (day.length < 2) day = "0" + day;
   if (sec.length < 2) sec = "0" + sec;
   if (minutes.length < 2) minutes = "0" + minutes;
+  if (hour.length < 2) hour = "0" + hour;
 
   var formattedDate =
     day + "." + month + "." + year + " " + hour + ":" + minutes + ":" + sec;

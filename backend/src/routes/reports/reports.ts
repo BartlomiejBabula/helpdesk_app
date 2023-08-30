@@ -96,7 +96,7 @@ async function myInterval() {
   const reportList = await Report.findAll();
   let currentDate = new Date();
   reportList.map((report) => {
-    let compareDate = new Date(report.dataValues.updatedAt);
+    let compareDate = report.dataValues.updatedAt;
     compareDate.setMinutes(compareDate.getMinutes() + 30);
     if (report.dataValues.block === true && currentDate > compareDate) {
       Report.update<Report>(
