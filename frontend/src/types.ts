@@ -51,6 +51,8 @@ export interface JobTypes {
   TM_START: string;
   VERSION: number;
   id: number;
+  TM_FORMAT_RESTART?: string;
+  TM_FORMAT_START?: string;
 }
 
 export interface ReplicationTypes {

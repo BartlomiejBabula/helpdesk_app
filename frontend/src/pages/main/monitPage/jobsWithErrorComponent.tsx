@@ -17,15 +17,15 @@ const columnsProcess: GridColDef[] = [
     headerName: "Status",
     width: 65,
   },
-  { field: "TM_START", headerName: "Start Procesu", width: 200 },
-  { field: "TM_RESTART", headerName: "Restart Procesu", width: 200 },
+  { field: "TM_FORMAT_START", headerName: "Start Procesu", width: 200 },
+  { field: "TM_FORMAT_RESTART", headerName: "Restart Procesu", width: 200 },
   { field: "ERROR_MESSAGE", headerName: "Error", width: 560 },
 ];
 
 export const JobsWithErrorComponent = () => {
   let errorJobs: JobTypes[] = useAppSelector(selectErrorJobs);
   return (
-    <Box style={{ height: 523 }}>
+    <Box style={{ height: 540 }}>
       <DataGrid
         rows={errorJobs ? errorJobs : []}
         columns={columnsProcess}

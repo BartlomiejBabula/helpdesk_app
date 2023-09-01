@@ -18,12 +18,6 @@ const HomePage = () => {
   const handleCloseSnackbar = () => setSnackbar(null);
 
   useEffect(() => {
-    dispatch(getBlockRaport());
-    dispatch(getJobs());
-    dispatch(getReplication());
-  }, []);
-
-  useEffect(() => {
     const interval = setInterval(() => {
       dispatch(getBlockRaport());
       dispatch(getJobs());

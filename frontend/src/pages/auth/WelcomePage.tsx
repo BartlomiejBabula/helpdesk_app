@@ -16,7 +16,7 @@ const WelcomePage = () => {
       <Card
         sx={{
           width: "75%",
-          minWidth: 800,
+          minWidth: 860,
           height: "50vh",
           minHeight: 450,
           display: "flex",
@@ -60,10 +60,10 @@ const WelcomePage = () => {
             variant='subtitle2'
             sx={{
               letterSpacing: 2,
-              marginTop: 14,
+              marginTop: 11,
             }}
           >
-            Wersja 1.0
+            Wersja 1.0.1
           </Typography>
         </Box>
         <Routes>
