@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { selectJobs, selectReplication } from "../../../selectors/user";
 import { JobTypes, ReplicationTypes } from "../../../types";
@@ -17,8 +18,8 @@ const columnsProcess: GridColDef[] = [
     headerName: "Status",
     width: 65,
   },
-  { field: "TM_START", headerName: "Start Procesu", width: 200 },
-  { field: "TM_RESTART", headerName: "Restart Procesu", width: 200 },
+  { field: "TM_FORMAT_START", headerName: "Start Procesu", width: 200 },
+  { field: "TM_FORMAT_RESTART", headerName: "Restart Procesu", width: 200 },
   { field: "ERROR_MESSAGE", headerName: "Error", width: 560 },
 ];
 
@@ -41,18 +42,25 @@ const columnsReplication: GridColDef[] = [
 ];
 
 export const Monitoring = () => {
+  const [filteredJobs, setFilteredJobs] = useState<JobTypes[]>();
   let jobs: JobTypes[] = useAppSelector(selectJobs);
   let replication: ReplicationTypes[] = useAppSelector(selectReplication);
 
-  if (jobs !== undefined) {
-    let compareDate = new Date(Date.now() - 3600 * 1000 * 240); // current day -240 h / 10days
-    let compareDate2 = new Date(Date.now() - 3600 * 1000 * 0.25);
-    jobs = jobs.filter(
-      (job: JobTypes) =>
-        new Date(job.TM_CREATE) > compareDate &&
-        new Date(job.TM_RESTART) < compareDate2
-    );
-  }
+  useEffect(() => {
+    if (jobs !== undefined) {
+      let compareDate = new Date(Date.now() - 3600 * 1000 * 240); // current day -240 h / 10days
+      let compareDate2 = new Date(Date.now() - 3600 * 1000 * 0.25);
+      let filer = jobs.filter(
+        (job: JobTypes) =>
+          new Date(job.TM_CREATE) > compareDate &&
+          new Date(job.TM_RESTART) < compareDate2 &&
+          (job.TM_FORMAT_RESTART !== "01.01.1970 01:00:00" ||
+            job.TM_FORMAT_START !== "01.01.1970 01:00:00")
+      );
+      setFilteredJobs(filer);
+    }
+  }, [jobs]);
+
   return (
     <Box>
       <Typography
@@ -68,8 +76,8 @@ export const Monitoring = () => {
         Długo przetwarzające się procesy
       </Typography>
       <DataGrid
-        style={{ height: 270 }}
-        rows={jobs ? jobs : []}
+        style={{ height: 290 }}
+        rows={filteredJobs ? filteredJobs : []}
         columns={columnsProcess}
         disableColumnMenu={true}
         initialState={{

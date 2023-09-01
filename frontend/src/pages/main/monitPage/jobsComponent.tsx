@@ -17,8 +17,8 @@ const columnsProcess: GridColDef[] = [
     headerName: "Status",
     width: 65,
   },
-  { field: "TM_START", headerName: "Start Procesu", width: 200 },
-  { field: "TM_RESTART", headerName: "Restart Procesu", width: 200 },
+  { field: "TM_FORMAT_START", headerName: "Start Procesu", width: 200 },
+  { field: "TM_FORMAT_RESTART", headerName: "Restart Procesu", width: 200 },
   { field: "DOC_ID", headerName: "DOC_ID", width: 110 },
   { field: "ORDERED", headerName: "Zlecony przez", width: 200 },
   { field: "ERROR_MESSAGE", headerName: "Error", width: 560 },
@@ -27,7 +27,7 @@ const columnsProcess: GridColDef[] = [
 export const JobsComponent = () => {
   let jobs: JobTypes[] = useAppSelector(selectJobs);
   return (
-    <Box style={{ height: 523 }}>
+    <Box style={{ height: 540 }}>
       <DataGrid
         rows={jobs ? jobs : []}
         columns={columnsProcess}

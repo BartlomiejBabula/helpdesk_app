@@ -214,22 +214,28 @@ export const generateMorningReport = async (
     const day2 = String(new Date().getDate() - 1).padStart(2, "0");
     let today = `${year}-${month}-${day}`;
     let yest = `${year}-${month}-${day2}`;
-
+    if (new Date().getDate() - 1 === 0) {
+      let date = new Date();
+      date.setDate(date.getDate() - 1);
+      yest = `${year}-${String(date.getMonth() + 1).padStart(
+        2,
+        "0"
+      )}-${date.getDate()}`;
+    }
     setBlockRaport("morning", req, res, next);
-    console.log("generuje raport poranny");
+    console.log("Generate morning raports");
     let orders_txt = await getOrders();
     let mandala_txt = await getMandala();
     let email = await getUserEmail(req);
     let gica = await getGICA(today, yest);
     let buffer = await getWS(today, yest);
-    console.log("wysyłka raportu");
     let gicaHiperStores = await getGICAEndStores(yest, "H");
     let gicaNetworkStores = await getGICAEndStores(yest, "N");
     transporter
       .sendMail({
         attachments: [
           {
-            filename: "WS.xlsx",
+            filename: dateToWSFileName(),
             content: buffer,
           },
         ],
@@ -237,10 +243,10 @@ export const generateMorningReport = async (
         to: email,
         subject: "Raport procesu generowania zamówień ESAMBO - automat",
         html: `<p>Witam,<br />
-        <br />
-${orders_txt}<br />
-${mandala_txt}<br />
-3. Zestawienie przetworzenia WS - załącznik w formacie xlsx</p>`,
+            <br />
+    ${orders_txt}<br />
+    ${mandala_txt}<br />
+    3. Zestawienie przetworzenia WS - załącznik w formacie xlsx</p>`,
       })
       .then((info: any) => {
         console.log({ info });
@@ -261,9 +267,9 @@ ${mandala_txt}<br />
           subject: "Transfer GICA vs. integracja danych w eSambo - automat",
           text: `Witam,
 
-1. W załączeniu przesyłam listę sklepów, gdzie aktualizacja danych w sklepie zakończyła się po północy.
-2. Aktualizacja danych na sklepach sieciowych i franczyzowych zakończyła się: ${gicaNetworkStores}.
-3. Aktualizacja na hipermarketach zakończyła się: ${gicaHiperStores}.`,
+    1. W załączeniu przesyłam listę sklepów, gdzie aktualizacja danych w sklepie zakończyła się po północy.
+    2. Aktualizacja danych na sklepach sieciowych i franczyzowych zakończyła się: ${gicaNetworkStores}.
+    3. Aktualizacja na hipermarketach zakończyła się: ${gicaHiperStores}.`,
         })
         .then((info: any) => {
           console.log({ info });
@@ -277,8 +283,8 @@ ${mandala_txt}<br />
           subject: "Transfer GICA vs. integracja danych w eSambo - automat",
           text: `Witam,
 
-1. Aktualizacja danych na sklepach sieciowych i franczyzowych zakończyła się: ${gicaNetworkStores}.
-2. Aktualizacja na hipermarketach zakończyła się: ${gicaHiperStores}.`,
+    1. Aktualizacja danych na sklepach sieciowych i franczyzowych zakończyła się: ${gicaNetworkStores}.
+    2. Aktualizacja na hipermarketach zakończyła się: ${gicaHiperStores}.`,
         })
         .then((info: any) => {
           console.log({ info });
@@ -312,7 +318,7 @@ const automaticMorningReport = schedule.scheduleJob(
       .sendMail({
         attachments: [
           {
-            filename: "WS.xlsx",
+            filename: dateToWSFileName(),
             content: buffer,
           },
         ],
@@ -386,7 +392,20 @@ export function formatDate(date: Date) {
   if (minutes.length < 2) minutes = "0" + minutes;
   if (hour.length < 2) hour = "0" + hour;
 
-  var formattedDate =
+  let formattedDate =
     day + "." + month + "." + year + " " + hour + ":" + minutes + ":" + sec;
   return formattedDate;
+}
+
+function dateToWSFileName() {
+  let d = new Date(Date.now()),
+    month = "" + (d.getMonth() + 1),
+    day = "" + d.getDate(),
+    year = d.getFullYear();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+
+  let WSname = "WS1_" + day + "_" + month + "_" + year + "_03_00.xlsx";
+  return WSname;
 }

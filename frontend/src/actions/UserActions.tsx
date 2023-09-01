@@ -102,8 +102,12 @@ export const editStore =
 export const getJobs = () => (dispatch: Dispatch<ActionGetJobsTypes>) => {
   api.get(`/reports/jobs`).then((response) => {
     let jobList = response.data.map((job: JobTypes, i: number) => {
+      let TM_FORMAT_START = formatDate(new Date(job.TM_START));
+      let TM_FORMAT_RESTART = formatDate(new Date(job.TM_RESTART));
       return (job = {
         ...job,
+        TM_FORMAT_START,
+        TM_FORMAT_RESTART,
         id: i + 1,
       });
     });
@@ -118,8 +122,12 @@ export const getJobsWithError =
   () => (dispatch: Dispatch<ActionGetJobsWithError>) => {
     api.get(`/reports/jobs-with-error`).then((response) => {
       let jobList = response.data.map((job: JobTypes, i: number) => {
+        let TM_FORMAT_START = formatDate(new Date(job.TM_START));
+        let TM_FORMAT_RESTART = formatDate(new Date(job.TM_RESTART));
         return (job = {
           ...job,
+          TM_FORMAT_START,
+          TM_FORMAT_RESTART,
           id: i + 1,
         });
       });
@@ -179,3 +187,23 @@ export const editJira =
         console.log(e);
       });
   };
+
+export function formatDate(date: Date) {
+  let d = new Date(date),
+    month = "" + (d.getMonth() + 1),
+    day = "" + d.getDate(),
+    year = d.getFullYear(),
+    hour = "" + d.getHours(),
+    minutes = "" + d.getMinutes(),
+    sec = "" + d.getSeconds();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+  if (sec.length < 2) sec = "0" + sec;
+  if (minutes.length < 2) minutes = "0" + minutes;
+  if (hour.length < 2) hour = "0" + hour;
+
+  let formattedDate =
+    day + "." + month + "." + year + " " + hour + ":" + minutes + ":" + sec;
+  return formattedDate;
+}
