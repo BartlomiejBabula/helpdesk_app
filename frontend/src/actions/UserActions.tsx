@@ -102,8 +102,10 @@ export const editStore =
 export const getJobs = () => (dispatch: Dispatch<ActionGetJobsTypes>) => {
   api.get(`/reports/jobs`).then((response) => {
     let jobList = response.data.map((job: JobTypes, i: number) => {
-      let TM_FORMAT_START = formatDate(new Date(job.TM_START));
-      let TM_FORMAT_RESTART = formatDate(new Date(job.TM_RESTART));
+      let date = new Date(job.TM_START);
+      let date2 = new Date(job.TM_RESTART);
+      let TM_FORMAT_START = formatDate(date);
+      let TM_FORMAT_RESTART = formatDate(date2);
       return (job = {
         ...job,
         TM_FORMAT_START,
@@ -122,8 +124,10 @@ export const getJobsWithError =
   () => (dispatch: Dispatch<ActionGetJobsWithError>) => {
     api.get(`/reports/jobs-with-error`).then((response) => {
       let jobList = response.data.map((job: JobTypes, i: number) => {
-        let TM_FORMAT_START = formatDate(new Date(job.TM_START));
-        let TM_FORMAT_RESTART = formatDate(new Date(job.TM_RESTART));
+        let date = new Date(job.TM_START);
+        let date2 = new Date(job.TM_RESTART);
+        let TM_FORMAT_START = formatDate(date);
+        let TM_FORMAT_RESTART = formatDate(date2);
         return (job = {
           ...job,
           TM_FORMAT_START,

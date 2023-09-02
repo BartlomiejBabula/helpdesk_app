@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Button, Typography, Stack } from "@mui/material";
 import api from "../../../api/api";
 import Alert, { AlertProps } from "@mui/material/Alert";
@@ -60,6 +60,10 @@ export const Report = () => {
         break;
     }
   };
+
+  useEffect(() => {
+    dispatch(getBlockRaport());
+  }, []);
 
   return (
     <Box sx={{ marginTop: 4 }}>
