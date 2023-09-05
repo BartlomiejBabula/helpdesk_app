@@ -3,6 +3,7 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { selectJobs } from "../../../selectors/user";
 import { JobTypes } from "../../../types";
 import { useAppSelector } from "../../../store/AppStore";
+import { formatDate } from "../../../actions/UserActions";
 
 const columnsProcess: GridColDef[] = [
   { field: "ID", headerName: "JobID", width: 110 },
@@ -17,8 +18,22 @@ const columnsProcess: GridColDef[] = [
     headerName: "Status",
     width: 65,
   },
-  { field: "TM_FORMAT_START", headerName: "Start Procesu", width: 200 },
-  { field: "TM_FORMAT_RESTART", headerName: "Restart Procesu", width: 200 },
+  {
+    field: "TM_FORMAT_START",
+    headerName: "Start Procesu",
+    width: 200,
+    headerClassName: "data-grid-header",
+    type: "date",
+    renderCell: (params) => formatDate(params.row?.TM_FORMAT_START),
+  },
+  {
+    field: "TM_FORMAT_RESTART",
+    headerName: "Restart Procesu",
+    width: 200,
+    headerClassName: "data-grid-header",
+    type: "date",
+    renderCell: (params) => formatDate(params.row?.TM_FORMAT_RESTART),
+  },
   { field: "DOC_ID", headerName: "DOC_ID", width: 110 },
   { field: "ORDERED", headerName: "Zlecony przez", width: 200 },
   { field: "ERROR_MESSAGE", headerName: "Error", width: 560 },

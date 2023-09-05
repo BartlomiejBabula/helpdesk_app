@@ -102,10 +102,8 @@ export const editStore =
 export const getJobs = () => (dispatch: Dispatch<ActionGetJobsTypes>) => {
   api.get(`/reports/jobs`).then((response) => {
     let jobList = response.data.map((job: JobTypes, i: number) => {
-      let date = new Date(job.TM_START);
-      let date2 = new Date(job.TM_RESTART);
-      let TM_FORMAT_START = formatDate(date);
-      let TM_FORMAT_RESTART = formatDate(date2);
+      let TM_FORMAT_START = new Date(job.TM_START);
+      let TM_FORMAT_RESTART = new Date(job.TM_RESTART);
       return (job = {
         ...job,
         TM_FORMAT_START,
@@ -124,10 +122,8 @@ export const getJobsWithError =
   () => (dispatch: Dispatch<ActionGetJobsWithError>) => {
     api.get(`/reports/jobs-with-error`).then((response) => {
       let jobList = response.data.map((job: JobTypes, i: number) => {
-        let date = new Date(job.TM_START);
-        let date2 = new Date(job.TM_RESTART);
-        let TM_FORMAT_START = formatDate(date);
-        let TM_FORMAT_RESTART = formatDate(date2);
+        let TM_FORMAT_START = new Date(job.TM_START);
+        let TM_FORMAT_RESTART = new Date(job.TM_RESTART);
         return (job = {
           ...job,
           TM_FORMAT_START,
@@ -159,7 +155,19 @@ export const getBlockRaport =
 export const getReplication =
   () => (dispatch: Dispatch<ActionGetReplication>) => {
     api.get(`/reports/replication`).then((response) => {
-      let replication: ReplicationTypes = response.data;
+      let delay = new Date(response.data[0].DELAY_SECONDS * 1000)
+        .toISOString()
+        .substr(11, 8);
+      let prodTime = formatDate(new Date(response.data[0].PROD_TIME));
+      let replicationTime = formatDate(
+        new Date(response.data[0].REPLICATION_TIME)
+      );
+      let replication: ReplicationTypes = {
+        ID: 1,
+        PROD_TIME: prodTime,
+        REPLICATION_TIME: replicationTime,
+        DELAY_SECONDS: delay,
+      };
       dispatch({
         type: GET_REPLICATION,
         payload: replication,
@@ -193,6 +201,7 @@ export const editJira =
   };
 
 export function formatDate(date: Date) {
+  console.log(date);
   let d = new Date(date),
     month = "" + (d.getMonth() + 1),
     day = "" + d.getDate(),

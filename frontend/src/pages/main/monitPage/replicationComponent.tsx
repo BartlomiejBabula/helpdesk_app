@@ -5,18 +5,18 @@ import { useAppSelector } from "../../../store/AppStore";
 
 const columnsReplication: GridColDef[] = [
   {
-    field: "SYSDATE",
+    field: "PROD_TIME",
     headerName: "Aktualna godzina",
     width: 220,
   },
   {
-    field: "DANE_ZREPLIKOWANE",
+    field: "REPLICATION_TIME",
     headerName: "Zreplikowana godzina",
     width: 220,
   },
   {
-    field: "A",
-    headerName: "Ilość godzin opóźnienia",
+    field: "DELAY_SECONDS",
+    headerName: "Opóźnienie",
     width: 220,
   },
 ];
@@ -25,7 +25,7 @@ export const ReplicationComponent = () => {
   let replication: ReplicationTypes[] = useAppSelector(selectReplication);
   return (
     <DataGrid
-      getRowId={(row) => row.SYSDATE}
+      getRowId={(row) => row.ID}
       sx={{ height: 110 }}
       rows={replication ? replication : []}
       columns={columnsReplication}

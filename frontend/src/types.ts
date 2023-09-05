@@ -51,16 +51,15 @@ export interface JobTypes {
   TM_START: string;
   VERSION: number;
   id: number;
-  TM_FORMAT_RESTART?: string;
-  TM_FORMAT_START?: string;
+  TM_FORMAT_RESTART?: Date;
+  TM_FORMAT_START?: Date;
 }
 
 export interface ReplicationTypes {
-  A: number;
-  B: number;
-  C: number;
-  DANE_ZREPLIKOWANE: string;
-  SYSDATE: string;
+  ID: 1;
+  PROD_TIME: string;
+  REPLICATION_TIME: string;
+  DELAY_SECONDS: string;
 }
 
 export interface JiraTypes {
