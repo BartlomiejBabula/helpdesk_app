@@ -24,15 +24,6 @@ export const samboDbConfig = {
   connectString: `(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=${process.env.SAMBODB_IP})(PORT=${process.env.SAMBODB_PORT}))(CONNECT_DATA=(SERVER=DEDICATED)(SID=${process.env.SAMBODB_SID})))`,
 };
 
-export const replicationDbConfig = {
-  user: process.env.REPLICATION_USER,
-  password: process.env.REPLICATION_PASSWORD,
-  poolMin: 20,
-  poolIncrement: 0,
-  poolMax: 20,
-  connectString: `(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=${process.env.REPLICATION_IP})(PORT=${process.env.REPLICATION_PORT}))(CONNECT_DATA=(SERVER=DEDICATED)(SID=${process.env.REPLICATION_SID})))`,
-};
-
 export const app: Application = express();
 app.use(cors());
 app.use(express.json());

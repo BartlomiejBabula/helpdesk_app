@@ -53,7 +53,7 @@ export const userReducer = (state = initState, action: ActionTypes) => {
       return { ...state, errorJobs: action.payload };
     }
     case GET_REPLICATION: {
-      return { ...state, replication: action.payload };
+      return { ...state, replication: [action.payload] };
     }
     case BLOCK_REPORT: {
       return {

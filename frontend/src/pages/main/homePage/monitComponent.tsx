@@ -4,6 +4,7 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { selectJobs, selectReplication } from "../../../selectors/user";
 import { JobTypes, ReplicationTypes } from "../../../types";
 import { useAppSelector } from "../../../store/AppStore";
+import { formatDate } from "../../../actions/UserActions";
 
 const columnsProcess: GridColDef[] = [
   { field: "ID", headerName: "JobID", width: 110 },
@@ -18,25 +19,39 @@ const columnsProcess: GridColDef[] = [
     headerName: "Status",
     width: 65,
   },
-  { field: "TM_FORMAT_START", headerName: "Start Procesu", width: 200 },
-  { field: "TM_FORMAT_RESTART", headerName: "Restart Procesu", width: 200 },
+  {
+    field: "TM_FORMAT_START",
+    headerName: "Start Procesu",
+    width: 200,
+    headerClassName: "data-grid-header",
+    type: "date",
+    renderCell: (params) => formatDate(params.row?.TM_FORMAT_START),
+  },
+  {
+    field: "TM_FORMAT_RESTART",
+    headerName: "Restart Procesu",
+    width: 200,
+    headerClassName: "data-grid-header",
+    type: "date",
+    renderCell: (params) => formatDate(params.row?.TM_FORMAT_RESTART),
+  },
   { field: "ERROR_MESSAGE", headerName: "Error", width: 560 },
 ];
 
 const columnsReplication: GridColDef[] = [
   {
-    field: "SYSDATE",
+    field: "PROD_TIME",
     headerName: "Aktualna godzina",
     width: 220,
   },
   {
-    field: "DANE_ZREPLIKOWANE",
+    field: "REPLICATION_TIME",
     headerName: "Zreplikowana godzina",
     width: 220,
   },
   {
-    field: "A",
-    headerName: "Ilość godzin opóźnienia",
+    field: "DELAY_SECONDS",
+    headerName: "Opóźnienie",
     width: 220,
   },
 ];
@@ -53,9 +68,7 @@ export const Monitoring = () => {
       let filer = jobs.filter(
         (job: JobTypes) =>
           new Date(job.TM_CREATE) > compareDate &&
-          new Date(job.TM_RESTART) < compareDate2 &&
-          (job.TM_FORMAT_RESTART !== "01.01.1970 01:00:00" ||
-            job.TM_FORMAT_START !== "01.01.1970 01:00:00")
+          new Date(job.TM_RESTART) < compareDate2
       );
       setFilteredJobs(filer);
     }
@@ -101,7 +114,7 @@ export const Monitoring = () => {
         Replikacja
       </Typography>
       <DataGrid
-        getRowId={(row) => row.SYSDATE}
+        getRowId={(row) => row.ID}
         sx={{ height: 76.5 }}
         rows={replication ? replication : []}
         columns={columnsReplication}

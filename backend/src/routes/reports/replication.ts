@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { replicationDbConfig } from "../../app";
+import { samboDbConfig } from "../../app";
 
 const oracledb = require("oracledb");
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
@@ -10,29 +10,18 @@ export const getReplication = async (
   next: NextFunction
 ) => {
   try {
-    let conn = await oracledb.getConnection(replicationDbConfig);
+    let conn = await oracledb.getConnection(samboDbConfig);
     await conn.execute(
       `alter session set NLS_DATE_FORMAT = 'yyyy-mm-dd HH24:MI:SS'`
     );
-    // const replicationRequest = await conn.execute(
-    //   `Select Sysdate,
-    //   P.Applied_Message_Create_Time dane_zreplikowane,
-    //   Round((Apply_Time - Applied_Message_Create_Time)*24,1) A,
-    //   Round((Sysdate - Apply_Time )*24*3600,1) B,
-    //   Round((Sysdate-Applied_Message_Create_Time )*24,1) C
-    //    From Dba_Apply_Progress P`,
-    //   [],
-    //   {
-    //     resultSet: true,
-    //   }
-    // );
     const replicationRequest = await conn.execute(
-      `select sysdate,
-      sysdate - 1/24 dane_zreplikowane, 
-      Round(0.000011*24*3600,1) A, 
-      Round(0.00011*24*3600,1) B, 
-      Round(0.000*24*3600,1) C 
-      from dual`,
+      `select 
+      c.capture_time "PROD_TIME", 
+      b.capture_time "REPLICATION_TIME", 
+      (select extract(second from (M.CAPTURE_TIME - W.CAPTURE_TIME)) + 
+               extract(minute from (M.CAPTURE_TIME - W.CAPTURE_TIME)) * 60 + extract(hour from (M.CAPTURE_TIME - W.CAPTURE_TIME)) * 3600 + 
+               extract(day from (M.CAPTURE_TIME - W.CAPTURE_TIME)) * 3600 * 24 as "DELAY" from  REP_HEART_BEAT M, REP_HEART_BEAT_WH W) "DELAY_SECONDS" 
+      from REP_HEART_BEAT c, REP_HEART_BEAT_WH b`,
       [],
       {
         resultSet: true,
