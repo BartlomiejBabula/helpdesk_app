@@ -131,31 +131,7 @@ export const LeftMenu = () => {
               />
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton
-              onClick={() => {
-                changeTab("shopList");
-                setTab("shopList");
-              }}
-            >
-              <ListItemIcon>
-                <ListIcon sx={{ fontSize: 20 }} />
-              </ListItemIcon>
-              <ListItemText primary='Lista sklepów' />
-              <Box
-                sx={{
-                  display: tab === "shopList" ? null : "none",
-                  alignSelf: "flex-end",
-                  width: 0,
-                  height: 0,
-                  borderTop: "9px solid transparent",
-                  borderBottom: "9px solid transparent",
-                  borderRight: "9px solid white",
-                  marginBottom: "7px",
-                }}
-              />
-            </ListItemButton>
-          </ListItem>
+
           <ListItem disablePadding>
             <ListItemButton
               onClick={() => {
@@ -184,6 +160,31 @@ export const LeftMenu = () => {
           <ListItem disablePadding>
             <ListItemButton
               onClick={() => {
+                changeTab("shopList");
+                setTab("shopList");
+              }}
+            >
+              <ListItemIcon>
+                <ListIcon sx={{ fontSize: 20 }} />
+              </ListItemIcon>
+              <ListItemText primary='Lista sklepów' />
+              <Box
+                sx={{
+                  display: tab === "shopList" ? null : "none",
+                  alignSelf: "flex-end",
+                  width: 0,
+                  height: 0,
+                  borderTop: "9px solid transparent",
+                  borderBottom: "9px solid transparent",
+                  borderRight: "9px solid white",
+                  marginBottom: "7px",
+                }}
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => {
                 changeTab("redirection");
                 setTab("redirection");
               }}
@@ -191,7 +192,7 @@ export const LeftMenu = () => {
               <ListItemIcon>
                 <ShortcutIcon sx={{ fontSize: 20 }} />
               </ListItemIcon>
-              <ListItemText primary='Przekierwowania' />
+              <ListItemText primary='Serwisy' />
               <Box
                 sx={{
                   display: tab === "redirection" ? null : "none",
@@ -209,7 +210,7 @@ export const LeftMenu = () => {
           <Box
             sx={{
               display: "flex",
-              height: "54%",
+              height: "55%",
             }}
           >
             <ListItem disablePadding sx={{ alignSelf: "flex-end" }}>

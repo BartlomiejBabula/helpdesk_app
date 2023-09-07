@@ -14,7 +14,7 @@ import {
 const raportList: { name: string; btt: string }[] = [
   { name: "RAPORT PORANNY", btt: "morning" },
   { name: "RAPORT WOLUMETRYKA", btt: "volumetrics" },
-  { name: "RAPORT SELENIUM", btt: "selenium" },
+  { name: "TESTY SELENIUM", btt: "selenium" },
 ];
 
 export const Report = () => {
@@ -47,7 +47,7 @@ export const Report = () => {
           severity: "success",
         });
         break;
-      case "RAPORT SELENIUM":
+      case "TESTY SELENIUM":
         await api.get(`/reports/selenium`); // dla dev /reports/selenium-dev
         dispatch(getBlockRaport());
         setSnackbar({
@@ -77,7 +77,7 @@ export const Report = () => {
           fontWeight: "medium",
         }}
       >
-        Generowanie ręczne raportów
+        Generowanie ręczne
       </Typography>
       <Stack direction={"row"} spacing={4}>
         {raportList.map((raport, id) => (

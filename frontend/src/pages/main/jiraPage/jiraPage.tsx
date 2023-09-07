@@ -24,7 +24,6 @@ const JiraPage = () => {
   };
 
   useEffect(() => {
-    console.log(jira);
     if (jira) {
       setChecked(jira.auto);
       setInput(jira.jiraKey);
@@ -71,6 +70,7 @@ const JiraPage = () => {
         control={<Switch checked={checked} onChange={handleChange} />}
       />
       <TextField
+        autoComplete='off'
         label='Nadrzędne zadanie hostingu np. ES-37288'
         size='small'
         id='storeNumber'
