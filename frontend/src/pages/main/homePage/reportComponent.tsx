@@ -77,7 +77,7 @@ export const Report = () => {
           fontWeight: "medium",
         }}
       >
-        Generowanie ręczne raportów
+        Generowanie ręczne
       </Typography>
       <Stack direction={"row"} spacing={4}>
         {raportList.map((raport, id) => (
