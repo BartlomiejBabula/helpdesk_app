@@ -82,6 +82,7 @@ export const RegisterComponent = () => {
       <form onSubmit={formik.handleSubmit}>
         <Stack spacing={1}>
           <TextField
+            autoComplete='off'
             label='Email'
             variant='standard'
             id='email'
@@ -94,6 +95,7 @@ export const RegisterComponent = () => {
             helperText={formik.touched.email && formik.errors.email}
           />
           <TextField
+            autoComplete='off'
             label='Hasło'
             variant='standard'
             id='password'
@@ -106,6 +108,7 @@ export const RegisterComponent = () => {
             helperText={formik.touched.password && formik.errors.password}
           />
           <TextField
+            autoComplete='off'
             label='Powtórz hasło'
             variant='standard'
             id='rePassword'

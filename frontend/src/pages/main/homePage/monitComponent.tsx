@@ -65,14 +65,26 @@ export const Monitoring = () => {
     if (jobs !== undefined) {
       let compareDate = new Date(Date.now() - 3600 * 1000 * 240); // current day -240 h / 10days
       let compareDate2 = new Date(Date.now() - 3600 * 1000 * 0.25);
+      let compareDate3 = new Date(Date.now() - 3600 * 1000 * 0.5);
       let filer = jobs.filter(
         (job: JobTypes) =>
+          formatDate(
+            job.TM_FORMAT_RESTART !== undefined
+              ? job.TM_FORMAT_RESTART
+              : new Date(0)
+          ) !== "01.01.1970 01:00:00" &&
+          formatDate(
+            job.TM_FORMAT_START !== undefined
+              ? job.TM_FORMAT_START
+              : new Date(0)
+          ) !== "01.01.1970 01:00:00" &&
           new Date(job.TM_CREATE) > compareDate &&
-          new Date(job.TM_RESTART) < compareDate2
+          new Date(job.TM_RESTART) < compareDate2 &&
+          new Date(job.TM_START) < compareDate3
       );
       setFilteredJobs(filer);
     }
-  }, [jobs]);
+  }, [jobs, replication]);
 
   return (
     <Box>

@@ -59,14 +59,14 @@ const MonitPage = () => {
 
   const handleGetProcessWithErrors = async () => {
     switch (tab) {
-      case 0:
+      case 1:
         setSnackbar({
           children: "Pobieram procesy - operacja może potrwać kilka minut",
           severity: "success",
         });
         dispatch(getJobsWithError());
         break;
-      case 1:
+      case 0:
         setSnackbar({
           children: "Pobieram procesy - operacja może potrwać kilka minut",
           severity: "success",
@@ -118,14 +118,14 @@ const MonitPage = () => {
           pobierz aktualne dane
         </Button>
         <Tabs value={tab} onChange={handleChange}>
-          <Tab label='Procesy z błędem' />
           <Tab label='Wszystkie procesy' />
+          <Tab label='Procesy z błędem' />
           <Tab label='Replikacja' />
         </Tabs>
-        <TabPanel value={tab} index={0}>
+        <TabPanel value={tab} index={1}>
           <JobsWithErrorComponent />
         </TabPanel>
-        <TabPanel value={tab} index={1}>
+        <TabPanel value={tab} index={0}>
           <JobsComponent />
         </TabPanel>
         <TabPanel value={tab} index={2}>

@@ -201,22 +201,25 @@ export const editJira =
   };
 
 export function formatDate(date: Date) {
-  console.log(date);
-  let d = new Date(date),
-    month = "" + (d.getMonth() + 1),
-    day = "" + d.getDate(),
-    year = d.getFullYear(),
-    hour = "" + d.getHours(),
-    minutes = "" + d.getMinutes(),
-    sec = "" + d.getSeconds();
+  if (date === new Date(0)) {
+    return "";
+  } else {
+    let d = new Date(date),
+      month = "" + (d.getMonth() + 1),
+      day = "" + d.getDate(),
+      year = d.getFullYear(),
+      hour = "" + d.getHours(),
+      minutes = "" + d.getMinutes(),
+      sec = "" + d.getSeconds();
 
-  if (month.length < 2) month = "0" + month;
-  if (day.length < 2) day = "0" + day;
-  if (sec.length < 2) sec = "0" + sec;
-  if (minutes.length < 2) minutes = "0" + minutes;
-  if (hour.length < 2) hour = "0" + hour;
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
+    if (sec.length < 2) sec = "0" + sec;
+    if (minutes.length < 2) minutes = "0" + minutes;
+    if (hour.length < 2) hour = "0" + hour;
 
-  let formattedDate =
-    day + "." + month + "." + year + " " + hour + ":" + minutes + ":" + sec;
-  return formattedDate;
+    let formattedDate =
+      day + "." + month + "." + year + " " + hour + ":" + minutes + ":" + sec;
+    return formattedDate;
+  }
 }

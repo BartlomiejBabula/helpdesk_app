@@ -88,6 +88,7 @@ export const AddShop = () => {
           sx={{ marginTop: 3, display: "flex", alignItems: "baseline" }}
         >
           <TextField
+            autoComplete='off'
             label='Sklep'
             size='small'
             id='storeNumber'
@@ -146,6 +147,7 @@ export const AddShop = () => {
             <option value='Centrala'>Centrala</option>
           </Select>
           <TextField
+            autoComplete='off'
             label='Informacje'
             size='small'
             id='information'
