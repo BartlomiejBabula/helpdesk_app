@@ -1,5 +1,14 @@
 import { useState, useEffect } from "react";
-import { Box, Button, Typography, Stack } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  Stack,
+  Modal,
+  Fade,
+  Backdrop,
+  TextField,
+} from "@mui/material";
 import api from "../../../api/api";
 import Alert, { AlertProps } from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
@@ -10,23 +19,37 @@ import {
   useAppDispatch,
   useAppSelector,
 } from "../../../store/AppStore";
+import { useFormik } from "formik";
+import * as yup from "yup";
 
 const raportList: { name: string; btt: string }[] = [
   { name: "RAPORT PORANNY", btt: "morning" },
   { name: "RAPORT WOLUMETRYKA", btt: "volumetrics" },
+  { name: "RAPORT JIRA SLA", btt: "jiraSLA" },
   { name: "TESTY SELENIUM", btt: "selenium" },
 ];
+
+interface formikValues {
+  issue: string;
+  exceptionsDates: string;
+}
 
 export const Report = () => {
   const dispatch: Dispatcher = useAppDispatch();
   let blockReports: string[] = useAppSelector(selectBlockReports);
+  const [openModal, setModalOpen] = useState(false);
+
   const [snackbar, setSnackbar] = useState<Pick<
     AlertProps,
     "children" | "severity"
   > | null>(null);
 
   const handleCloseSnackbar = () => setSnackbar(null);
-
+  const handleOpenModal = () => setModalOpen(true);
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    formikJira.resetForm();
+  };
   const handleRaportGenerate = async (button: string) => {
     switch (button) {
       case "RAPORT PORANNY":
@@ -47,6 +70,9 @@ export const Report = () => {
           severity: "success",
         });
         break;
+      case "RAPORT JIRA SLA":
+        handleOpenModal();
+        break;
       case "TESTY SELENIUM":
         await api.get(`/reports/selenium`); // dla dev /reports/selenium-dev
         dispatch(getBlockRaport());
@@ -60,6 +86,47 @@ export const Report = () => {
         break;
     }
   };
+
+  const formikJira = useFormik({
+    validationSchema: yup.object().shape({
+      issue: yup.string().required("Pole obowiązkowe"),
+    }),
+
+    initialValues: {
+      issue: "",
+      exceptionsDates: "",
+    },
+
+    onSubmit: async (values: formikValues, { resetForm }) => {
+      let exceptionsDatesArr = values.exceptionsDates
+        .replace(/\s+/g, "")
+        .split(",");
+      exceptionsDatesArr = exceptionsDatesArr.filter((item) => item.length > 0);
+      let reqData = {
+        issue: values.issue,
+        exceptionsDates: exceptionsDatesArr,
+      };
+      handleCloseModal();
+      resetForm();
+
+      await api
+        .post(`/reports/jira-sla`, reqData)
+        .then(() => {
+          setSnackbar({
+            children:
+              "Zlecono generacje raportu - raport zostanie wysłany na twojego maila",
+            severity: "success",
+          });
+        })
+        .catch((error) => {
+          setSnackbar({
+            children: "Błędne żądanie - raport nie zostanie wygenerowany",
+            severity: "error",
+          });
+        });
+      dispatch(getBlockRaport());
+    },
+  });
 
   useEffect(() => {
     dispatch(getBlockRaport());
@@ -110,6 +177,89 @@ export const Report = () => {
           </Snackbar>
         )}
       </Stack>
+      <Modal
+        open={openModal}
+        onClose={handleCloseModal}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+      >
+        <Fade in={openModal}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 420,
+              borderRadius: 1,
+              bgcolor: "background.paper",
+              boxShadow: 24,
+              p: 4,
+              textAlign: "center",
+            }}
+          >
+            <Typography variant='h6' component='h2'>
+              Parametry generacji raportu
+            </Typography>
+            <form onSubmit={formikJira.handleSubmit}>
+              <TextField
+                autoComplete='off'
+                label='Zadanie nadrzędne'
+                placeholder='ES-37288'
+                size='small'
+                id='issue'
+                name='issue'
+                type='text'
+                onChange={formikJira.handleChange}
+                value={formikJira.values.issue}
+                onBlur={formikJira.handleBlur}
+                error={
+                  formikJira.touched.issue && Boolean(formikJira.errors.issue)
+                }
+                helperText={formikJira.touched.issue && formikJira.errors.issue}
+                sx={{ width: 320, marginTop: 5 }}
+              />
+              <TextField
+                autoComplete='off'
+                label='Dni wyłączone z SLA'
+                placeholder='2023-08-06, 2023-08-13, 2023-08-20, 2023-08-27, 2023-09-03'
+                size='small'
+                id='exceptionsDates'
+                name='exceptionsDates'
+                type='text'
+                multiline
+                rows={3}
+                onChange={formikJira.handleChange}
+                value={formikJira.values.exceptionsDates}
+                onBlur={formikJira.handleBlur}
+                error={
+                  formikJira.touched.exceptionsDates &&
+                  Boolean(formikJira.errors.exceptionsDates)
+                }
+                helperText={
+                  formikJira.touched.exceptionsDates &&
+                  formikJira.errors.exceptionsDates
+                }
+                sx={{ width: 320, marginTop: 1 }}
+              />
+              <Button
+                sx={{
+                  letterSpacing: 2,
+                  height: 42,
+                  width: 200,
+                  marginTop: 7,
+                  backgroundImage:
+                    "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
+                }}
+                type='submit'
+                variant='contained'
+              >
+                Zleć raport
+              </Button>
+            </form>
+          </Box>
+        </Fade>
+      </Modal>
     </Box>
   );
 };

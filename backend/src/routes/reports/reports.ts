@@ -9,6 +9,7 @@ import { runSeleniumDEV, runSeleniumTest } from "./seleniumTest";
 import { runVolumetrics } from "./volumetrics";
 import { TOKEN } from "../../app";
 import { getReplication } from "./replication";
+import { getJiraSLA } from "./jiraSla";
 
 export const reports = Router();
 
@@ -19,6 +20,7 @@ reports.use("/selenium", authJWTMiddleware, runSeleniumTest);
 reports.use("/selenium-dev", authJWTMiddleware, runSeleniumDEV);
 reports.use("/volumetrics", authJWTMiddleware, runVolumetrics);
 reports.use("/replication", authJWTMiddleware, getReplication);
+reports.post("/jira-sla", getJiraSLA);
 
 reports.get(
   "/blocked",
