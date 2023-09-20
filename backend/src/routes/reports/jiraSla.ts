@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import axios from "axios";
 import { EMAIL, transporter } from "../../config/nodemailer";
 import xlsx from "node-xlsx";
+import { getUserEmail } from "./reports";
 
 const oracledb = require("oracledb");
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
@@ -35,6 +36,7 @@ export const getJiraSLA = async (
             .then(async (response: any) => {
               if (response.data.fields.subtasks.length > 0)
                 await createJiraSLAreports(
+                  req,
                   response.data.fields.subtasks,
                   jiraUser,
                   req.body.exceptionsDates
@@ -58,6 +60,7 @@ export const getJiraSLA = async (
 };
 
 const createJiraSLAreports = async (
+  req: Request,
   tasks: any,
   jiraUser: any,
   exceptionsDates: any[]
@@ -290,6 +293,7 @@ const createJiraSLAreports = async (
   let issueAll = issueOK + SLA_NOT_OK.length - 1;
   let percentageOK = ((issueOK / issueAll) * 100).toFixed(0);
   SLA_ALL = [...SLA_ALL, [percentageOK, issueOK, issueAll]];
+  const email = await getUserEmail(req);
   let buffer = xlsx.build(
     [
       {
@@ -377,7 +381,7 @@ const createJiraSLAreports = async (
         },
       ],
       from: EMAIL,
-      to: "bartlomiej.babula@asseco.pl",
+      to: email,
       subject: "Raport JIRA SLA",
       html: `<p>Witam,<br />
       <br />
