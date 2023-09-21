@@ -7,6 +7,11 @@ import { getUserEmail } from "./reports";
 const oracledb = require("oracledb");
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 
+interface JiraUserType {
+  name: string;
+  value: string;
+}
+
 export const getJiraSLA = async (
   req: Request,
   res: Response,
@@ -23,7 +28,7 @@ export const getJiraSLA = async (
           password: JIRA_PASSWORD,
         })
         .then(async (res: any) => {
-          let jiraUser: { name: string; value: string } = {
+          let jiraUser: JiraUserType = {
             name: res.data.session.name,
             value: res.data.session.value,
           };
@@ -62,12 +67,12 @@ export const getJiraSLA = async (
 const createJiraSLAreports = async (
   req: Request,
   tasks: any,
-  jiraUser: any,
-  exceptionsDates: any[]
+  jiraUser: JiraUserType,
+  exceptionsDates: string[] | Date[]
 ) => {
-  exceptionsDates = exceptionsDates.map((item) => new Date(item));
+  let newExceptionsDates = exceptionsDates.map((item) => new Date(item));
   let parentKey = "";
-  let SLA_data: any = [
+  let SLA_data = [
     [
       {
         v: "CHILDKEY",
@@ -95,7 +100,7 @@ const createJiraSLAreports = async (
       },
     ],
   ];
-  let SLA_NOT_OK: any = [
+  let SLA_NOT_OK = [
     [
       {
         v: "CHILDKEY",
@@ -123,7 +128,7 @@ const createJiraSLAreports = async (
       },
     ],
   ];
-  let SLA_NOT_CLOSE: any = [
+  let SLA_NOT_CLOSE = [
     [
       {
         v: "CHILDKEY",
@@ -154,7 +159,7 @@ const createJiraSLAreports = async (
       },
     ],
   ];
-  let SLA_OPEN: any = [
+  let SLA_OPEN = [
     [
       {
         v: "CHILDKEY",
@@ -183,9 +188,12 @@ const createJiraSLAreports = async (
       {
         v: "KOMENTARZ",
       },
+      {
+        v: "ZGLOSZENIE_DO",
+      },
     ],
   ];
-  let SLA_ALL: any = [
+  let SLA_ALL = [
     [
       {
         v: "PROC_SLA",
@@ -211,7 +219,7 @@ const createJiraSLAreports = async (
       .then((response: any) => {
         if (key === 0) parentKey = response.data.fields.parent.key;
         let startDate = new Date(response.data.fields.created);
-        let updatedDate = new Date(response.data.fields.updated);
+
         let closeDate: Date | null = new Date(
           response.data.fields.resolutiondate
         );
@@ -226,9 +234,9 @@ const createJiraSLAreports = async (
         }
         SLATime = getSLAtime(
           response.data.changelog.histories,
-          exceptionsDates
+          newExceptionsDates
         );
-        formatTime = convertMS(SLATime);
+        formatTime = formatTimeToPrint(SLATime);
         if (response.data.fields.priority.name === "Drobny") {
           priority = "C"; //48h
           if (SLATime > 172800000) {
@@ -255,23 +263,38 @@ const createJiraSLAreports = async (
         }
 
         if (closeDate === null) {
+          let lastUpdatedStatusesDate = getLastDateStatusChange(
+            response.data.changelog.histories
+          );
           let newRow = [
             task.key,
             response.data.fields.summary.slice(0, 9),
             startDate,
-            updatedDate,
+            lastUpdatedStatusesDate,
             formatTime,
             response.data.fields.status.name,
             priority,
             SLA_OK,
+            "",
           ];
           if (
             response.data.fields.status.id === "1" ||
             response.data.fields.status.id === "3" ||
             response.data.fields.status.id === "4"
-          )
+          ) {
+            let reopenedDate = getReopenedDate(
+              response.data.changelog.histories,
+              response.data.fields.status.id
+            );
+            let timeTillOK = calculateOpenSLA(
+              reopenedDate,
+              newExceptionsDates,
+              priority,
+              SLATime
+            );
+            newRow.push(timeTillOK);
             return (SLA_OPEN = [...SLA_OPEN, newRow]);
-          else SLA_NOT_CLOSE = [...SLA_NOT_CLOSE, newRow];
+          } else SLA_NOT_CLOSE = [...SLA_NOT_CLOSE, newRow];
         } else {
           let newRow = [
             task.key,
@@ -292,7 +315,14 @@ const createJiraSLAreports = async (
   let issueOK = SLA_data.length - 1;
   let issueAll = issueOK + SLA_NOT_OK.length - 1;
   let percentageOK = ((issueOK / issueAll) * 100).toFixed(0);
-  SLA_ALL = [...SLA_ALL, [percentageOK, issueOK, issueAll]];
+  SLA_ALL = [
+    ...SLA_ALL,
+    [
+      { v: percentageOK },
+      { v: issueOK.toString() },
+      { v: issueAll.toString() },
+    ],
+  ];
   const email = await getUserEmail(req);
   let buffer = xlsx.build(
     [
@@ -366,6 +396,7 @@ const createJiraSLAreports = async (
             { width: 10 },
             { width: 10 },
             { width: 32 },
+            { width: 32 },
           ],
         },
       },
@@ -393,7 +424,7 @@ const createJiraSLAreports = async (
     .catch(console.error);
 };
 
-function convertMS(ms: number) {
+function formatTimeToPrint(ms: number) {
   let d, h, m, s;
   s = Math.floor(ms / 1000);
   m = Math.floor(s / 60);
@@ -442,7 +473,7 @@ function getSLAtime(changelogs: any, exceptionDates: Date[]) {
   return slaTime;
 }
 
-function calculateSLA(startDate: any, endDate: any, exceptionDates: Date[]) {
+function calculateSLA(startDate: Date, endDate: Date, exceptionDates: Date[]) {
   let currentDate = startDate;
   let slaTime = 0;
   for (let i = 1; currentDate.getTime() <= endDate.getTime(); i++) {
@@ -467,4 +498,73 @@ function calculateSLA(startDate: any, endDate: any, exceptionDates: Date[]) {
   }
   let slaTimeMS = slaTime * 60000;
   return slaTimeMS;
+}
+
+function calculateOpenSLA(
+  startDate: Date,
+  exceptionDates: Date[],
+  priority: string,
+  slaMS: number
+) {
+  let currentDate = startDate;
+  let slaTime = 0;
+  let maxTimeMS = 0;
+  let returnDate = new Date(0);
+  if (priority === "A") {
+    maxTimeMS = 14400000;
+  }
+  if (priority === "B") {
+    maxTimeMS = 21600000;
+  }
+  if (priority === "C") {
+    maxTimeMS = 172800000;
+  }
+  for (let i = 1; slaTime * 60000 + slaMS <= maxTimeMS; i++) {
+    let exception = false;
+    exceptionDates.forEach((data) => {
+      let compareDate = new Date(currentDate);
+      compareDate.setUTCHours(0, 0, 0, 0);
+      if (data.getTime() === compareDate.getTime()) {
+        exception = true;
+      } else {
+        exception = false;
+      }
+    });
+    let newDate = new Date(currentDate);
+    newDate.setMinutes(newDate.getMinutes() + 1);
+    if (exception === false) {
+      if (newDate.getHours() >= 6 && newDate.getHours() < 22) {
+        returnDate = new Date(newDate);
+        slaTime++;
+      }
+    }
+    currentDate = newDate;
+  }
+  return currentDate;
+}
+
+function getLastDateStatusChange(changelogs: any) {
+  let lastDateChangeStatus: Date = new Date(0);
+  changelogs.map((change: any, key: number) => {
+    let item = change.items.filter((item: any) => item.field === "status");
+    if (item.length >= 1) {
+      if (item[0].field === "status") {
+        lastDateChangeStatus = new Date(change.created);
+      }
+    }
+  });
+  return lastDateChangeStatus;
+}
+
+function getReopenedDate(changelogs: any, actualStatus: string) {
+  let reopenedDate: Date = new Date(0);
+  changelogs.map((change: any, key: number) => {
+    let item = change.items.filter((item: any) => item.field === "status");
+    if (item.length >= 1) {
+      if (item[0].to === actualStatus) {
+        reopenedDate = new Date(change.created);
+      }
+    }
+  });
+  return reopenedDate;
 }
