@@ -103,7 +103,7 @@ export const Report = () => {
         .split(",");
       exceptionsDatesArr = exceptionsDatesArr.filter((item) => item.length > 0);
       let reqData = {
-        issue: values.issue,
+        issue: values.issue.replace(/\s+/g, ""),
         exceptionsDates: exceptionsDatesArr,
       };
       handleCloseModal();
@@ -190,7 +190,7 @@ export const Report = () => {
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
-              width: 420,
+              width: 415,
               borderRadius: 1,
               bgcolor: "background.paper",
               boxShadow: 24,
@@ -201,12 +201,22 @@ export const Report = () => {
             <Typography variant='h6' component='h2'>
               Parametry generacji raportu
             </Typography>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginBottom: 3,
+                marginTop: 3,
+                color: "rgba(0, 0, 0, 0.6)",
+              }}
+            >
+              Uzupełnij numer ES nadrzędnego zadania oraz daty w formacie
+              YYYY-MM-DD dni wykluczeń z SLA, przedzielone przecinkami
+            </Typography>
             <form onSubmit={formikJira.handleSubmit}>
               <TextField
                 autoComplete='off'
                 label='Zadanie nadrzędne'
                 placeholder='ES-37288'
-                size='small'
                 id='issue'
                 name='issue'
                 type='text'
@@ -217,13 +227,12 @@ export const Report = () => {
                   formikJira.touched.issue && Boolean(formikJira.errors.issue)
                 }
                 helperText={formikJira.touched.issue && formikJira.errors.issue}
-                sx={{ width: 320, marginTop: 5 }}
+                sx={{ width: 350 }}
               />
               <TextField
                 autoComplete='off'
                 label='Dni wyłączone z SLA'
                 placeholder='2023-08-06, 2023-08-13, 2023-08-20, 2023-08-27, 2023-09-03'
-                size='small'
                 id='exceptionsDates'
                 name='exceptionsDates'
                 type='text'
@@ -240,14 +249,14 @@ export const Report = () => {
                   formikJira.touched.exceptionsDates &&
                   formikJira.errors.exceptionsDates
                 }
-                sx={{ width: 320, marginTop: 1 }}
+                sx={{ width: 350, marginTop: 1 }}
               />
               <Button
                 sx={{
                   letterSpacing: 2,
                   height: 42,
                   width: 200,
-                  marginTop: 7,
+                  marginTop: 10,
                   backgroundImage:
                     "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
                 }}
