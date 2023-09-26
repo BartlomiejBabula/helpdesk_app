@@ -12,7 +12,7 @@ interface JiraUserType {
   value: string;
 }
 
-export const getJiraSLA = async (
+export const getSLA = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -40,11 +40,12 @@ export const getJiraSLA = async (
             })
             .then(async (response: any) => {
               if (response.data.fields.subtasks.length > 0)
-                await createJiraSLAreports(
+                await createSLAreports(
                   req,
                   response.data.fields.subtasks,
                   jiraUser,
-                  req.body.exceptionsDates
+                  req.body.exceptionsDates,
+                  req.body.type
                 );
               else {
                 axiosError = "The issue does not have subtasks";
@@ -64,11 +65,12 @@ export const getJiraSLA = async (
   }
 };
 
-const createJiraSLAreports = async (
+const createSLAreports = async (
   req: Request,
   tasks: any,
   jiraUser: JiraUserType,
-  exceptionsDates: string[] | Date[]
+  exceptionsDates: string[] | Date[],
+  type: "esambo" | "qlik"
 ) => {
   let newExceptionsDates = exceptionsDates.map((item) => new Date(item));
   let parentKey = "";
@@ -234,34 +236,65 @@ const createJiraSLAreports = async (
         }
         SLATime = getSLAtime(
           response.data.changelog.histories,
-          newExceptionsDates
+          newExceptionsDates,
+          type
         );
         formatTime = formatTimeToPrint(SLATime);
-        if (response.data.fields.priority.name === "Drobny") {
-          priority = "C"; //48h
-          if (SLATime > 172800000) {
-            SLA_OK = "NOT OK";
+        if (type === "qlik") {
+          if (response.data.fields.priority.name === "Drobny") {
+            priority = "D";
+            if (SLATime > 129600000) {
+              SLA_OK = "NOT OK";
+            }
+          }
+          if (response.data.fields.priority.name === "Średni") {
+            priority = "C";
+            if (SLATime > 64800000) {
+              SLA_OK = "NOT OK";
+            }
+          }
+          if (response.data.fields.priority.name === "Poważny") {
+            priority = "B";
+            if (SLATime > 32400000) {
+              SLA_OK = "NOT OK";
+            }
+          }
+          if (
+            response.data.fields.priority.name === "Krytyczny" ||
+            response.data.fields.priority.name === "Blokujący"
+          ) {
+            priority = "A";
+            if (SLATime > 14400000) {
+              SLA_OK = "NOT OK";
+            }
           }
         }
-        if (
-          response.data.fields.priority.name === "Średni" ||
-          response.data.fields.priority.name === "Poważny"
-        ) {
-          priority = "B"; // 6h
-          if (SLATime > 21600000) {
-            SLA_OK = "NOT OK";
+        if (type === "esambo") {
+          if (response.data.fields.priority.name === "Drobny") {
+            priority = "C";
+            if (SLATime > 172800000) {
+              SLA_OK = "NOT OK";
+            }
+          }
+          if (
+            response.data.fields.priority.name === "Średni" ||
+            response.data.fields.priority.name === "Poważny"
+          ) {
+            priority = "B";
+            if (SLATime > 21600000) {
+              SLA_OK = "NOT OK";
+            }
+          }
+          if (
+            response.data.fields.priority.name === "Krytyczny" ||
+            response.data.fields.priority.name === "Blokujący"
+          ) {
+            priority = "A";
+            if (SLATime > 14400000) {
+              SLA_OK = "NOT OK";
+            }
           }
         }
-        if (
-          response.data.fields.priority.name === "Krytyczny" ||
-          response.data.fields.priority.name === "Blokujący"
-        ) {
-          priority = "A"; // 4h
-          if (SLATime > 14400000) {
-            SLA_OK = "NOT OK";
-          }
-        }
-
         if (closeDate === null) {
           let lastUpdatedStatusesDate = getLastDateStatusChange(
             response.data.changelog.histories
@@ -290,7 +323,8 @@ const createJiraSLAreports = async (
               reopenedDate,
               newExceptionsDates,
               priority,
-              SLATime
+              SLATime,
+              type
             );
             newRow.push(timeTillOK);
             return (SLA_OPEN = [...SLA_OPEN, newRow]);
@@ -415,8 +449,8 @@ const createJiraSLAreports = async (
       to: email,
       subject: "Raport JIRA SLA",
       html: `<p>Witam,<br />
-      <br />
-  W załączniku przesyłam raport JIRA SLA.</p>`,
+        <br />
+    W załączniku przesyłam raport JIRA SLA.</p>`,
     })
     .then((info: any) => {
       console.log({ info });
@@ -444,7 +478,11 @@ function formatTimeToPrint(ms: number) {
   return h + ":" + m;
 }
 
-function getSLAtime(changelogs: any, exceptionDates: Date[]) {
+function getSLAtime(
+  changelogs: any,
+  exceptionDates: Date[],
+  type: "esambo" | "qlik"
+) {
   let startDate: Date = new Date(0);
   let endDate: Date = new Date(0);
   let slaTime = 0;
@@ -459,7 +497,8 @@ function getSLAtime(changelogs: any, exceptionDates: Date[]) {
         endDate < new Date(change.created)
       ) {
         endDate = new Date(change.created);
-        slaTime = slaTime + calculateSLA(startDate, endDate, exceptionDates);
+        slaTime =
+          slaTime + calculateSLA(startDate, endDate, exceptionDates, type);
       }
       if (
         (item[0].to === "3" || item[0].to === "4") &&
@@ -473,7 +512,12 @@ function getSLAtime(changelogs: any, exceptionDates: Date[]) {
   return slaTime;
 }
 
-function calculateSLA(startDate: Date, endDate: Date, exceptionDates: Date[]) {
+function calculateSLA(
+  startDate: Date,
+  endDate: Date,
+  exceptionDates: Date[],
+  type: "esambo" | "qlik"
+) {
   let currentDate = startDate;
   let slaTime = 0;
   for (let i = 1; currentDate.getTime() <= endDate.getTime(); i++) {
@@ -490,8 +534,15 @@ function calculateSLA(startDate: Date, endDate: Date, exceptionDates: Date[]) {
     let newDate = new Date(currentDate);
     newDate.setMinutes(newDate.getMinutes() + 1);
     if (exception === false) {
-      if (newDate.getHours() >= 6 && newDate.getHours() < 22) {
-        slaTime++;
+      if (type === "qlik") {
+        if (newDate.getHours() >= 6 && newDate.getHours() < 18) {
+          slaTime++;
+        }
+      }
+      if (type === "esambo") {
+        if (newDate.getHours() >= 6 && newDate.getHours() < 22) {
+          slaTime++;
+        }
       }
     }
     currentDate = newDate;
@@ -504,21 +555,38 @@ function calculateOpenSLA(
   startDate: Date,
   exceptionDates: Date[],
   priority: string,
-  slaMS: number
+  slaMS: number,
+  type: "esambo" | "qlik"
 ) {
   let currentDate = startDate;
   let slaTime = 0;
   let maxTimeMS = 0;
-  let returnDate = new Date(0);
-  if (priority === "A") {
-    maxTimeMS = 14400000;
+  if (type === "qlik") {
+    if (priority === "A") {
+      maxTimeMS = 14400000;
+    }
+    if (priority === "B") {
+      maxTimeMS = 32400000;
+    }
+    if (priority === "C") {
+      maxTimeMS = 64800000;
+    }
+    if (priority === "D") {
+      maxTimeMS = 129600000;
+    }
   }
-  if (priority === "B") {
-    maxTimeMS = 21600000;
+  if (type === "esambo") {
+    if (priority === "A") {
+      maxTimeMS = 14400000;
+    }
+    if (priority === "B") {
+      maxTimeMS = 21600000;
+    }
+    if (priority === "C") {
+      maxTimeMS = 172800000;
+    }
   }
-  if (priority === "C") {
-    maxTimeMS = 172800000;
-  }
+
   for (let i = 1; slaTime * 60000 + slaMS <= maxTimeMS; i++) {
     let exception = false;
     exceptionDates.forEach((data) => {
@@ -533,9 +601,15 @@ function calculateOpenSLA(
     let newDate = new Date(currentDate);
     newDate.setMinutes(newDate.getMinutes() + 1);
     if (exception === false) {
-      if (newDate.getHours() >= 6 && newDate.getHours() < 22) {
-        returnDate = new Date(newDate);
-        slaTime++;
+      if (type === "qlik") {
+        if (newDate.getHours() >= 6 && newDate.getHours() < 18) {
+          slaTime++;
+        }
+      }
+      if (type === "esambo") {
+        if (newDate.getHours() >= 6 && newDate.getHours() < 22) {
+          slaTime++;
+        }
       }
     }
     currentDate = newDate;
@@ -545,7 +619,7 @@ function calculateOpenSLA(
 
 function getLastDateStatusChange(changelogs: any) {
   let lastDateChangeStatus: Date = new Date(0);
-  changelogs.map((change: any, key: number) => {
+  changelogs.map((change: any) => {
     let item = change.items.filter((item: any) => item.field === "status");
     if (item.length >= 1) {
       if (item[0].field === "status") {
@@ -558,7 +632,7 @@ function getLastDateStatusChange(changelogs: any) {
 
 function getReopenedDate(changelogs: any, actualStatus: string) {
   let reopenedDate: Date = new Date(0);
-  changelogs.map((change: any, key: number) => {
+  changelogs.map((change: any) => {
     let item = change.items.filter((item: any) => item.field === "status");
     if (item.length >= 1) {
       if (item[0].to === actualStatus) {

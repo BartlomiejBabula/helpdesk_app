@@ -8,6 +8,7 @@ import {
   Fade,
   Backdrop,
   TextField,
+  Select,
 } from "@mui/material";
 import api from "../../../api/api";
 import Alert, { AlertProps } from "@mui/material/Alert";
@@ -30,6 +31,7 @@ const raportList: { name: string; btt: string }[] = [
 ];
 
 interface formikValues {
+  type: string;
   issue: string;
   exceptionsDates: string;
 }
@@ -93,6 +95,7 @@ export const Report = () => {
     }),
 
     initialValues: {
+      type: "esambo",
       issue: "",
       exceptionsDates: "",
     },
@@ -102,7 +105,9 @@ export const Report = () => {
         .replace(/\s+/g, "")
         .split(",");
       exceptionsDatesArr = exceptionsDatesArr.filter((item) => item.length > 0);
+
       let reqData = {
+        type: values.type,
         issue: values.issue.replace(/\s+/g, ""),
         exceptionsDates: exceptionsDatesArr,
       };
@@ -110,7 +115,7 @@ export const Report = () => {
       resetForm();
 
       await api
-        .post(`/reports/jira-sla`, reqData)
+        .post(`/reports/sla`, reqData)
         .then(() => {
           setSnackbar({
             children:
@@ -209,14 +214,31 @@ export const Report = () => {
                 color: "rgba(0, 0, 0, 0.6)",
               }}
             >
-              Uzupełnij numer ES nadrzędnego zadania oraz daty w formacie
+              Uzupełnij numer nadrzędnego zadania oraz daty w formacie
               YYYY-MM-DD dni wykluczeń z SLA, przedzielone przecinkami
             </Typography>
             <form onSubmit={formikJira.handleSubmit}>
+              <Select
+                id='type'
+                name='type'
+                sx={{ width: 350, height: 1, marginBottom: 3 }}
+                value={formikJira.values.type}
+                onChange={formikJira.handleChange}
+                error={
+                  formikJira.touched.type && Boolean(formikJira.errors.type)
+                }
+                native
+                autoFocus
+              >
+                <option value='esambo'>eSabmo</option>
+                <option value='qlik'>QlikView</option>
+              </Select>
               <TextField
                 autoComplete='off'
                 label='Zadanie nadrzędne'
-                placeholder='ES-37288'
+                placeholder={
+                  formikJira.values.type === "qlik" ? "QVHD-439" : "ES-37288"
+                }
                 id='issue'
                 name='issue'
                 type='text'
