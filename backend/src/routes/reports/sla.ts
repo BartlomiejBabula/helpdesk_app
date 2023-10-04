@@ -535,7 +535,12 @@ function calculateSLA(
     newDate.setMinutes(newDate.getMinutes() + 1);
     if (exception === false) {
       if (type === "qlik") {
-        if (newDate.getHours() >= 6 && newDate.getHours() < 18) {
+        if (
+          newDate.getHours() >= 6 &&
+          newDate.getHours() < 18 &&
+          newDate.getDay() !== 0 &&
+          newDate.getDay() !== 6
+        ) {
           slaTime++;
         }
       }
@@ -602,7 +607,12 @@ function calculateOpenSLA(
     newDate.setMinutes(newDate.getMinutes() + 1);
     if (exception === false) {
       if (type === "qlik") {
-        if (newDate.getHours() >= 6 && newDate.getHours() < 18) {
+        if (
+          newDate.getHours() >= 6 &&
+          newDate.getHours() < 18 &&
+          newDate.getDay() !== 0 &&
+          newDate.getDay() !== 6
+        ) {
           slaTime++;
         }
       }

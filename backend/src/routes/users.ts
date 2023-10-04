@@ -1,8 +1,6 @@
 import { Request, Router, Response, NextFunction } from "express";
 import { User } from "../models/User";
-import { AuthToken } from "./../models/AuthToken";
-import { TOKEN, REFRESH_TOKEN } from "../app";
-// import bcrypt from "bcrypt";
+import { TOKEN } from "../app";
 
 export const users = Router();
 export const login = Router();
@@ -17,16 +15,22 @@ export const authJWTMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.headers["authorization"]?.split(" ")[1];
-  if (!token) {
+  const access = req.headers["authorization"]?.split(" ")[1];
+  const refresh = req.headers["authorization_refresh"]?.split(" ")[1];
+  if (!access && !refresh) {
     return res.sendStatus(401);
   }
-  jwt.verify(token, TOKEN, (e: any, data: any) => {
+  jwt.verify(refresh, TOKEN, (e: any, data: any) => {
     if (e) {
       return res.sendStatus(401);
     }
-    req.user = data;
-    next();
+    jwt.verify(access, TOKEN, (e: any, data: any) => {
+      if (e) {
+        return res.sendStatus(401);
+      }
+      req.user = data;
+      next();
+    });
   });
 };
 
@@ -49,7 +53,6 @@ users.post("/", async (req: Request, res: Response, next) => {
           password: await bcrypt.hash(req.body.password, salt),
         };
         const user = await User.create(newUser);
-        // const user = await User.create(req.body);
         res.status(201).json(user);
       }
     } else {
@@ -145,10 +148,9 @@ login.post("/", async (req: Request, res: Response, next) => {
       );
       if (password_valid) {
         const payload = { id: user.id, email: user.email };
-        const token = jwt.sign(payload, TOKEN, { expiresIn: "300s" });
-        const refreshToken = jwt.sign(payload, REFRESH_TOKEN);
-        await AuthToken.create<any>({ refreshToken: refreshToken });
-        res.status(201).json({ token, refreshToken });
+        const accessToken = jwt.sign(payload, TOKEN, { expiresIn: "300s" });
+        const refreshToken = jwt.sign(payload, TOKEN, { expiresIn: "8h" });
+        res.status(201).json({ accessToken, refreshToken });
       } else {
         res.status(401).json(`Błędne hasło`);
       }
@@ -162,24 +164,20 @@ login.post("/", async (req: Request, res: Response, next) => {
   }
 });
 
-logout.delete("/", authJWTMiddleware, async (req: Request, res: Response) => {
+logout.post("/", authJWTMiddleware, async (req: Request, res: Response) => {
   const token = req.body.refreshToken;
-  await AuthToken.destroy({ where: { refreshToken: token } });
-  res.sendStatus(204);
+  res.status(200).json({ message: "You are logged out!" });
 });
 
 auth.post("/", async (req: Request, res: Response, next) => {
   try {
     const refreshToken = req.body.refreshToken;
-    const token = await AuthToken.findOne({
-      where: { refreshToken: req.body.refreshToken },
-    });
-    if (!token) {
-      return res.sendStatus(403);
+    if (!refreshToken) {
+      return res.status(403).json("Brak refresh tokena");
     }
-    jwt.verify(token.refreshToken, REFRESH_TOKEN, (e: any, data: any) => {
+    jwt.verify(refreshToken, TOKEN, (e: any, data: any) => {
       if (e) {
-        return res.sendStatus(403);
+        return res.status(403).json("Błędny refresh token - sesja wygasła");
       }
       const payload = { id: data.id, email: data.email };
       const newAccessToken = jwt.sign(payload, TOKEN, { expiresIn: "300s" });

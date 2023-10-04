@@ -135,7 +135,7 @@ export const Report = () => {
 
   useEffect(() => {
     dispatch(getBlockRaport());
-  }, []);
+  }, [dispatch]);
 
   return (
     <Box sx={{ marginTop: 4 }}>
@@ -159,7 +159,8 @@ export const Report = () => {
             size='large'
             style={{
               marginBottom: 10,
-              width: 250,
+              width: "16.5vw",
+              minWidth: 180,
               backgroundImage:
                 "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
             }}
@@ -195,7 +196,7 @@ export const Report = () => {
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
-              width: 415,
+              width: 425,
               borderRadius: 1,
               bgcolor: "background.paper",
               boxShadow: 24,
@@ -271,7 +272,7 @@ export const Report = () => {
                   formikJira.touched.exceptionsDates &&
                   formikJira.errors.exceptionsDates
                 }
-                sx={{ width: 350, marginTop: 1 }}
+                sx={{ width: 350, marginTop: 2 }}
               />
               <Button
                 sx={{

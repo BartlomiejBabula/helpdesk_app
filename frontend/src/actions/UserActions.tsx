@@ -40,27 +40,32 @@ export const logInAction = () => ({
 
 export const getUserProfile =
   () => (dispatch: Dispatch<ActionGetUserProfileTypes>) => {
-    api.get(`/users/profile`).then((response) => {
-      let user: UserTypes = response.data;
-      dispatch({
-        type: GET_USER,
-        payload: user,
-      });
-      api.get(`/stores`).then((response) => {
-        let storeList: StoreTypes[] = response.data;
+    api
+      .get(`/users/profile`)
+      .then((response) => {
+        let user: UserTypes = response.data;
         dispatch({
-          type: GET_STORELIST,
-          payload: storeList,
+          type: GET_USER,
+          payload: user,
         });
-        api.get(`/jira`).then((response) => {
-          let jira: JiraTypes = response.data[0];
+        api.get(`/stores`).then((response) => {
+          let storeList: StoreTypes[] = response.data;
           dispatch({
-            type: GET_JIRA,
-            payload: jira,
+            type: GET_STORELIST,
+            payload: storeList,
+          });
+          api.get(`/jira`).then((response) => {
+            let jira: JiraTypes = response.data[0];
+            dispatch({
+              type: GET_JIRA,
+              payload: jira,
+            });
           });
         });
+      })
+      .catch((error: any) => {
+        console.log("Auth error");
       });
-    });
   };
 
 export const getStoreList = () => (dispatch: Dispatch<ActionGetStoreList>) => {
@@ -100,27 +105,9 @@ export const editStore =
   };
 
 export const getJobs = () => (dispatch: Dispatch<ActionGetJobsTypes>) => {
-  api.get(`/reports/jobs`).then((response) => {
-    let jobList = response.data.map((job: JobTypes, i: number) => {
-      let TM_FORMAT_START = new Date(job.TM_START);
-      let TM_FORMAT_RESTART = new Date(job.TM_RESTART);
-      return (job = {
-        ...job,
-        TM_FORMAT_START,
-        TM_FORMAT_RESTART,
-        id: i + 1,
-      });
-    });
-    dispatch({
-      type: GET_JOBS,
-      payload: jobList,
-    });
-  });
-};
-
-export const getJobsWithError =
-  () => (dispatch: Dispatch<ActionGetJobsWithError>) => {
-    api.get(`/reports/jobs-with-error`).then((response) => {
+  api
+    .get(`/reports/jobs`)
+    .then((response) => {
       let jobList = response.data.map((job: JobTypes, i: number) => {
         let TM_FORMAT_START = new Date(job.TM_START);
         let TM_FORMAT_RESTART = new Date(job.TM_RESTART);
@@ -132,47 +119,85 @@ export const getJobsWithError =
         });
       });
       dispatch({
-        type: GET_ERROR_JOBS_LIST,
+        type: GET_JOBS,
         payload: jobList,
       });
+    })
+    .catch((error: any) => {
+      console.log("Auth error");
     });
+};
+
+export const getJobsWithError =
+  () => (dispatch: Dispatch<ActionGetJobsWithError>) => {
+    api
+      .get(`/reports/jobs-with-error`)
+      .then((response) => {
+        let jobList = response.data.map((job: JobTypes, i: number) => {
+          let TM_FORMAT_START = new Date(job.TM_START);
+          let TM_FORMAT_RESTART = new Date(job.TM_RESTART);
+          return (job = {
+            ...job,
+            TM_FORMAT_START,
+            TM_FORMAT_RESTART,
+            id: i + 1,
+          });
+        });
+        dispatch({
+          type: GET_ERROR_JOBS_LIST,
+          payload: jobList,
+        });
+      })
+      .catch((error: any) => {
+        console.log("Auth error");
+      });
   };
 
 export const getBlockRaport =
   () => (dispatch: Dispatch<ActionGetBlockRaport>) => {
-    api.get(`/reports/blocked`).then((response) => {
-      let blockedRaports: string[] = [];
-      response.data.map(
-        (item: any) => (blockedRaports = [...blockedRaports, item.name])
-      );
-      dispatch({
-        type: BLOCK_REPORT,
-        payload: blockedRaports,
+    api
+      .get(`/reports/blocked`)
+      .then((response) => {
+        let blockedRaports: string[] = [];
+        response.data.map(
+          (item: any) => (blockedRaports = [...blockedRaports, item.name])
+        );
+        dispatch({
+          type: BLOCK_REPORT,
+          payload: blockedRaports,
+        });
+      })
+      .catch((error: any) => {
+        console.log("Auth error");
       });
-    });
   };
 
 export const getReplication =
   () => (dispatch: Dispatch<ActionGetReplication>) => {
-    api.get(`/reports/replication`).then((response) => {
-      let delay = new Date(response.data[0].DELAY_SECONDS * 1000)
-        .toISOString()
-        .substr(11, 8);
-      let prodTime = formatDate(new Date(response.data[0].PROD_TIME));
-      let replicationTime = formatDate(
-        new Date(response.data[0].REPLICATION_TIME)
-      );
-      let replication: ReplicationTypes = {
-        ID: 1,
-        PROD_TIME: prodTime,
-        REPLICATION_TIME: replicationTime,
-        DELAY_SECONDS: delay,
-      };
-      dispatch({
-        type: GET_REPLICATION,
-        payload: replication,
+    api
+      .get(`/reports/replication`)
+      .then((response) => {
+        let delay = new Date(response.data[0].DELAY_SECONDS * 1000)
+          .toISOString()
+          .substr(11, 8);
+        let prodTime = formatDate(new Date(response.data[0].PROD_TIME));
+        let replicationTime = formatDate(
+          new Date(response.data[0].REPLICATION_TIME)
+        );
+        let replication: ReplicationTypes = {
+          ID: 1,
+          PROD_TIME: prodTime,
+          REPLICATION_TIME: replicationTime,
+          DELAY_SECONDS: delay,
+        };
+        dispatch({
+          type: GET_REPLICATION,
+          payload: replication,
+        });
+      })
+      .catch((error: any) => {
+        console.log("Auth error");
       });
-    });
   };
 
 export const getJira = () => (dispatch: Dispatch<ActionGetJira>) => {

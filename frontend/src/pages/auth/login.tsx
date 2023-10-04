@@ -1,11 +1,16 @@
 import { useFormik } from "formik";
-import * as React from "react";
+import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import Snackbar from "@mui/material/Snackbar";
 import api, { setAuthHeader } from "../../api/api";
 import Alert, { AlertProps } from "@mui/material/Alert";
-import { logInAction, getUserProfile } from "../../actions/UserActions";
+import {
+  logInAction,
+  getUserProfile,
+  getJobs,
+  getReplication,
+} from "../../actions/UserActions";
 import { Box, Stack, Button, TextField, Typography } from "@mui/material";
 import { Dispatcher, useAppDispatch } from "../../store/AppStore";
 
@@ -15,12 +20,13 @@ interface LoginValues {
 }
 
 export const LoginComponent = () => {
-  const [snackbar, setSnackbar] = React.useState<Pick<
+  const [snackbar, setSnackbar] = useState<Pick<
     AlertProps,
     "children" | "severity"
   > | null>(null);
   const dispatch: Dispatcher = useAppDispatch();
   const navigate = useNavigate();
+
   const formik = useFormik({
     validationSchema: yup.object().shape({
       email: yup
@@ -40,16 +46,18 @@ export const LoginComponent = () => {
       password: "",
     },
 
-    onSubmit: async (values: LoginValues) => {
+    onSubmit: (values: LoginValues) => {
       const user = { email: values.email, password: values.password };
       api
         .post("/login", user)
         .then((response) => {
           localStorage.setItem("refresh", response.data.refreshToken);
-          localStorage.setItem("access", response.data.token);
-          setAuthHeader(response.data.token);
+          localStorage.setItem("access", response.data.accessToken);
+          setAuthHeader(response.data.accessToken, response.data.refreshToken);
           dispatch(logInAction());
           dispatch(getUserProfile());
+          dispatch(getJobs());
+          dispatch(getReplication());
           navigate({ pathname: "/dashboard" });
         })
         .catch((error) => {
@@ -63,10 +71,18 @@ export const LoginComponent = () => {
         });
     },
   });
+
   const navigateToRegister = () => {
     navigate({ pathname: "/register" });
   };
+
   const handleCloseSnackbar = () => setSnackbar(null);
+
+  useEffect(() => {
+    if (localStorage.getItem("refresh") !== null)
+      navigate({ pathname: "/dashboard" });
+  }, [navigate]);
+
   return (
     <Box
       sx={{
