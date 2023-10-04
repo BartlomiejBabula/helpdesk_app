@@ -89,7 +89,8 @@ const RedirectionPage = () => {
               size='large'
               style={{
                 marginBottom: 10,
-                width: 400,
+                width: "28vw",
+                minWidth: 300,
                 backgroundImage:
                   "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
               }}
@@ -122,7 +123,8 @@ const RedirectionPage = () => {
               size='large'
               style={{
                 marginBottom: 10,
-                width: 400,
+                width: "28vw",
+                minWidth: 300,
                 backgroundImage:
                   "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
               }}

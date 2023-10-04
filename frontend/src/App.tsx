@@ -15,7 +15,9 @@ const App = () => {
   let user = useSelector(selectUser);
 
   useEffect(() => {
-    dispatch(getUserProfile());
+    if (window.location.pathname !== "/") {
+      dispatch(getUserProfile());
+    }
   }, [dispatch]);
 
   return (

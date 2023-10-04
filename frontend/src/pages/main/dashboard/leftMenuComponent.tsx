@@ -30,10 +30,10 @@ export const LeftMenu = () => {
 
   const handleLogout = () => {
     const refreshToken = { refresh: localStorage.refresh };
+    api.post("/logout", refreshToken);
     dispatch(logOutAction());
     localStorage.removeItem("refresh");
     localStorage.removeItem("access");
-    api.post("/logout", refreshToken);
     navigate({ pathname: "/" }, { replace: true });
   };
 
