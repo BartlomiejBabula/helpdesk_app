@@ -231,7 +231,7 @@ export const Report = () => {
                 native
                 autoFocus
               >
-                <option value='esambo'>eSabmo</option>
+                <option value='esambo'>eSambo</option>
                 <option value='qlik'>QlikView</option>
               </Select>
               <TextField
