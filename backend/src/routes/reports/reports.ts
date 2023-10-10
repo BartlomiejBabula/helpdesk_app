@@ -3,23 +3,17 @@ import { authJWTMiddleware } from "../users";
 import { Report } from "../../models/Report";
 import { Model } from "sequelize-typescript";
 import { generateMorningReport } from "./morningReport";
-import { getJobs } from "./jobs";
-import { getJobsWithError } from "./jobsError";
 import { runSeleniumDEV, runSeleniumTest } from "./seleniumTest";
 import { runVolumetrics } from "./volumetrics";
 import { TOKEN } from "../../app";
-import { getReplication } from "./replication";
 import { getSLA } from "./sla";
 
 export const reports = Router();
 
-reports.use("/jobs", authJWTMiddleware, getJobs);
-reports.use("/jobs-with-error", authJWTMiddleware, getJobsWithError);
 reports.use("/morning", authJWTMiddleware, generateMorningReport);
 reports.use("/selenium", authJWTMiddleware, runSeleniumTest);
 reports.use("/selenium-dev", authJWTMiddleware, runSeleniumDEV);
 reports.use("/volumetrics", authJWTMiddleware, runVolumetrics);
-reports.use("/replication", authJWTMiddleware, getReplication);
 reports.post("/sla", authJWTMiddleware, getSLA);
 
 reports.get(

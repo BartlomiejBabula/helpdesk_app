@@ -63,7 +63,7 @@ const WelcomePage = () => {
               marginTop: 11,
             }}
           >
-            Wersja 1.1.0
+            Wersja 1.2.0
           </Typography>
         </Box>
         <Routes>
