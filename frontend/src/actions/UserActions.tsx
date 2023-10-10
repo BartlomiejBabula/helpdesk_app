@@ -13,7 +13,6 @@ import {
   ActionGetBlockRaport,
   ActionGetJira,
   ActionGetJobsTypes,
-  ActionGetJobsWithError,
   ActionGetReplication,
   ActionGetStoreList,
   ActionGetUserProfileTypes,
@@ -24,7 +23,6 @@ export const UPDATE_STORELIST = "UPDATE_STORELIST";
 export const EDIT_STORE = "EDIT_STORE";
 export const USER_LOGGED_OUT = "USER_LOGGED_OUT";
 export const USER_LOGGED_IN = "USER_LOGGED_IN";
-export const GET_ERROR_JOBS_LIST = "GET_ERROR_JOBS_LIST";
 export const GET_JOBS = "GET_JOBS";
 export const BLOCK_REPORT = "BLOCK_REPORT";
 export const GET_REPLICATION = "GET_REPLICATION";
@@ -106,7 +104,7 @@ export const editStore =
 
 export const getJobs = () => (dispatch: Dispatch<ActionGetJobsTypes>) => {
   api
-    .get(`/reports/jobs`)
+    .get(`/job`)
     .then((response) => {
       let jobList = response.data.map((job: JobTypes, i: number) => {
         let TM_FORMAT_START = new Date(job.TM_START);
@@ -127,31 +125,6 @@ export const getJobs = () => (dispatch: Dispatch<ActionGetJobsTypes>) => {
       console.log("Auth error");
     });
 };
-
-export const getJobsWithError =
-  () => (dispatch: Dispatch<ActionGetJobsWithError>) => {
-    api
-      .get(`/reports/jobs-with-error`)
-      .then((response) => {
-        let jobList = response.data.map((job: JobTypes, i: number) => {
-          let TM_FORMAT_START = new Date(job.TM_START);
-          let TM_FORMAT_RESTART = new Date(job.TM_RESTART);
-          return (job = {
-            ...job,
-            TM_FORMAT_START,
-            TM_FORMAT_RESTART,
-            id: i + 1,
-          });
-        });
-        dispatch({
-          type: GET_ERROR_JOBS_LIST,
-          payload: jobList,
-        });
-      })
-      .catch((error: any) => {
-        console.log("Auth error");
-      });
-  };
 
 export const getBlockRaport =
   () => (dispatch: Dispatch<ActionGetBlockRaport>) => {
@@ -175,7 +148,7 @@ export const getBlockRaport =
 export const getReplication =
   () => (dispatch: Dispatch<ActionGetReplication>) => {
     api
-      .get(`/reports/replication`)
+      .get(`/replication`)
       .then((response) => {
         let delay = new Date(response.data[0].DELAY_SECONDS * 1000)
           .toISOString()

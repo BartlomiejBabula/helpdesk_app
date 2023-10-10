@@ -13,7 +13,6 @@ import {
   EDIT_STORE,
   GET_JOBS,
   UPDATE_STORELIST,
-  GET_ERROR_JOBS_LIST,
   BLOCK_REPORT,
   GET_REPLICATION,
   GET_JIRA,
@@ -28,7 +27,6 @@ export type ActionTypes =
   | ActionAddStoreToStoreListTypes
   | ActionGetBlockRaport
   | ActionGetReplication
-  | ActionGetJobsWithError
   | ActionGetJira;
 
 export type ActionGetReplication = {
@@ -48,11 +46,6 @@ export type ActionGetBlockRaport = {
 
 export type ActionGetJobsTypes = {
   type: typeof GET_JOBS;
-  payload: JobTypes[];
-};
-
-export type ActionGetJobsWithError = {
-  type: typeof GET_ERROR_JOBS_LIST;
   payload: JobTypes[];
 };
 

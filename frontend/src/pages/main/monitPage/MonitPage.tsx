@@ -1,12 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import Alert, { AlertProps } from "@mui/material/Alert";
-import {
-  getJobsWithError,
-  getJobs,
-  getReplication,
-} from "../../../actions/UserActions";
+import { getJobs, getReplication } from "../../../actions/UserActions";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { JobsComponent } from "./jobsComponent";
@@ -49,12 +45,6 @@ const MonitPage = () => {
     "children" | "severity"
   > | null>(null);
 
-  // useEffect(() => {
-  //   dispatch(getJobsWithError());
-  //   dispatch(getJobs());
-  //   dispatch(getReplication());
-  // }, []);
-
   const handleCloseSnackbar = () => setSnackbar(null);
 
   const handleGetProcessWithErrors = async () => {
@@ -64,7 +54,7 @@ const MonitPage = () => {
           children: "Pobieram procesy - operacja może potrwać kilka minut",
           severity: "success",
         });
-        dispatch(getJobsWithError());
+        dispatch(getJobs());
         break;
       case 0:
         setSnackbar({
