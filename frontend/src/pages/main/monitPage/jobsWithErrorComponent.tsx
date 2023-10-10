@@ -2,13 +2,20 @@ import { useState, useEffect } from "react";
 import { Box, Fade, Modal, Backdrop, Typography, Button } from "@mui/material";
 import { DataGrid, GridColDef, GridActionsCellItem } from "@mui/x-data-grid";
 import { selectJobs } from "../../../selectors/user";
-import { useAppSelector } from "../../../store/AppStore";
+import { getJobs } from "../../../actions/UserActions";
+import {
+  useAppSelector,
+  Dispatcher,
+  useAppDispatch,
+} from "../../../store/AppStore";
 import { JobTypes } from "../../../types";
 import { formatDate } from "../../../actions/UserActions";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import api from "../../../api/api";
 
 export const JobsWithErrorComponent = () => {
+  const dispatch: Dispatcher = useAppDispatch();
   const [openModal, setModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
   const [selectedAction, setSelectedAction] = useState<
@@ -92,31 +99,27 @@ export const JobsWithErrorComponent = () => {
   ];
 
   const handleRestartJob = (row: any) => {
-    // api
-    //   .post("/job/restart", { id: row.ID })
-    //   .then(() => {
-    //     dispatch(getJobs());
-    //     handleCloseModal();
-    //   })
-    //   .catch((error: Error) => {
-    //     console.log(error);
-    //   });
-    console.log("Restart joba:", row.ID);
-    handleCloseModal();
+    api
+      .post("/job/restart", { id: row.ID })
+      .then(() => {
+        dispatch(getJobs());
+        handleCloseModal();
+      })
+      .catch((error: Error) => {
+        console.log(error);
+      });
   };
 
   const handleEndJob = (row: any) => {
-    // api
-    //   .post("/job/end", { id: row.ID })
-    //   .then(() => {
-    //     dispatch(getJobs());
-    //     handleCloseModal();
-    //   })
-    //   .catch((error: Error) => {
-    //     console.log(error);
-    //   });
-    console.log("End joba:", row.ID);
-    handleCloseModal();
+    api
+      .post("/job/end", { id: row.ID })
+      .then(() => {
+        dispatch(getJobs());
+        handleCloseModal();
+      })
+      .catch((error: Error) => {
+        console.log(error);
+      });
   };
 
   const handleConfirmAction = () => {

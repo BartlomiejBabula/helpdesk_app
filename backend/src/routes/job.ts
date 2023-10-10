@@ -12,10 +12,10 @@ job.post(
   async (req: Request, res: Response, next) => {
     try {
       const id = req.body.id;
-      let conn = await oracledb.getConnection(samboDbConfig);
-      await conn.execute(`update s_jobs set status = 'E' where id = '${id}'`);
-      await conn.commit();
-      await conn.close();
+      // let conn = await oracledb.getConnection(samboDbConfig);
+      // await conn.execute(`update s_jobs set status = 'E' where id = '${id}'`);
+      // await conn.commit();
+      // await conn.close();
       res.status(201).json(id);
     } catch (e) {
       next(e);
@@ -29,12 +29,12 @@ job.post(
   async (req: Request, res: Response, next) => {
     try {
       const id = req.body.id;
-      let conn = await oracledb.getConnection(samboDbConfig);
-      await conn.execute(
-        `update s_jobs set status = 'R', tm_restart = sysdate where id = '${id}'`
-      );
-      await conn.commit();
-      await conn.close();
+      // let conn = await oracledb.getConnection(samboDbConfig);
+      // await conn.execute(
+      //   `update s_jobs set status = 'R', tm_restart = sysdate where id = '${id}'`
+      // );
+      // await conn.commit();
+      // await conn.close();
       res.status(201).json(id);
     } catch (e) {
       next(e);
