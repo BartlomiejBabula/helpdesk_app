@@ -3,12 +3,19 @@ import { useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridActionsCellItem } from "@mui/x-data-grid";
 import { selectJobs, selectReplication } from "../../../selectors/user";
 import { JobTypes, ReplicationTypes } from "../../../types";
-import { useAppSelector } from "../../../store/AppStore";
 import { formatDate } from "../../../actions/UserActions";
+import {
+  useAppDispatch,
+  useAppSelector,
+  Dispatcher,
+} from "../../../store/AppStore";
+import { getJobs } from "../../../actions/UserActions";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import api from "../../../api/api";
 
 export const Monitoring = () => {
+  const dispatch: Dispatcher = useAppDispatch();
   const [openModal, setModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
   const [selectedAction, setSelectedAction] = useState<
@@ -136,29 +143,27 @@ export const Monitoring = () => {
   const handleCloseModal = () => setModalOpen(false);
 
   const handleRestartJob = (row: any) => {
-    // api
-    //   .post("/job/restart", { id: row.ID })
-    //   .then(() => {
-    //     dispatch(getJobs());
-    //     handleCloseModal();
-    //   })
-    //   .catch((error: Error) => {
-    //     console.log(error);
-    //   });
-    console.log("Restart joba:", row.ID);
-    handleCloseModal();
+    api
+      .post("/job/restart", { id: row.ID })
+      .then(() => {
+        dispatch(getJobs());
+        handleCloseModal();
+      })
+      .catch((error: Error) => {
+        console.log(error);
+      });
   };
 
   const handleEndJob = (row: any) => {
-    // api
-    //   .post("/job/end", { id: row.ID })
-    //   .then(() => {
-    //     dispatch(getJobs());
-    //     handleCloseModal();
-    //   })
-    //   .catch((error: Error) => {
-    //     console.log(error);
-    //   });
+    api
+      .post("/job/end", { id: row.ID })
+      .then(() => {
+        dispatch(getJobs());
+        handleCloseModal();
+      })
+      .catch((error: Error) => {
+        console.log(error);
+      });
     console.log("End joba:", row.ID);
     handleCloseModal();
   };
