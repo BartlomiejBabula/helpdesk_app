@@ -143,7 +143,7 @@ export const Report = () => {
     <Paper
       sx={{
         padding: 1,
-        marginTop: 3,
+        marginTop: 4,
         display: "flex",
         flexDirection: "column",
       }}
@@ -154,7 +154,7 @@ export const Report = () => {
           marginLeft: 1,
           letterSpacing: 1,
           color: "#38373D",
-          marginBottom: 1,
+          marginBottom: 2,
           fontWeight: "medium",
         }}
       >

@@ -186,7 +186,7 @@ export const Monitoring = () => {
   };
 
   return (
-    <Paper sx={{ padding: 2, paddingBottom: 3 }}>
+    <Box>
       <Typography
         variant='subtitle1'
         sx={{
@@ -200,7 +200,7 @@ export const Monitoring = () => {
         Długo przetwarzające się procesy
       </Typography>
       <DataGrid
-        style={{ height: "40vh", minHeight: 260 }}
+        style={{ height: "44vh", minHeight: 260, backgroundColor: "white" }}
         rows={filteredJobs ? filteredJobs : []}
         columns={columnsProcess}
         disableColumnMenu={true}
@@ -214,7 +214,7 @@ export const Monitoring = () => {
       <Typography
         variant='subtitle1'
         sx={{
-          marginTop: 4,
+          marginTop: 3,
           letterSpacing: 1,
           color: "#38373D",
           marginBottom: 1,
@@ -225,6 +225,7 @@ export const Monitoring = () => {
         Replikacja
       </Typography>
       <DataGrid
+        style={{ backgroundColor: "white" }}
         getRowId={(row) => row.ID}
         sx={{ height: 76.5 }}
         rows={replication ? replication : []}
@@ -302,6 +303,6 @@ export const Monitoring = () => {
           </Box>
         </Fade>
       </Modal>
-    </Paper>
+    </Box>
   );
 };
