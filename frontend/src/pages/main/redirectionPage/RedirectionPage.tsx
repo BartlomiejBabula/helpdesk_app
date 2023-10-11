@@ -76,16 +76,16 @@ const RedirectionPage = () => {
       >
         Serwisy
       </Typography>
-      <Paper
-        sx={{
-          padding: 2,
-          display: "flex",
-          flexDirection: "row",
-          width: 860,
-          justifyContent: "center",
-        }}
-      >
-        <Box>
+      <Box sx={{ display: "flex", flexDirection: "row", width: 860 }}>
+        <Paper
+          sx={{
+            padding: 2,
+            width: 400,
+            alignItems: "center",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <Typography
             variant='subtitle1'
             sx={{
@@ -106,7 +106,7 @@ const RedirectionPage = () => {
                 size='large'
                 style={{
                   marginBottom: 10,
-                  width: 350,
+                  width: 330,
                   backgroundImage:
                     "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
                 }}
@@ -118,8 +118,17 @@ const RedirectionPage = () => {
               </Button>
             ))}
           </Stack>
-        </Box>
-        <Box sx={{ marginLeft: 10 }}>
+        </Paper>
+        <Paper
+          sx={{
+            marginLeft: 5,
+            padding: 2,
+            width: 400,
+            alignItems: "center",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <Typography
             variant='subtitle1'
             sx={{
@@ -140,7 +149,7 @@ const RedirectionPage = () => {
                 size='large'
                 style={{
                   marginBottom: 10,
-                  width: 350,
+                  width: 330,
                   backgroundImage:
                     "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
                 }}
@@ -152,8 +161,8 @@ const RedirectionPage = () => {
               </Button>
             ))}
           </Stack>
-        </Box>
-      </Paper>
+        </Paper>
+      </Box>
     </Box>
   );
 };
