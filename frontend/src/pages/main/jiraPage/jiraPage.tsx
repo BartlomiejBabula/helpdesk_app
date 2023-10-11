@@ -6,6 +6,7 @@ import {
   FormControlLabel,
   TextField,
   Button,
+  Paper,
 } from "@mui/material";
 import { editJira } from "../../../actions/UserActions";
 import { Dispatcher, useAppDispatch } from "../../../store/AppStore";
@@ -41,12 +42,9 @@ const JiraPage = () => {
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
         height: "100%",
         position: "relative",
         padding: 2,
-        paddingLeft: 6,
         marginBottom: 5,
       }}
     >
@@ -54,62 +52,79 @@ const JiraPage = () => {
         variant='h6'
         sx={{
           letterSpacing: 2,
-          color: "rgba(0, 0, 0, 0.6)",
-          marginBottom: 5,
+          color: "#38373D",
+          marginBottom: 1,
+          marginLeft: 1,
         }}
       >
-        JIRA Automat
+        Automat JIRA
       </Typography>
-
-      <Typography variant='subtitle1' sx={{ marginBottom: 2 }}>
-        Automatyczna rejestracja zgłoszeń
-      </Typography>
-
-      <FormControlLabel
-        label={checked ? "Włączona" : "Wyłączona"}
-        control={<Switch checked={checked} onChange={handleChange} />}
-      />
-      <TextField
-        autoComplete='off'
-        label='Nadrzędne zadanie hostingu np. ES-37288'
-        size='small'
-        id='storeNumber'
-        name='storeNumber'
-        type='text'
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          setInput(e.target.value);
+      <Paper
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          padding: 3,
+          width: 400,
         }}
-        value={input}
-        sx={{ width: 260, marginTop: 1 }}
-      />
-      {checked && (
+      >
         <Typography
-          variant='subtitle2'
-          sx={{ marginBottom: 2, color: "red", maxWidth: 600 }}
+          variant='subtitle1'
+          sx={{
+            letterSpacing: 1,
+            color: "#38373D",
+            marginBottom: 2,
+            fontWeight: "medium",
+            marginLeft: 1,
+          }}
         >
+          Automatyczna rejestracja zgłoszeń
+        </Typography>
+
+        <FormControlLabel
+          label={checked ? "Włączona" : "Wyłączona"}
+          control={<Switch checked={checked} onChange={handleChange} />}
+        />
+        <TextField
+          autoComplete='off'
+          label='Nadrzędne zadanie hostingu np. ES-37288'
+          size='small'
+          id='storeNumber'
+          name='storeNumber'
+          type='text'
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setInput(e.target.value);
+          }}
+          value={input}
+          sx={{ width: "100%", marginTop: 3, alignSelf: "center" }}
+        />
+        <Typography variant='subtitle2' sx={{ color: "red" }}>
           Uwaga! - ustawienie parametru uruchamia automatyczną rejestracje
           zgłoszeń z Carrefour, pod wskazanym nadrzędnym zadaniem - Hosting i
           utrzymanie sklepów za dany miesiąc
         </Typography>
-      )}
-      <Button
-        sx={{
-          letterSpacing: 2,
-          height: 42,
-          width: 200,
-          marginBottom: 4,
-          backgroundImage: "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
-        }}
-        disabled={
-          jira
-            ? jira.jiraKey === input.replace(/\s/g, "") && jira.auto === checked
-            : false
-        }
-        onClick={handleSubmit}
-        variant='contained'
-      >
-        Zmień
-      </Button>
+        <Button
+          sx={{
+            alignSelf: "center",
+            letterSpacing: 2,
+            height: 42,
+            width: 200,
+            marginTop: 5,
+            marginBottom: 2,
+            backgroundImage:
+              "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
+          }}
+          disabled={
+            jira
+              ? jira.jiraKey === input.replace(/\s/g, "") &&
+                jira.auto === checked
+              : false
+          }
+          onClick={handleSubmit}
+          variant='contained'
+        >
+          Zmień
+        </Button>
+      </Paper>
     </Box>
   );
 };

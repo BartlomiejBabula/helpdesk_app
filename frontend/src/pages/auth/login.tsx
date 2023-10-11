@@ -58,7 +58,7 @@ export const LoginComponent = () => {
           dispatch(getUserProfile());
           dispatch(getJobs());
           dispatch(getReplication());
-          navigate({ pathname: "/dashboard" });
+          navigate({ pathname: "/dashboard/" });
         })
         .catch((error) => {
           if (error.response.status === 403) {
@@ -80,7 +80,7 @@ export const LoginComponent = () => {
 
   useEffect(() => {
     if (localStorage.getItem("refresh") !== null)
-      navigate({ pathname: "/dashboard" });
+      navigate({ pathname: "/dashboard/" });
   }, [navigate]);
 
   return (

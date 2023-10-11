@@ -1,4 +1,4 @@
-import { Box, Button, Typography, Stack } from "@mui/material";
+import { Box, Button, Typography, Stack, Paper } from "@mui/material";
 
 const buttonList: string[] = [
   "JIRA SKG",
@@ -61,82 +61,99 @@ const RedirectionPage = () => {
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "row",
         height: "100%",
-        position: "relative",
         padding: 2,
-        paddingLeft: 5,
       }}
     >
-      <Box>
-        <Typography
-          variant='h6'
-          sx={{
-            letterSpacing: 2,
-            color: "rgba(0, 0, 0, 0.6)",
-            marginBottom: 2,
-            marginLeft: 1,
-          }}
-        >
-          eSambo
-        </Typography>
-        <Stack>
-          {eSamboList.map((esambo, id) => (
-            <Button
-              key={id}
-              variant='contained'
-              size='large'
-              style={{
-                marginBottom: 10,
-                width: "28vw",
-                minWidth: 300,
-                backgroundImage:
-                  "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
-              }}
-              onClick={() => {
-                handleGoToExternalServices(esambo);
-              }}
-            >
-              {esambo}
-            </Button>
-          ))}
-        </Stack>
-      </Box>
-      <Box sx={{ marginLeft: 8 }}>
-        <Typography
-          variant='h6'
-          sx={{
-            letterSpacing: 2,
-            color: "rgba(0, 0, 0, 0.6)",
-            marginBottom: 2,
-            marginLeft: 1,
-          }}
-        >
-          Serwisy zewnętrzne
-        </Typography>
-        <Stack>
-          {buttonList.map((button, id) => (
-            <Button
-              key={id}
-              variant='contained'
-              size='large'
-              style={{
-                marginBottom: 10,
-                width: "28vw",
-                minWidth: 300,
-                backgroundImage:
-                  "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
-              }}
-              onClick={() => {
-                handleGoToExternalServices(button);
-              }}
-            >
-              {button}
-            </Button>
-          ))}
-        </Stack>
-      </Box>
+      <Typography
+        variant='h6'
+        sx={{
+          letterSpacing: 2,
+          color: "#38373D",
+          marginLeft: 1,
+          marginBottom: 1,
+        }}
+      >
+        Serwisy
+      </Typography>
+      <Paper
+        sx={{
+          padding: 2,
+          display: "flex",
+          flexDirection: "row",
+          width: 860,
+          justifyContent: "center",
+        }}
+      >
+        <Box>
+          <Typography
+            variant='subtitle1'
+            sx={{
+              letterSpacing: 1,
+              color: "#38373D",
+              marginBottom: 2,
+              fontWeight: "medium",
+              marginLeft: 1,
+            }}
+          >
+            Środowiska eSambo
+          </Typography>
+          <Stack>
+            {eSamboList.map((esambo, id) => (
+              <Button
+                key={id}
+                variant='contained'
+                size='large'
+                style={{
+                  marginBottom: 10,
+                  width: 350,
+                  backgroundImage:
+                    "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
+                }}
+                onClick={() => {
+                  handleGoToExternalServices(esambo);
+                }}
+              >
+                {esambo}
+              </Button>
+            ))}
+          </Stack>
+        </Box>
+        <Box sx={{ marginLeft: 10 }}>
+          <Typography
+            variant='subtitle1'
+            sx={{
+              letterSpacing: 1,
+              color: "#38373D",
+              marginBottom: 2,
+              fontWeight: "medium",
+              marginLeft: 1,
+            }}
+          >
+            Serwisy zewnętrzne
+          </Typography>
+          <Stack>
+            {buttonList.map((button, id) => (
+              <Button
+                key={id}
+                variant='contained'
+                size='large'
+                style={{
+                  marginBottom: 10,
+                  width: 350,
+                  backgroundImage:
+                    "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
+                }}
+                onClick={() => {
+                  handleGoToExternalServices(button);
+                }}
+              >
+                {button}
+              </Button>
+            ))}
+          </Stack>
+        </Box>
+      </Paper>
     </Box>
   );
 };

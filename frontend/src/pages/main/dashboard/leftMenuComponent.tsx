@@ -24,7 +24,7 @@ interface Values {
 }
 
 export const LeftMenu = () => {
-  const [tab, setTab] = useState("");
+  const [tab, setTab] = useState("dashboard");
   const navigate = useNavigate();
   const dispatch: Dispatcher = useAppDispatch();
 
@@ -45,7 +45,7 @@ export const LeftMenu = () => {
       case "shopList":
         navigate({ pathname: "./shoplist" });
         break;
-      case "services":
+      case "dashboard":
         navigate({ pathname: "./" });
         break;
       case "jira":
@@ -62,168 +62,178 @@ export const LeftMenu = () => {
   return (
     <Box
       sx={{
-        backgroundImage: "linear-gradient(to bottom right, #4098cf, #457b9d)",
-        minWidth: 190,
-        height: "100%",
-        color: "white",
+        margin: 1,
+        padding: 2,
+        backgroundImage: "linear-gradient(to bottom right, #36353b, #38373D)",
+        width: 220,
+        minWidth: 220,
+        color: "#ccc",
         textAlign: "center",
-        paddingTop: 3,
+        borderRadius: 1.5,
+        display: "flex",
+        flexDirection: "column",
       }}
     >
-      <Typography variant='subtitle2' sx={{ letterSpacing: 4 }}>
+      <Typography variant='subtitle2' sx={{ letterSpacing: 4, color: "white" }}>
         HELPDESK
       </Typography>
       <Typography
         variant='h4'
-        sx={{ letterSpacing: 2, fontWeight: "bold", marginBottom: 3 }}
+        sx={{
+          letterSpacing: 2,
+          fontWeight: "bold",
+          marginBottom: 3,
+          color: "white",
+        }}
       >
         ESAMBO
       </Typography>
-      <Box sx={{ height: "100%", display: "flex" }}>
-        <List sx={{ width: "100%" }}>
-          <ListItem disablePadding>
-            <ListItemButton
-              onClick={() => {
-                changeTab("services");
-                setTab("services");
-              }}
-            >
-              <ListItemIcon>
-                <HomeIcon sx={{ fontSize: 20 }} />
-              </ListItemIcon>
-              <ListItemText primary='Strona głowna' />
-              <Box
-                sx={{
-                  display: tab === "services" ? null : "none",
-                  alignSelf: "flex-end",
-                  width: 0,
-                  height: 0,
-                  borderTop: "9px solid transparent",
-                  borderBottom: "9px solid transparent",
-                  borderRight: "9px solid white",
-                  marginBottom: "7px",
-                }}
-              />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton
-              onClick={() => {
-                changeTab("monitoring");
-                setTab("monitoring");
-              }}
-            >
-              <ListItemIcon>
-                <MonitIcon sx={{ fontSize: 20 }} />
-              </ListItemIcon>
-              <ListItemText primary='Monitoring' />
-              <Box
-                sx={{
-                  display: tab === "monitoring" ? null : "none",
-                  alignSelf: "flex-end",
-                  width: 0,
-                  height: 0,
-                  borderTop: "9px solid transparent",
-                  borderBottom: "9px solid transparent",
-                  borderRight: "9px solid white",
-                  marginBottom: "7px",
-                }}
-              />
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem disablePadding>
-            <ListItemButton
-              onClick={() => {
-                changeTab("jira");
-                setTab("jira");
-              }}
-            >
-              <ListItemIcon>
-                <DriveFileRenameOutlineIcon sx={{ fontSize: 20 }} />
-              </ListItemIcon>
-              <ListItemText primary='Automat JIRA' />
-              <Box
-                sx={{
-                  display: tab === "jira" ? null : "none",
-                  alignSelf: "flex-end",
-                  width: 0,
-                  height: 0,
-                  borderTop: "9px solid transparent",
-                  borderBottom: "9px solid transparent",
-                  borderRight: "9px solid white",
-                  marginBottom: "7px",
-                }}
-              />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton
-              onClick={() => {
-                changeTab("shopList");
-                setTab("shopList");
-              }}
-            >
-              <ListItemIcon>
-                <ListIcon sx={{ fontSize: 20 }} />
-              </ListItemIcon>
-              <ListItemText primary='Lista sklepów' />
-              <Box
-                sx={{
-                  display: tab === "shopList" ? null : "none",
-                  alignSelf: "flex-end",
-                  width: 0,
-                  height: 0,
-                  borderTop: "9px solid transparent",
-                  borderBottom: "9px solid transparent",
-                  borderRight: "9px solid white",
-                  marginBottom: "7px",
-                }}
-              />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton
-              onClick={() => {
-                changeTab("redirection");
-                setTab("redirection");
-              }}
-            >
-              <ListItemIcon>
-                <ShortcutIcon sx={{ fontSize: 20 }} />
-              </ListItemIcon>
-              <ListItemText primary='Serwisy' />
-              <Box
-                sx={{
-                  display: tab === "redirection" ? null : "none",
-                  alignSelf: "flex-end",
-                  width: 0,
-                  height: 0,
-                  borderTop: "9px solid transparent",
-                  borderBottom: "9px solid transparent",
-                  borderRight: "9px solid white",
-                  marginBottom: "7px",
-                }}
-              />
-            </ListItemButton>
-          </ListItem>
-          <Box
-            sx={{
-              display: "flex",
-              height: "55%",
+      <List
+        disablePadding
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+        }}
+      >
+        <ListItem
+          disablePadding
+          sx={{
+            backgroundImage:
+              tab === "dashboard"
+                ? "linear-gradient(to bottom right, #4fa8e0, #457b9d)"
+                : "none",
+            borderRadius: 1,
+            color: tab === "dashboard" ? "white" : "#ccc",
+          }}
+        >
+          <ListItemButton
+            onClick={() => {
+              changeTab("dashboard");
+              setTab("dashboard");
             }}
           >
-            <ListItem disablePadding sx={{ alignSelf: "flex-end" }}>
-              <ListItemButton onClick={handleLogout} sx={{ paddingLeft: 5 }}>
-                <ListItemIcon>
-                  <LogoutIcon sx={{ fontSize: 20 }} />
-                </ListItemIcon>
-                <ListItemText primary='Wyloguj' />
-              </ListItemButton>
-            </ListItem>
-          </Box>
-        </List>
-      </Box>
+            <ListItemIcon>
+              <HomeIcon
+                sx={{
+                  fontSize: 20,
+                }}
+              />
+            </ListItemIcon>
+            <ListItemText primary='Strona głowna' />
+          </ListItemButton>
+        </ListItem>
+        <ListItem
+          disablePadding
+          sx={{
+            backgroundImage:
+              tab === "monitoring"
+                ? "linear-gradient(to bottom right, #4fa8e0, #457b9d)"
+                : "none",
+            borderRadius: 1,
+            color: tab === "monitoring" ? "white" : "#ccc",
+          }}
+        >
+          <ListItemButton
+            onClick={() => {
+              changeTab("monitoring");
+              setTab("monitoring");
+            }}
+          >
+            <ListItemIcon>
+              <MonitIcon sx={{ fontSize: 20 }} />
+            </ListItemIcon>
+            <ListItemText primary='Monitoring' />
+          </ListItemButton>
+        </ListItem>
+        <ListItem
+          disablePadding
+          sx={{
+            backgroundImage:
+              tab === "jira"
+                ? "linear-gradient(to bottom right, #4fa8e0, #457b9d)"
+                : "none",
+            borderRadius: 1,
+            color: tab === "jira" ? "white" : "#ccc",
+          }}
+        >
+          <ListItemButton
+            onClick={() => {
+              changeTab("jira");
+              setTab("jira");
+            }}
+          >
+            <ListItemIcon>
+              <DriveFileRenameOutlineIcon sx={{ fontSize: 20 }} />
+            </ListItemIcon>
+            <ListItemText primary='Automat JIRA' />
+          </ListItemButton>
+        </ListItem>
+        <ListItem
+          disablePadding
+          sx={{
+            backgroundImage:
+              tab === "shopList"
+                ? "linear-gradient(to bottom right, #4fa8e0, #457b9d)"
+                : "none",
+            borderRadius: 1,
+            color: tab === "shopList" ? "white" : "#ccc",
+          }}
+        >
+          <ListItemButton
+            onClick={() => {
+              changeTab("shopList");
+              setTab("shopList");
+            }}
+          >
+            <ListItemIcon>
+              <ListIcon sx={{ fontSize: 20 }} />
+            </ListItemIcon>
+            <ListItemText primary='Lista sklepów' />
+          </ListItemButton>
+        </ListItem>
+        <ListItem
+          disablePadding
+          sx={{
+            backgroundImage:
+              tab === "redirection"
+                ? "linear-gradient(to bottom right, #4fa8e0, #457b9d)"
+                : "none",
+            borderRadius: 1,
+            color: tab === "redirection" ? "white" : "#ccc",
+          }}
+        >
+          <ListItemButton
+            onClick={() => {
+              changeTab("redirection");
+              setTab("redirection");
+            }}
+          >
+            <ListItemIcon>
+              <ShortcutIcon sx={{ fontSize: 20 }} />
+            </ListItemIcon>
+            <ListItemText primary='Serwisy' />
+          </ListItemButton>
+        </ListItem>
+        <ListItem
+          disablePadding
+          sx={{
+            position: "absolute",
+            bottom: 0,
+            backgroundImage:
+              "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
+            borderRadius: 1,
+            color: "white",
+          }}
+        >
+          <ListItemButton onClick={handleLogout} sx={{ paddingLeft: 5 }}>
+            <ListItemIcon>
+              <LogoutIcon sx={{ fontSize: 20 }} />
+            </ListItemIcon>
+            <ListItemText primary='Wyloguj' />
+          </ListItemButton>
+        </ListItem>
+      </List>
     </Box>
   );
 };

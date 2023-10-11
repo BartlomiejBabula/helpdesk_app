@@ -56,18 +56,15 @@ const HomePage = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: "100%",
-        position: "relative",
         padding: 2,
-        paddingLeft: 5,
       }}
     >
-      <Box sx={{ flexDirection: "row", marginBottom: 3 }}>
+      <Box sx={{ marginBottom: 1 }}>
         <Typography
           variant='h6'
           sx={{
             letterSpacing: 2,
-            color: "rgba(0, 0, 0, 0.6)",
+            color: "#38373D",
             marginLeft: 1,
           }}
         >
