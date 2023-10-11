@@ -133,7 +133,7 @@ export const JobsComponent = () => {
   };
 
   return (
-    <Box style={{ height: 540 }}>
+    <Box style={{ height: "76vh", minHeight: 522 }}>
       <DataGrid
         rows={jobs ? jobs : []}
         columns={columnsProcess}

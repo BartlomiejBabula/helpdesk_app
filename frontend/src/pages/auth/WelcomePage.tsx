@@ -27,10 +27,9 @@ const WelcomePage = () => {
           sx={{
             display: "flex",
             flexDirection: "column",
-            paddingTop: "14%",
+            paddingTop: "13%",
             backgroundImage:
               "linear-gradient(to bottom right, #4098cf, #457b9d)",
-            // backgroundColor: "primary.main",
             width: "45%",
             color: "white",
             textAlign: "center",
@@ -63,7 +62,7 @@ const WelcomePage = () => {
               marginTop: 11,
             }}
           >
-            Wersja 1.2.0
+            Wersja 1.3.0
           </Typography>
         </Box>
         <Routes>

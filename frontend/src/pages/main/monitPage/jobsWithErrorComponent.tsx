@@ -139,7 +139,7 @@ export const JobsWithErrorComponent = () => {
   }, [jobs]);
 
   return (
-    <Box style={{ height: 540 }}>
+    <Box style={{ height: "76vh", minHeight: 522 }}>
       <DataGrid
         rows={filteredJobs ? filteredJobs : []}
         columns={columnsProcess}

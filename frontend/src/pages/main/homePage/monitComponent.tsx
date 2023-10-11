@@ -1,4 +1,12 @@
-import { Box, Typography, Button, Fade, Modal, Backdrop } from "@mui/material";
+import {
+  Box,
+  Paper,
+  Typography,
+  Button,
+  Fade,
+  Modal,
+  Backdrop,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridActionsCellItem } from "@mui/x-data-grid";
 import { selectJobs, selectReplication } from "../../../selectors/user";
@@ -178,12 +186,12 @@ export const Monitoring = () => {
   };
 
   return (
-    <Box>
+    <Paper sx={{ padding: 2, paddingBottom: 3 }}>
       <Typography
         variant='subtitle1'
         sx={{
           letterSpacing: 1,
-          color: "rgba(0, 0, 0, 0.6)",
+          color: "#38373D",
           marginBottom: 1,
           fontWeight: "medium",
           marginLeft: 1,
@@ -192,7 +200,7 @@ export const Monitoring = () => {
         Długo przetwarzające się procesy
       </Typography>
       <DataGrid
-        style={{ height: 290 }}
+        style={{ height: "40vh", minHeight: 260 }}
         rows={filteredJobs ? filteredJobs : []}
         columns={columnsProcess}
         disableColumnMenu={true}
@@ -208,7 +216,7 @@ export const Monitoring = () => {
         sx={{
           marginTop: 4,
           letterSpacing: 1,
-          color: "rgba(0, 0, 0, 0.6)",
+          color: "#38373D",
           marginBottom: 1,
           fontWeight: "medium",
           marginLeft: 1,
@@ -294,6 +302,6 @@ export const Monitoring = () => {
           </Box>
         </Fade>
       </Modal>
-    </Box>
+    </Paper>
   );
 };

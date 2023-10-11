@@ -8,7 +8,7 @@ import {
   useGridApiContext,
   GridRowModel,
 } from "@mui/x-data-grid";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, Paper } from "@mui/material";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Snackbar from "@mui/material/Snackbar";
 import Alert, { AlertProps } from "@mui/material/Alert";
@@ -151,16 +151,15 @@ const ShopListPage = () => {
         height: "100%",
         position: "relative",
         padding: 2,
-        paddingLeft: 5,
       }}
     >
       <Typography
         variant='h6'
         sx={{
           letterSpacing: 2,
-          color: "rgba(0, 0, 0, 0.6)",
+          color: "#38373D",
           marginLeft: 1,
-          marginBottom: 2,
+          marginBottom: 1,
         }}
       >
         Lista Sklepów
@@ -171,31 +170,45 @@ const ShopListPage = () => {
       >
         Dodaj sklep
       </Button>
-      {addStore && <AddShop />}
-      <Box style={{ height: 595 }}>
-        <DataGrid
-          rows={storeList}
-          columns={columns}
-          density={"compact"}
-          components={{ Toolbar: GridToolbar }}
-          experimentalFeatures={{ newEditingApi: true }}
-          disableColumnMenu={true}
-          disableDensitySelector={true}
-          disableColumnSelector={true}
-          processRowUpdate={processRowUpdate}
-          onProcessRowUpdateError={handleProcessRowUpdateError}
-        />
-      </Box>
-      {!!snackbar && (
-        <Snackbar
-          open
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          onClose={handleCloseSnackbar}
-          autoHideDuration={6000}
+      <Paper
+        sx={{
+          paddingTop: addStore ? 1 : 2,
+          paddingLeft: 2,
+          paddingRight: 2,
+          paddingBottom: 2,
+        }}
+      >
+        {addStore && <AddShop />}
+        <Box
+          style={{
+            height: addStore ? "65vh" : "86.7vh",
+            minHeight: addStore ? 442 : 602,
+          }}
         >
-          <Alert {...snackbar} onClose={handleCloseSnackbar} />
-        </Snackbar>
-      )}
+          <DataGrid
+            rows={storeList}
+            columns={columns}
+            density={"compact"}
+            components={{ Toolbar: GridToolbar }}
+            experimentalFeatures={{ newEditingApi: true }}
+            disableColumnMenu={true}
+            disableDensitySelector={true}
+            disableColumnSelector={true}
+            processRowUpdate={processRowUpdate}
+            onProcessRowUpdateError={handleProcessRowUpdateError}
+          />
+        </Box>
+        {!!snackbar && (
+          <Snackbar
+            open
+            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            onClose={handleCloseSnackbar}
+            autoHideDuration={6000}
+          >
+            <Alert {...snackbar} onClose={handleCloseSnackbar} />
+          </Snackbar>
+        )}
+      </Paper>
     </Box>
   );
 };

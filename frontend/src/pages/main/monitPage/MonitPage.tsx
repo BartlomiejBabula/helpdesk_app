@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, Paper } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import Alert, { AlertProps } from "@mui/material/Alert";
 import { getJobs, getReplication } from "../../../actions/UserActions";
@@ -85,42 +85,43 @@ const MonitPage = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: "100%",
         padding: 2,
       }}
     >
-      <Box sx={{ position: "relative" }}>
+      <Box sx={{ marginBottom: 1 }}>
         <Typography
           variant='h6'
           sx={{
             letterSpacing: 2,
-            color: "rgba(0, 0, 0, 0.6)",
-            marginBottom: 2,
-            marginLeft: 4,
+            color: "#38373D",
+            marginLeft: 1,
+            marginBottom: 1,
           }}
         >
           Monitoring
         </Typography>
         <Button
           onClick={handleGetProcessWithErrors}
-          sx={{ position: "absolute", top: 5, right: 20, zIndex: 1 }}
+          sx={{ position: "absolute", top: 15, right: 20, zIndex: 1 }}
         >
           pobierz aktualne dane
         </Button>
-        <Tabs value={tab} onChange={handleChange}>
-          <Tab label='Wszystkie procesy' />
-          <Tab label='Procesy z błędem' />
-          <Tab label='Replikacja' />
-        </Tabs>
-        <TabPanel value={tab} index={1}>
-          <JobsWithErrorComponent />
-        </TabPanel>
-        <TabPanel value={tab} index={0}>
-          <JobsComponent />
-        </TabPanel>
-        <TabPanel value={tab} index={2}>
-          <ReplicationComponent />
-        </TabPanel>
+        <Paper sx={{ padding: 1 }}>
+          <Tabs value={tab} onChange={handleChange}>
+            <Tab label='Wszystkie procesy' />
+            <Tab label='Procesy z błędem' />
+            <Tab label='Replikacja' />
+          </Tabs>
+          <TabPanel value={tab} index={1}>
+            <JobsWithErrorComponent />
+          </TabPanel>
+          <TabPanel value={tab} index={0}>
+            <JobsComponent />
+          </TabPanel>
+          <TabPanel value={tab} index={2}>
+            <ReplicationComponent />
+          </TabPanel>
+        </Paper>
       </Box>
       {!!snackbar && (
         <Snackbar

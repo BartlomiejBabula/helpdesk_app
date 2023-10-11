@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import {
   Box,
+  Paper,
   Button,
   Typography,
   Stack,
@@ -22,6 +23,7 @@ import {
 } from "../../../store/AppStore";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import CloseIcon from "@mui/icons-material/Close";
 
 const raportList: { name: string; btt: string }[] = [
   { name: "RAPORT PORANNY", btt: "morning" },
@@ -138,20 +140,27 @@ export const Report = () => {
   }, [dispatch]);
 
   return (
-    <Box sx={{ marginTop: 4 }}>
+    <Paper
+      sx={{
+        padding: 1,
+        marginTop: 3,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <Typography
         variant='subtitle1'
         sx={{
           marginLeft: 1,
           letterSpacing: 1,
-          color: "rgba(0, 0, 0, 0.6)",
+          color: "#38373D",
           marginBottom: 1,
           fontWeight: "medium",
         }}
       >
         Generowanie ręczne
       </Typography>
-      <Stack direction={"row"} spacing={4}>
+      <Stack direction={"row"} spacing={4} sx={{ alignSelf: "center" }}>
         {raportList.map((raport, id) => (
           <Button
             key={id}
@@ -160,7 +169,7 @@ export const Report = () => {
             style={{
               marginBottom: 10,
               width: "16.5vw",
-              minWidth: 180,
+              minWidth: 185,
               backgroundImage:
                 "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
             }}
@@ -204,6 +213,17 @@ export const Report = () => {
               textAlign: "center",
             }}
           >
+            <CloseIcon
+              sx={{
+                position: "absolute",
+                top: 10,
+                right: 10,
+                color: "black",
+                cursor: "pointer",
+                fontSize: 20,
+              }}
+              onClick={handleCloseModal}
+            />
             <Typography variant='h6' component='h2'>
               Parametry generacji raportu
             </Typography>
@@ -292,6 +312,6 @@ export const Report = () => {
           </Box>
         </Fade>
       </Modal>
-    </Box>
+    </Paper>
   );
 };
