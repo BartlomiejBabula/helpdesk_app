@@ -170,45 +170,38 @@ const ShopListPage = () => {
       >
         Dodaj sklep
       </Button>
-      <Paper
-        sx={{
-          paddingTop: addStore ? 1 : 2,
-          paddingLeft: 2,
-          paddingRight: 2,
-          paddingBottom: 2,
+      {addStore && <AddShop />}
+      <Box
+        style={{
+          height: addStore ? "65vh" : "100vh",
+          minHeight: addStore ? 442 : 602,
+          paddingTop: 1,
         }}
       >
-        {addStore && <AddShop />}
-        <Box
-          style={{
-            height: addStore ? "65vh" : "86.7vh",
-            minHeight: addStore ? 442 : 602,
-          }}
+        <DataGrid
+          style={{ backgroundColor: "white" }}
+          rows={storeList}
+          columns={columns}
+          density={"compact"}
+          components={{ Toolbar: GridToolbar }}
+          experimentalFeatures={{ newEditingApi: true }}
+          disableColumnMenu={true}
+          disableDensitySelector={true}
+          disableColumnSelector={true}
+          processRowUpdate={processRowUpdate}
+          onProcessRowUpdateError={handleProcessRowUpdateError}
+        />
+      </Box>
+      {!!snackbar && (
+        <Snackbar
+          open
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          onClose={handleCloseSnackbar}
+          autoHideDuration={6000}
         >
-          <DataGrid
-            rows={storeList}
-            columns={columns}
-            density={"compact"}
-            components={{ Toolbar: GridToolbar }}
-            experimentalFeatures={{ newEditingApi: true }}
-            disableColumnMenu={true}
-            disableDensitySelector={true}
-            disableColumnSelector={true}
-            processRowUpdate={processRowUpdate}
-            onProcessRowUpdateError={handleProcessRowUpdateError}
-          />
-        </Box>
-        {!!snackbar && (
-          <Snackbar
-            open
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            onClose={handleCloseSnackbar}
-            autoHideDuration={6000}
-          >
-            <Alert {...snackbar} onClose={handleCloseSnackbar} />
-          </Snackbar>
-        )}
-      </Paper>
+          <Alert {...snackbar} onClose={handleCloseSnackbar} />
+        </Snackbar>
+      )}
     </Box>
   );
 };

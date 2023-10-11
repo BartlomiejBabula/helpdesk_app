@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, Typography, Paper } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import Alert, { AlertProps } from "@mui/material/Alert";
 import { getJobs, getReplication } from "../../../actions/UserActions";
@@ -106,22 +106,20 @@ const MonitPage = () => {
         >
           pobierz aktualne dane
         </Button>
-        <Paper sx={{ padding: 1 }}>
-          <Tabs value={tab} onChange={handleChange}>
-            <Tab label='Wszystkie procesy' />
-            <Tab label='Procesy z błędem' />
-            <Tab label='Replikacja' />
-          </Tabs>
-          <TabPanel value={tab} index={1}>
-            <JobsWithErrorComponent />
-          </TabPanel>
-          <TabPanel value={tab} index={0}>
-            <JobsComponent />
-          </TabPanel>
-          <TabPanel value={tab} index={2}>
-            <ReplicationComponent />
-          </TabPanel>
-        </Paper>
+        <Tabs value={tab} onChange={handleChange}>
+          <Tab sx={{ color: "#38373D" }} label='Wszystkie procesy' />
+          <Tab sx={{ color: "#38373D" }} label='Procesy z błędem' />
+          <Tab sx={{ color: "#38373D" }} label='Replikacja' />
+        </Tabs>
+        <TabPanel value={tab} index={1}>
+          <JobsWithErrorComponent />
+        </TabPanel>
+        <TabPanel value={tab} index={0}>
+          <JobsComponent />
+        </TabPanel>
+        <TabPanel value={tab} index={2}>
+          <ReplicationComponent />
+        </TabPanel>
       </Box>
       {!!snackbar && (
         <Snackbar

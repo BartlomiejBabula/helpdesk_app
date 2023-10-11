@@ -26,7 +26,7 @@ export const ReplicationComponent = () => {
   return (
     <DataGrid
       getRowId={(row) => row.ID}
-      sx={{ height: 110 }}
+      sx={{ height: 110, backgroundColor: "white" }}
       rows={replication ? replication : []}
       columns={columnsReplication}
       hideFooter

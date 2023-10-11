@@ -59,7 +59,7 @@ const HomePage = () => {
         padding: 2,
       }}
     >
-      <Box sx={{ marginBottom: 1 }}>
+      <Box sx={{ marginBottom: 2 }}>
         <Typography
           variant='h6'
           sx={{

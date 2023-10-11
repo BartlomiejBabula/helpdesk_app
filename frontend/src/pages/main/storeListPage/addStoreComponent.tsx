@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, Stack, Button, TextField } from "@mui/material";
+import { Paper, Stack, Button, TextField } from "@mui/material";
 import Select from "@mui/material/Select";
 import Snackbar from "@mui/material/Snackbar";
 import Alert, { AlertProps } from "@mui/material/Alert";
@@ -80,12 +80,12 @@ export const AddShop = () => {
   });
 
   return (
-    <Box>
+    <Paper sx={{ padding: 2, marginBottom: 4 }}>
       <form onSubmit={formikAddShop.handleSubmit}>
         <Stack
           direction={"row"}
           spacing={1}
-          sx={{ marginTop: 3, display: "flex", alignItems: "baseline" }}
+          sx={{ display: "flex", alignItems: "baseline" }}
         >
           <TextField
             autoComplete='off'
@@ -172,7 +172,6 @@ export const AddShop = () => {
             letterSpacing: 2,
             height: 42,
             width: 200,
-            marginBottom: 4,
             backgroundImage:
               "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
           }}
@@ -192,6 +191,6 @@ export const AddShop = () => {
           <Alert {...snackbar} onClose={handleCloseSnackbar} />
         </Snackbar>
       )}
-    </Box>
+    </Paper>
   );
 };
