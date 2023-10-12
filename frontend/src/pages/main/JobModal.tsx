@@ -1,7 +1,7 @@
 import { Box, Typography, Button, Fade, Modal, Backdrop } from "@mui/material";
-import { useAppDispatch, Dispatcher } from "../store/AppStore";
-import { getJobs } from "../actions/UserActions";
-import api from "../api/api";
+import { useAppDispatch, Dispatcher } from "../../store/AppStore";
+import { getJobs } from "../../actions/UserActions";
+import api from "../../api/api";
 
 interface JobModalType {
   row: any;
