@@ -7,7 +7,7 @@ import { formatDate } from "../../../actions/UserActions";
 import { useAppSelector } from "../../../store/AppStore";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import { JobModal } from "../../JobModal";
+import { JobModal } from "../JobModal";
 
 export const Monitoring = () => {
   const [openModal, setModalOpen] = useState(false);

@@ -7,7 +7,7 @@ import { JobTypes } from "../../../types";
 import { formatDate } from "../../../actions/UserActions";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import { JobModal } from "../../JobModal";
+import { JobModal } from "../JobModal";
 
 export const JobsWithErrorComponent = () => {
   const [openModal, setModalOpen] = useState(false);
