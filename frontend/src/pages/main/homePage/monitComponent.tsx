@@ -1,29 +1,15 @@
-import {
-  Box,
-  Paper,
-  Typography,
-  Button,
-  Fade,
-  Modal,
-  Backdrop,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridActionsCellItem } from "@mui/x-data-grid";
 import { selectJobs, selectReplication } from "../../../selectors/user";
 import { JobTypes, ReplicationTypes } from "../../../types";
 import { formatDate } from "../../../actions/UserActions";
-import {
-  useAppDispatch,
-  useAppSelector,
-  Dispatcher,
-} from "../../../store/AppStore";
-import { getJobs } from "../../../actions/UserActions";
+import { useAppSelector } from "../../../store/AppStore";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import api from "../../../api/api";
+import { JobModal } from "../../JobModal";
 
 export const Monitoring = () => {
-  const dispatch: Dispatcher = useAppDispatch();
   const [openModal, setModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
   const [selectedAction, setSelectedAction] = useState<
@@ -150,41 +136,6 @@ export const Monitoring = () => {
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
 
-  const handleRestartJob = (row: any) => {
-    api
-      .post("/job/restart", { id: row.ID })
-      .then(() => {
-        dispatch(getJobs());
-        handleCloseModal();
-      })
-      .catch((error: Error) => {
-        console.log(error);
-      });
-  };
-
-  const handleEndJob = (row: any) => {
-    api
-      .post("/job/end", { id: row.ID })
-      .then(() => {
-        dispatch(getJobs());
-        handleCloseModal();
-      })
-      .catch((error: Error) => {
-        console.log(error);
-      });
-    console.log("End joba:", row.ID);
-    handleCloseModal();
-  };
-
-  const handleConfirmAction = () => {
-    if (selectedAction === "delete") {
-      handleEndJob(selectedRow);
-    }
-    if (selectedAction === "restart") {
-      handleRestartJob(selectedRow);
-    }
-  };
-
   return (
     <Box>
       <Typography
@@ -234,75 +185,12 @@ export const Monitoring = () => {
         disableColumnMenu={true}
         density={"compact"}
       />
-      <Modal
-        open={openModal}
-        onClose={handleCloseModal}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-      >
-        <Fade in={openModal}>
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: 425,
-              borderRadius: 1,
-              bgcolor: "background.paper",
-              boxShadow: 24,
-              p: 4,
-              textAlign: "center",
-            }}
-          >
-            <Typography
-              variant='h6'
-              sx={{
-                marginBottom: 1,
-              }}
-            >
-              Czy chcesz wykonać{" "}
-              {selectedAction === "delete" ? "END" : "RESTART"} joba?
-            </Typography>
-            <Box>
-              <Button
-                variant='contained'
-                style={{
-                  width: 70,
-                  backgroundImage:
-                    "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
-                }}
-                onClick={() => {
-                  handleConfirmAction();
-                }}
-              >
-                TAK
-              </Button>
-              <Button
-                variant='contained'
-                style={{
-                  marginLeft: 20,
-                  width: 70,
-                  backgroundImage:
-                    "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
-                }}
-                onClick={() => {
-                  handleCloseModal();
-                }}
-              >
-                NIE
-              </Button>
-            </Box>
-            <Typography
-              variant='subtitle2'
-              sx={{ color: "red", marginTop: 3, fontSize: 14 }}
-            >
-              Przed wykonaniem operacji upewnij się że masz pobraną aktualną
-              listę jobów.
-            </Typography>
-          </Box>
-        </Fade>
-      </Modal>
+      <JobModal
+        row={selectedRow}
+        openModal={openModal}
+        handleCloseModal={handleCloseModal}
+        selectedAction={selectedAction}
+      />
     </Box>
   );
 };

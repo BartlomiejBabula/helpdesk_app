@@ -141,6 +141,7 @@ export const Report = () => {
 
   return (
     <Paper
+      variant='outlined'
       sx={{
         padding: 1,
         marginTop: 4,
