@@ -80,7 +80,7 @@ export const AddShop = () => {
   });
 
   return (
-    <Paper sx={{ padding: 2, marginBottom: 4 }}>
+    <Paper variant='outlined' sx={{ padding: 2, marginBottom: 4 }}>
       <form onSubmit={formikAddShop.handleSubmit}>
         <Stack
           direction={"row"}

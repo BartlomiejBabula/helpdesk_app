@@ -60,6 +60,7 @@ const JiraPage = () => {
         Automat JIRA
       </Typography>
       <Paper
+        variant='outlined'
         sx={{
           display: "flex",
           flexDirection: "column",

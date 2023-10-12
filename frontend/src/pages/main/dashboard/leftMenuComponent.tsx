@@ -58,7 +58,6 @@ export const LeftMenu = () => {
         break;
     }
   };
-
   return (
     <Box
       sx={{
@@ -100,11 +99,12 @@ export const LeftMenu = () => {
           disablePadding
           sx={{
             backgroundImage:
-              tab === "dashboard"
+              window.location.pathname === "/dashboard/"
                 ? "linear-gradient(to bottom right, #4fa8e0, #457b9d)"
                 : "none",
             borderRadius: 1,
-            color: tab === "dashboard" ? "white" : "#ccc",
+            color:
+              window.location.pathname === "/dashboard/" ? "white" : "#ccc",
           }}
         >
           <ListItemButton
@@ -127,11 +127,14 @@ export const LeftMenu = () => {
           disablePadding
           sx={{
             backgroundImage:
-              tab === "monitoring"
+              window.location.pathname === "/dashboard/monit"
                 ? "linear-gradient(to bottom right, #4fa8e0, #457b9d)"
                 : "none",
             borderRadius: 1,
-            color: tab === "monitoring" ? "white" : "#ccc",
+            color:
+              window.location.pathname === "/dashboard/monit"
+                ? "white"
+                : "#ccc",
           }}
         >
           <ListItemButton
@@ -150,11 +153,12 @@ export const LeftMenu = () => {
           disablePadding
           sx={{
             backgroundImage:
-              tab === "jira"
+              window.location.pathname === "/dashboard/jira"
                 ? "linear-gradient(to bottom right, #4fa8e0, #457b9d)"
                 : "none",
             borderRadius: 1,
-            color: tab === "jira" ? "white" : "#ccc",
+            color:
+              window.location.pathname === "/dashboard/jira" ? "white" : "#ccc",
           }}
         >
           <ListItemButton
@@ -173,11 +177,14 @@ export const LeftMenu = () => {
           disablePadding
           sx={{
             backgroundImage:
-              tab === "shopList"
+              window.location.pathname === "/dashboard/shoplist"
                 ? "linear-gradient(to bottom right, #4fa8e0, #457b9d)"
                 : "none",
             borderRadius: 1,
-            color: tab === "shopList" ? "white" : "#ccc",
+            color:
+              window.location.pathname === "/dashboard/shoplist"
+                ? "white"
+                : "#ccc",
           }}
         >
           <ListItemButton
@@ -196,11 +203,14 @@ export const LeftMenu = () => {
           disablePadding
           sx={{
             backgroundImage:
-              tab === "redirection"
+              window.location.pathname === "/dashboard/redirection"
                 ? "linear-gradient(to bottom right, #4fa8e0, #457b9d)"
                 : "none",
             borderRadius: 1,
-            color: tab === "redirection" ? "white" : "#ccc",
+            color:
+              window.location.pathname === "/dashboard/redirection"
+                ? "white"
+                : "#ccc",
           }}
         >
           <ListItemButton

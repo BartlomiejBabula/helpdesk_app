@@ -78,6 +78,7 @@ const RedirectionPage = () => {
       </Typography>
       <Box sx={{ display: "flex", flexDirection: "row", width: 860 }}>
         <Paper
+          variant='outlined'
           sx={{
             padding: 2,
             width: 400,
@@ -120,6 +121,7 @@ const RedirectionPage = () => {
           </Stack>
         </Paper>
         <Paper
+          variant='outlined'
           sx={{
             marginLeft: 5,
             padding: 2,

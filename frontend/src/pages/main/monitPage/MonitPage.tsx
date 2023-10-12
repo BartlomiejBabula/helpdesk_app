@@ -47,33 +47,13 @@ const MonitPage = () => {
 
   const handleCloseSnackbar = () => setSnackbar(null);
 
-  const handleGetProcessWithErrors = async () => {
-    switch (tab) {
-      case 1:
-        setSnackbar({
-          children: "Pobieram procesy - operacja może potrwać kilka minut",
-          severity: "success",
-        });
-        dispatch(getJobs());
-        break;
-      case 0:
-        setSnackbar({
-          children: "Pobieram procesy - operacja może potrwać kilka minut",
-          severity: "success",
-        });
-        dispatch(getJobs());
-        break;
-      case 2:
-        setSnackbar({
-          children:
-            "Pobieram dane o replikacji - operacja może potrwać kilka minut",
-          severity: "success",
-        });
-        dispatch(getReplication());
-        break;
-      default:
-        break;
-    }
+  const handleGetActualData = () => {
+    dispatch(getJobs());
+    dispatch(getReplication());
+    setSnackbar({
+      children: "Pobieram aktualne dane - operacja może potrwać kilka minut",
+      severity: "success",
+    });
   };
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -101,7 +81,7 @@ const MonitPage = () => {
           Monitoring
         </Typography>
         <Button
-          onClick={handleGetProcessWithErrors}
+          onClick={handleGetActualData}
           sx={{ position: "absolute", top: 15, right: 20, zIndex: 1 }}
         >
           pobierz aktualne dane
