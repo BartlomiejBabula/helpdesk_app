@@ -1,70 +1,40 @@
 import { Routes, Route } from "react-router-dom";
 import { LoginComponent } from "./login";
 import { RegisterComponent } from "./register";
-import { Card, Box, Container, Typography } from "@mui/material";
+import { Card, CardMedia, Container, Typography } from "@mui/material";
 
 const WelcomePage = () => {
   return (
     <Container
-      fixed
       sx={{
         display: "flex",
         justifyContent: "center",
-        marginTop: "10vh",
+        height: "100%",
       }}
     >
       <Card
         sx={{
-          width: "75%",
-          minWidth: 860,
-          height: "50vh",
-          minHeight: 450,
+          mt: 10,
+          height: 550,
           display: "flex",
-          flexDirection: "row",
+          flexDirection: "column",
+          width: 450,
+          alignItems: "center",
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            paddingTop: "13%",
-            backgroundImage:
-              "linear-gradient(to bottom right, #4098cf, #457b9d)",
-            width: "45%",
-            color: "white",
-            textAlign: "center",
-          }}
+        <CardMedia
+          component='img'
+          image='/logo_lefttop.jpg'
+          alt='logo'
+          sx={{ width: 200, mt: 2 }}
+        />
+        <Typography
+          variant='h6'
+          sx={{ letterSpacing: 4, color: "rgba(0, 0, 0, 0.6)", mt: 1 }}
         >
-          <Typography variant='h6' sx={{ letterSpacing: 4, marginBottom: 2 }}>
-            ESAMBO
-          </Typography>
-          <Typography
-            variant='h3'
-            sx={{ letterSpacing: 6, fontWeight: "medium" }}
-          >
-            HELPDESK
-          </Typography>
-          <Typography
-            variant='body1'
-            sx={{
-              fontWeight: "medium",
-              letterSpacing: 3,
-              marginTop: 4,
-              paddingX: 3,
-            }}
-          >
-            Siemanko, tu znajdziesz wszystko co potrzeba do sprawnej pracy
-          </Typography>
-          <Typography
-            variant='subtitle2'
-            sx={{
-              letterSpacing: 2,
-              marginTop: 11,
-            }}
-          >
-            Wersja 1.3.0
-          </Typography>
-        </Box>
+          HELPDESK
+        </Typography>
+
         <Routes>
           <Route path='/' element={<LoginComponent />} />
           <Route path='/register' element={<RegisterComponent />} />

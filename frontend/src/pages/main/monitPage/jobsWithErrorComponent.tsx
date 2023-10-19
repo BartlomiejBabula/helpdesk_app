@@ -95,7 +95,7 @@ export const JobsWithErrorComponent = () => {
   useEffect(() => {
     if (jobs !== undefined) {
       let filer = jobs.filter(
-        (job: JobTypes) => job.STATUS === "B" && job.ERROR_MESSAGE !== null
+        (job: JobTypes) => job.ERROR_MESSAGE !== null
       );
       setFilteredJobs(filer);
     }

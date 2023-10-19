@@ -3,7 +3,8 @@ import * as React from "react";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import Snackbar from "@mui/material/Snackbar";
-import api from "../../api/api";
+import { AppURL } from "../../api/api";
+import axios from "axios";
 import Alert, { AlertProps } from "@mui/material/Alert";
 import { Box, Stack, Button, TextField, Typography } from "@mui/material";
 
@@ -44,15 +45,14 @@ export const RegisterComponent = () => {
       rePassword: "",
     },
 
-    onSubmit: async (values: RegisterValues, { resetForm }) => {
+    onSubmit: (values: RegisterValues, { resetForm }) => {
       const newUser = {
         email: values.email,
         password: values.password,
       };
-      await api
-        .post("/users", newUser)
-        .then((res) => {
-          console.log(res);
+      axios
+        .post(`${AppURL}/users`, newUser)
+        .then((response) => {
           setSnackbar({
             children: "Konto zostało utworzone",
             severity: "success",
@@ -61,7 +61,7 @@ export const RegisterComponent = () => {
         })
         .catch((error) => {
           setSnackbar({
-            children: error.message,
+            children: error.response.data,
             severity: "error",
           });
         });
@@ -72,88 +72,90 @@ export const RegisterComponent = () => {
   };
   const handleCloseSnackbar = () => setSnackbar(null);
   return (
-    <Box
-      sx={{
-        width: "55%",
-        paddingX: 8,
-        paddingTop: "8%",
-      }}
-    >
+    <>
       <form onSubmit={formik.handleSubmit}>
-        <Stack spacing={1}>
-          <TextField
-            autoComplete='off'
-            label='Email'
-            variant='standard'
-            id='email'
-            name='email'
-            type='text'
-            onChange={formik.handleChange}
-            value={formik.values.email}
-            onBlur={formik.handleBlur}
-            error={formik.touched.email && Boolean(formik.errors.email)}
-            helperText={formik.touched.email && formik.errors.email}
-          />
-          <TextField
-            autoComplete='off'
-            label='Hasło'
-            variant='standard'
-            id='password'
-            name='password'
-            type='password'
-            onChange={formik.handleChange}
-            value={formik.values.password}
-            onBlur={formik.handleBlur}
-            error={formik.touched.password && Boolean(formik.errors.password)}
-            helperText={formik.touched.password && formik.errors.password}
-          />
-          <TextField
-            autoComplete='off'
-            label='Powtórz hasło'
-            variant='standard'
-            id='rePassword'
-            name='rePassword'
-            type='password'
-            onChange={formik.handleChange}
-            value={formik.values.rePassword}
-            onBlur={formik.handleBlur}
-            error={
-              formik.touched.rePassword && Boolean(formik.errors.rePassword)
-            }
-            helperText={formik.touched.rePassword && formik.errors.rePassword}
-          />
-        </Stack>
-        <Button
-          size='large'
-          sx={{
-            width: "100%",
-            marginTop: 5,
-            letterSpacing: 2,
-            backgroundImage:
-              "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
-          }}
-          type='submit'
-          variant='contained'
-        >
-          Zarejestruj się
-        </Button>
         <Box
           sx={{
-            marginTop: 3,
             display: "flex",
-            flexDirection: "row",
-            alignItems: "baseline",
-            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
+            mt: 4,
           }}
         >
-          <Typography
-            sx={{ color: "rgba(0, 0, 0, 0.6)", fontSize: 16, marginRight: 1 }}
+          <Stack spacing={1} sx={{ width: 300 }}>
+            <TextField
+              autoComplete='off'
+              label='Email'
+              variant='standard'
+              id='email'
+              name='email'
+              type='text'
+              onChange={formik.handleChange}
+              value={formik.values.email}
+              onBlur={formik.handleBlur}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              helperText={formik.touched.email && formik.errors.email}
+            />
+            <TextField
+              autoComplete='off'
+              label='Hasło'
+              variant='standard'
+              id='password'
+              name='password'
+              type='password'
+              onChange={formik.handleChange}
+              value={formik.values.password}
+              onBlur={formik.handleBlur}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
+            />
+            <TextField
+              autoComplete='off'
+              label='Powtórz hasło'
+              variant='standard'
+              id='rePassword'
+              name='rePassword'
+              type='password'
+              onChange={formik.handleChange}
+              value={formik.values.rePassword}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.rePassword && Boolean(formik.errors.rePassword)
+              }
+              helperText={formik.touched.rePassword && formik.errors.rePassword}
+            />
+          </Stack>
+          <Button
+            size='large'
+            sx={{
+              marginTop: 5,
+              letterSpacing: 2,
+              backgroundImage:
+                "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
+            }}
+            type='submit'
+            variant='contained'
           >
-            Masz konto?
-          </Typography>
-          <Button type='button' variant='text' onClick={navigateToLogin}>
-            Zaloguj się
+            Zarejestruj się
           </Button>
+          <Box
+            sx={{
+              marginTop: 3,
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "baseline",
+              justifyContent: "center",
+            }}
+          >
+            <Typography
+              sx={{ color: "rgba(0, 0, 0, 0.6)", fontSize: 16, marginRight: 1 }}
+            >
+              Masz konto?
+            </Typography>
+            <Button type='button' variant='text' onClick={navigateToLogin}>
+              Zaloguj się
+            </Button>
+          </Box>
         </Box>
       </form>
       {!!snackbar && (
@@ -166,6 +168,6 @@ export const RegisterComponent = () => {
           <Alert {...snackbar} onClose={handleCloseSnackbar} />
         </Snackbar>
       )}
-    </Box>
+    </>
   );
 };

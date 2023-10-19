@@ -46,7 +46,7 @@ users.post("/", async (req: Request, res: Response, next) => {
           email.dataValues.email === newUser.email && (newUserExist = true)
       );
       if (newUserExist) {
-        res.status(400).json(`User exist with email address: ${newUser.email}`);
+        res.status(400).json(`Istnieje użytkownik: ${newUser.email}`);
       } else {
         let newUser: any = {
           email: req.body.email,
@@ -56,7 +56,7 @@ users.post("/", async (req: Request, res: Response, next) => {
         res.status(201).json(user);
       }
     } else {
-      res.status(400).json("User need to requaried email and password");
+      res.status(400).json("Użytownik musi posiadać hasło i adres email");
     }
   } catch (e) {
     next(e);
