@@ -7,7 +7,7 @@ import { JobTypes } from "../../../types";
 import { formatDate } from "../../../actions/UserActions";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import { JobModal } from "../JobModal";
+import { JobModal } from "../../../components/JobModal";
 
 export const JobsWithErrorComponent = () => {
   const [openModal, setModalOpen] = useState(false);
@@ -89,14 +89,12 @@ export const JobsWithErrorComponent = () => {
       type: "date",
       renderCell: (params) => formatDate(params.row?.TM_FORMAT_RESTART),
     },
-    { field: "ERROR_MESSAGE", headerName: "Error", width: 560 },
+    { field: "ERROR_MESSAGE", headerName: "Error", width: 1200 },
   ];
 
   useEffect(() => {
     if (jobs !== undefined) {
-      let filer = jobs.filter(
-        (job: JobTypes) => job.ERROR_MESSAGE !== null
-      );
+      let filer = jobs.filter((job: JobTypes) => job.ERROR_MESSAGE !== null);
       setFilteredJobs(filer);
     }
   }, [jobs]);

@@ -12,8 +12,7 @@ import {
   Select,
 } from "@mui/material";
 import api from "../../../api/api";
-import Alert, { AlertProps } from "@mui/material/Alert";
-import Snackbar from "@mui/material/Snackbar";
+import { AlertProps } from "@mui/material/Alert";
 import { selectBlockReports } from "../../../selectors/user";
 import { getBlockRaport } from "../../../actions/UserActions";
 import {
@@ -24,6 +23,7 @@ import {
 import { useFormik } from "formik";
 import * as yup from "yup";
 import CloseIcon from "@mui/icons-material/Close";
+import SnackbarAlert from "../../../components/SnackbarAlert";
 
 const raportList: { name: string; btt: string }[] = [
   { name: "RAPORT PORANNY", btt: "morning" },
@@ -42,18 +42,18 @@ export const Report = () => {
   const dispatch: Dispatcher = useAppDispatch();
   let blockReports: string[] = useAppSelector(selectBlockReports);
   const [openModal, setModalOpen] = useState(false);
-
   const [snackbar, setSnackbar] = useState<Pick<
     AlertProps,
     "children" | "severity"
   > | null>(null);
 
-  const handleCloseSnackbar = () => setSnackbar(null);
   const handleOpenModal = () => setModalOpen(true);
+
   const handleCloseModal = () => {
     setModalOpen(false);
     formikJira.resetForm();
   };
+
   const handleRaportGenerate = async (button: string) => {
     switch (button) {
       case "RAPORT PORANNY":
@@ -182,16 +182,7 @@ export const Report = () => {
             {raport.name}
           </Button>
         ))}
-        {!!snackbar && (
-          <Snackbar
-            open
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            onClose={handleCloseSnackbar}
-            autoHideDuration={6000}
-          >
-            <Alert {...snackbar} onClose={handleCloseSnackbar} />
-          </Snackbar>
-        )}
+        <SnackbarAlert alert={snackbar} />
       </Stack>
       <Modal
         open={openModal}

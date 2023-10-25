@@ -2,11 +2,11 @@ import { useFormik } from "formik";
 import * as React from "react";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
-import Snackbar from "@mui/material/Snackbar";
 import { AppURL } from "../../api/api";
 import axios from "axios";
-import Alert, { AlertProps } from "@mui/material/Alert";
+import { AlertProps } from "@mui/material/Alert";
 import { Box, Stack, Button, TextField, Typography } from "@mui/material";
+import SnackbarAlert from "../../components/SnackbarAlert";
 
 interface RegisterValues {
   email: string;
@@ -20,6 +20,7 @@ export const RegisterComponent = () => {
     "children" | "severity"
   > | null>(null);
   const navigate = useNavigate();
+
   const formik = useFormik({
     validationSchema: yup.object().shape({
       email: yup
@@ -67,10 +68,11 @@ export const RegisterComponent = () => {
         });
     },
   });
+
   const navigateToLogin = () => {
     navigate({ pathname: "/" });
   };
-  const handleCloseSnackbar = () => setSnackbar(null);
+
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
@@ -158,16 +160,7 @@ export const RegisterComponent = () => {
           </Box>
         </Box>
       </form>
-      {!!snackbar && (
-        <Snackbar
-          open
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          onClose={handleCloseSnackbar}
-          autoHideDuration={6000}
-        >
-          <Alert {...snackbar} onClose={handleCloseSnackbar} />
-        </Snackbar>
-      )}
+      <SnackbarAlert alert={snackbar} />
     </>
   );
 };

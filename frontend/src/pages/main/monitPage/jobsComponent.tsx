@@ -7,7 +7,7 @@ import { useAppSelector } from "../../../store/AppStore";
 import { formatDate } from "../../../actions/UserActions";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import { JobModal } from "../JobModal";
+import { JobModal } from "../../../components/JobModal";
 
 export const JobsComponent = () => {
   let jobs: JobTypes[] = useAppSelector(selectJobs);
@@ -90,7 +90,7 @@ export const JobsComponent = () => {
     },
     { field: "DOC_ID", headerName: "DOC_ID", width: 110 },
     { field: "ORDERED", headerName: "Zlecony przez", width: 200 },
-    { field: "ERROR_MESSAGE", headerName: "Error", width: 560 },
+    { field: "ERROR_MESSAGE", headerName: "Error", width: 1200 },
   ];
 
   return (

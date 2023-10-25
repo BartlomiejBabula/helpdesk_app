@@ -8,16 +8,16 @@ import {
   useGridApiContext,
   GridRowModel,
 } from "@mui/x-data-grid";
-import { Box, Button, Typography, Paper } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import Snackbar from "@mui/material/Snackbar";
-import Alert, { AlertProps } from "@mui/material/Alert";
+import { AlertProps } from "@mui/material/Alert";
 import { selectStoreList } from "../../../selectors/user";
 import { useSelector } from "react-redux";
 import { editStore } from "../../../actions/UserActions";
 import { AddShop } from "./addStoreComponent";
 import { StoreTypes } from "../../../types";
 import { Dispatcher, useAppDispatch } from "../../../store/AppStore";
+import SnackbarAlert from "../../../components/SnackbarAlert";
 
 const ShopListPage = () => {
   const dispatch: Dispatcher = useAppDispatch();
@@ -27,8 +27,6 @@ const ShopListPage = () => {
     AlertProps,
     "children" | "severity"
   > | null>(null);
-
-  const handleCloseSnackbar = () => setSnackbar(null);
 
   const toggleAddStore = () => {
     setAddStore(!addStore);
@@ -192,16 +190,7 @@ const ShopListPage = () => {
           onProcessRowUpdateError={handleProcessRowUpdateError}
         />
       </Box>
-      {!!snackbar && (
-        <Snackbar
-          open
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          onClose={handleCloseSnackbar}
-          autoHideDuration={6000}
-        >
-          <Alert {...snackbar} onClose={handleCloseSnackbar} />
-        </Snackbar>
-      )}
+      <SnackbarAlert alert={snackbar} />
     </Box>
   );
 };
