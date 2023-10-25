@@ -1,8 +1,7 @@
 import * as React from "react";
 import { Paper, Stack, Button, TextField } from "@mui/material";
 import Select from "@mui/material/Select";
-import Snackbar from "@mui/material/Snackbar";
-import Alert, { AlertProps } from "@mui/material/Alert";
+import { AlertProps } from "@mui/material/Alert";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { selectStoreList } from "../../../selectors/user";
@@ -13,6 +12,7 @@ import {
   useAppSelector,
 } from "../../../store/AppStore";
 import { StoreTypes } from "../../../types";
+import SnackbarAlert from "../../../components/SnackbarAlert";
 
 interface formikValues {
   storeNumber: string;
@@ -28,8 +28,6 @@ export const AddShop = () => {
     AlertProps,
     "children" | "severity"
   > | null>(null);
-
-  const handleCloseSnackbar = () => setSnackbar(null);
 
   const formikAddShop = useFormik({
     validationSchema: yup.object().shape({
@@ -181,16 +179,7 @@ export const AddShop = () => {
           Dodaj sklep
         </Button>
       </form>
-      {!!snackbar && (
-        <Snackbar
-          open
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          onClose={handleCloseSnackbar}
-          autoHideDuration={6000}
-        >
-          <Alert {...snackbar} onClose={handleCloseSnackbar} />
-        </Snackbar>
-      )}
+      <SnackbarAlert alert={snackbar} />
     </Paper>
   );
 };

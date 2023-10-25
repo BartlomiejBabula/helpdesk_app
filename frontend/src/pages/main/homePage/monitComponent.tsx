@@ -7,7 +7,7 @@ import { formatDate } from "../../../actions/UserActions";
 import { useAppSelector } from "../../../store/AppStore";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import { JobModal } from "../JobModal";
+import { JobModal } from "../../../components/JobModal";
 
 export const Monitoring = () => {
   const [openModal, setModalOpen] = useState(false);
@@ -87,7 +87,7 @@ export const Monitoring = () => {
       type: "date",
       renderCell: (params) => formatDate(params.row?.TM_FORMAT_RESTART),
     },
-    { field: "ERROR_MESSAGE", headerName: "Error", width: 560 },
+    { field: "ERROR_MESSAGE", headerName: "Error", width: 1260 },
   ];
 
   const columnsReplication: GridColDef[] = [

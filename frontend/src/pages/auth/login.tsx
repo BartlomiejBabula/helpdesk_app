@@ -2,10 +2,9 @@ import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
-import Snackbar from "@mui/material/Snackbar";
 import { setAuthHeader, AppURL } from "../../api/api";
 import axios from "axios";
-import Alert, { AlertProps } from "@mui/material/Alert";
+import { AlertProps } from "@mui/material/Alert";
 import {
   logInAction,
   getUserProfile,
@@ -14,6 +13,7 @@ import {
 } from "../../actions/UserActions";
 import { Box, Stack, Button, TextField, Typography } from "@mui/material";
 import { Dispatcher, useAppDispatch } from "../../store/AppStore";
+import SnackbarAlert from "../../components/SnackbarAlert";
 
 interface LoginValues {
   email: string;
@@ -76,8 +76,6 @@ export const LoginComponent = () => {
   const navigateToRegister = () => {
     navigate({ pathname: "/register" });
   };
-
-  const handleCloseSnackbar = () => setSnackbar(null);
 
   useEffect(() => {
     if (localStorage.getItem("refresh") !== null)
@@ -156,16 +154,7 @@ export const LoginComponent = () => {
           </Box>
         </Box>
       </form>
-      {!!snackbar && (
-        <Snackbar
-          open
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          onClose={handleCloseSnackbar}
-          autoHideDuration={6000}
-        >
-          <Alert {...snackbar} onClose={handleCloseSnackbar} />
-        </Snackbar>
-      )}
+      <SnackbarAlert alert={snackbar} />
     </>
   );
 };

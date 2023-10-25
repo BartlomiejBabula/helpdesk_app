@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
-import Snackbar from "@mui/material/Snackbar";
-import Alert, { AlertProps } from "@mui/material/Alert";
+import { AlertProps } from "@mui/material/Alert";
 import { getJobs, getReplication } from "../../../actions/UserActions";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -9,6 +8,7 @@ import { JobsComponent } from "./jobsComponent";
 import { JobsWithErrorComponent } from "./jobsWithErrorComponent";
 import { ReplicationComponent } from "./replicationComponent";
 import { Dispatcher, useAppDispatch } from "../../../store/AppStore";
+import SnackbarAlert from "../../../components/SnackbarAlert";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -39,13 +39,10 @@ function TabPanel(props: TabPanelProps) {
 const MonitPage = () => {
   const dispatch: Dispatcher = useAppDispatch();
   const [tab, setTab] = useState<number>(0);
-
   const [snackbar, setSnackbar] = useState<Pick<
     AlertProps,
     "children" | "severity"
   > | null>(null);
-
-  const handleCloseSnackbar = () => setSnackbar(null);
 
   const handleGetActualData = () => {
     dispatch(getJobs());
@@ -101,16 +98,7 @@ const MonitPage = () => {
           <ReplicationComponent />
         </TabPanel>
       </Box>
-      {!!snackbar && (
-        <Snackbar
-          open
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          onClose={handleCloseSnackbar}
-          autoHideDuration={6000}
-        >
-          <Alert {...snackbar} onClose={handleCloseSnackbar} />
-        </Snackbar>
-      )}
+      <SnackbarAlert alert={snackbar} />
     </Box>
   );
 };

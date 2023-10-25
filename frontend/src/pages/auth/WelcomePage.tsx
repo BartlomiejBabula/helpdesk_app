@@ -34,7 +34,6 @@ const WelcomePage = () => {
         >
           HELPDESK
         </Typography>
-
         <Routes>
           <Route path='/' element={<LoginComponent />} />
           <Route path='/register' element={<RegisterComponent />} />

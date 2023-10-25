@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Box, Typography, Button } from "@mui/material";
-import Alert, { AlertProps } from "@mui/material/Alert";
-import Snackbar from "@mui/material/Snackbar";
+import { AlertProps } from "@mui/material/Alert";
 import { getBlockRaport } from "../../../actions/UserActions";
 import { Report } from "./reportComponent";
 import { Dispatcher, useAppDispatch } from "../../../store/AppStore";
 import { Monitoring } from "./monitComponent";
 import { getJobs, getReplication } from "../../../actions/UserActions";
 import api, { destroyToken, saveToken, setAuthHeader } from "../../../api/api";
+import SnackbarAlert from "../../../components/SnackbarAlert";
 
 const HomePage = () => {
   const dispatch: Dispatcher = useAppDispatch();
@@ -15,8 +15,6 @@ const HomePage = () => {
     AlertProps,
     "children" | "severity"
   > | null>(null);
-
-  const handleCloseSnackbar = () => setSnackbar(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -79,16 +77,7 @@ const HomePage = () => {
       </Box>
       <Monitoring />
       <Report />
-      {!!snackbar && (
-        <Snackbar
-          open
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          onClose={handleCloseSnackbar}
-          autoHideDuration={6000}
-        >
-          <Alert {...snackbar} onClose={handleCloseSnackbar} />
-        </Snackbar>
-      )}
+      <SnackbarAlert alert={snackbar} />
     </Box>
   );
 };
