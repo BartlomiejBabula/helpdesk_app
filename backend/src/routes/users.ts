@@ -149,7 +149,7 @@ login.post("/", async (req: Request, res: Response, next) => {
       if (password_valid) {
         const payload = { id: user.id, email: user.email };
         const accessToken = jwt.sign(payload, TOKEN, { expiresIn: "300s" });
-        const refreshToken = jwt.sign(payload, TOKEN, { expiresIn: "8h" });
+        const refreshToken = jwt.sign(payload, TOKEN, { expiresIn: "10h" });
         res.status(201).json({ accessToken, refreshToken });
       } else {
         res.status(401).json(`Błędne hasło`);

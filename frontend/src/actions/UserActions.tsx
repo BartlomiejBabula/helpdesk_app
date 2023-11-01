@@ -221,3 +221,27 @@ export function formatDate(date: Date) {
     return formattedDate;
   }
 }
+
+export function formatErrorMessage(error: string | null) {
+  let errorMessage = error;
+  let messageContain = [
+    "Description:",
+    "SOAPFaultException",
+    "SocketTimeoutException:",
+    "IllegalArgumentException:",
+    "Exception:",
+    "<Message>",
+    "Błąd:",
+  ];
+  let founded = false;
+  messageContain.forEach((item) => {
+    if (errorMessage !== null) {
+      let startIndex = errorMessage.indexOf(item);
+      if (founded === false && startIndex !== -1) {
+        errorMessage = errorMessage.slice(startIndex);
+        founded = true;
+      }
+    }
+  });
+  return errorMessage;
+}

@@ -4,7 +4,7 @@ import { DataGrid, GridColDef, GridActionsCellItem } from "@mui/x-data-grid";
 import { selectJobs } from "../../../selectors/user";
 import { JobTypes } from "../../../types";
 import { useAppSelector } from "../../../store/AppStore";
-import { formatDate } from "../../../actions/UserActions";
+import { formatDate, formatErrorMessage } from "../../../actions/UserActions";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { JobModal } from "../../../components/JobModal";
@@ -90,7 +90,12 @@ export const JobsComponent = () => {
     },
     { field: "DOC_ID", headerName: "DOC_ID", width: 110 },
     { field: "ORDERED", headerName: "Zlecony przez", width: 200 },
-    { field: "ERROR_MESSAGE", headerName: "Error", width: 1200 },
+    {
+      field: "ERROR_MESSAGE",
+      headerName: "Error",
+      width: 1200,
+      renderCell: (params) => formatErrorMessage(params.row?.ERROR_MESSAGE),
+    },
   ];
 
   return (
