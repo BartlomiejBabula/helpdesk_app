@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridActionsCellItem } from "@mui/x-data-grid";
 import { selectJobs, selectReplication } from "../../../selectors/user";
 import { JobTypes, ReplicationTypes } from "../../../types";
-import { formatDate } from "../../../actions/UserActions";
+import { formatDate, formatErrorMessage } from "../../../actions/UserActions";
 import { useAppSelector } from "../../../store/AppStore";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
@@ -87,7 +87,12 @@ export const Monitoring = () => {
       type: "date",
       renderCell: (params) => formatDate(params.row?.TM_FORMAT_RESTART),
     },
-    { field: "ERROR_MESSAGE", headerName: "Error", width: 1260 },
+    {
+      field: "ERROR_MESSAGE",
+      headerName: "Error",
+      width: 1260,
+      renderCell: (params) => formatErrorMessage(params.row?.ERROR_MESSAGE),
+    },
   ];
 
   const columnsReplication: GridColDef[] = [
