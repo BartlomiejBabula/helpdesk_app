@@ -54,7 +54,7 @@ export const LoginComponent = () => {
         .then((response) => {
           localStorage.setItem("refresh", response.data.refreshToken);
           localStorage.setItem("access", response.data.accessToken);
-          setAuthHeader(response.data.accessToken, response.data.refreshToken);
+          setAuthHeader(response.data.accessToken);
           dispatch(logInAction());
           dispatch(getUserProfile());
           dispatch(getJobs());

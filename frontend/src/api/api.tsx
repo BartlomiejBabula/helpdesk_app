@@ -6,13 +6,10 @@ export const AppURL = "https://esambohd-bck.skg.pl";
 // axiosInstance.defaults.baseURL = "http://localhost:8888";
 // export const AppURL = "http://localhost:8888";
 
-export const setAuthHeader = (token: any, refresh: any) => {
+export const setAuthHeader = (token: any) => {
   axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  axiosInstance.defaults.headers.common[
-    "Authorization_Refresh"
-  ] = `Bearer ${refresh}`;
 };
-setAuthHeader(localStorage.getItem("access"), localStorage.getItem("refresh"));
+setAuthHeader(localStorage.getItem("access"));
 
 export const saveToken = (response: any) => {
   localStorage.setItem("refresh", response.data.refreshToken);
@@ -40,13 +37,12 @@ function createAxiosResponseInterceptor() {
        */
       axiosInstance.interceptors.response.eject(interceptor);
       const refreshToken = localStorage.getItem("refresh");
+      setAuthHeader(refreshToken);
       return axiosInstance
-        .post("/refresh-token", {
-          refreshToken: refreshToken,
-        })
+        .get("/refresh-token")
         .then((response) => {
           saveToken(response);
-          setAuthHeader(response.data.token, refreshToken);
+          setAuthHeader(response.data.token);
           error.response.config.headers["Authorization"] =
             "Bearer " + response.data.token;
           return axiosInstance(error.response.config);
