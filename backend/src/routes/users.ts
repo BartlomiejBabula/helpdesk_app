@@ -1,6 +1,6 @@
 import { Request, Router, Response, NextFunction } from "express";
 import { User } from "../models/User";
-import { TOKEN } from "../app";
+import { TOKEN, REFRESH_TOKEN } from "../app";
 
 export const users = Router();
 export const login = Router();
@@ -16,21 +16,15 @@ export const authJWTMiddleware = (
   next: NextFunction
 ) => {
   const access = req.headers["authorization"]?.split(" ")[1];
-  const refresh = req.headers["authorization_refresh"]?.split(" ")[1];
-  if (!access && !refresh) {
+  if (!access) {
     return res.sendStatus(401);
   }
-  jwt.verify(refresh, TOKEN, (e: any, data: any) => {
+  jwt.verify(access, TOKEN, (e: any, data: any) => {
     if (e) {
       return res.sendStatus(401);
     }
-    jwt.verify(access, TOKEN, (e: any, data: any) => {
-      if (e) {
-        return res.sendStatus(401);
-      }
-      req.user = data;
-      next();
-    });
+    req.user = data;
+    next();
   });
 };
 
@@ -149,7 +143,9 @@ login.post("/", async (req: Request, res: Response, next) => {
       if (password_valid) {
         const payload = { id: user.id, email: user.email };
         const accessToken = jwt.sign(payload, TOKEN, { expiresIn: "300s" });
-        const refreshToken = jwt.sign(payload, TOKEN, { expiresIn: "10h" });
+        const refreshToken = jwt.sign(payload, REFRESH_TOKEN, {
+          expiresIn: "10h",
+        });
         res.status(201).json({ accessToken, refreshToken });
       } else {
         res.status(401).json(`Błędne hasło`);
@@ -169,21 +165,43 @@ logout.post("/", authJWTMiddleware, async (req: Request, res: Response) => {
   res.status(200).json({ message: "You are logged out!" });
 });
 
-auth.post("/", async (req: Request, res: Response, next) => {
-  try {
-    const refreshToken = req.body.refreshToken;
-    if (!refreshToken) {
-      return res.status(403).json("Brak refresh tokena");
-    }
-    jwt.verify(refreshToken, TOKEN, (e: any, data: any) => {
-      if (e) {
-        return res.status(403).json("Błędny refresh token - sesja wygasła");
-      }
-      const payload = { id: data.id, email: data.email };
-      const newAccessToken = jwt.sign(payload, TOKEN, { expiresIn: "300s" });
-      res.status(201).json({ token: newAccessToken, refreshToken });
-    });
-  } catch (e) {
-    next(e);
+const authJWTRefreshMiddleware = (
+  req: any,
+  res: Response,
+  next: NextFunction
+) => {
+  const refresh = req.headers["authorization"]?.split(" ")[1];
+  if (!refresh) {
+    return res.sendStatus(401);
   }
-});
+  jwt.verify(refresh, REFRESH_TOKEN, (e: any, data: any) => {
+    if (e) {
+      return res.sendStatus(401);
+    }
+    req.user = data;
+    next();
+  });
+};
+
+auth.get(
+  "/",
+  authJWTRefreshMiddleware,
+  async (req: Request, res: Response, next) => {
+    try {
+      const refreshToken = req.headers["authorization"]?.split(" ")[1];
+      if (!refreshToken) {
+        return res.status(403).json("Brak refresh tokena");
+      }
+      jwt.verify(refreshToken, REFRESH_TOKEN, (e: any, data: any) => {
+        if (e) {
+          return res.status(403).json("Błędny refresh token - sesja wygasła");
+        }
+        const payload = { id: data.id, email: data.email };
+        const newAccessToken = jwt.sign(payload, TOKEN, { expiresIn: "300s" });
+        res.status(201).json({ token: newAccessToken, refreshToken });
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
+);

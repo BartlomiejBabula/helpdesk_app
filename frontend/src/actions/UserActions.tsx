@@ -232,6 +232,7 @@ export function formatErrorMessage(error: string | null) {
     "Exception:",
     "<Message>",
     "Błąd:",
+    "<OperationResultCode>",
   ];
   let founded = false;
   messageContain.forEach((item) => {

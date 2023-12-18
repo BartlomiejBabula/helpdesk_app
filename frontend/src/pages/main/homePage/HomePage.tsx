@@ -19,13 +19,12 @@ const HomePage = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       const refreshToken = localStorage.getItem("refresh");
+      setAuthHeader(refreshToken);
       api
-        .post("/refresh-token", {
-          refreshToken: refreshToken,
-        })
+        .get("/refresh-token")
         .then((response) => {
           saveToken(response);
-          setAuthHeader(response.data.token, refreshToken);
+          setAuthHeader(response.data.token);
           dispatch(getBlockRaport());
           dispatch(getJobs());
           dispatch(getReplication());
