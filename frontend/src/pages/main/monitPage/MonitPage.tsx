@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { AlertProps } from "@mui/material/Alert";
-import { getJobs, getReplication } from "../../../actions/UserActions";
+import { getJobs } from "../../../actions/UserActions";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { JobsComponent } from "./jobsComponent";
 import { JobsWithErrorComponent } from "./jobsWithErrorComponent";
-import { ReplicationComponent } from "./replicationComponent";
 import { Dispatcher, useAppDispatch } from "../../../store/AppStore";
 import SnackbarAlert from "../../../components/SnackbarAlert";
 
@@ -46,7 +45,6 @@ const MonitPage = () => {
 
   const handleGetActualData = () => {
     dispatch(getJobs());
-    dispatch(getReplication());
     setSnackbar({
       children: "Pobieram aktualne dane - operacja może potrwać kilka minut",
       severity: "success",
@@ -86,16 +84,12 @@ const MonitPage = () => {
         <Tabs value={tab} onChange={handleChange}>
           <Tab sx={{ color: "#38373D" }} label='Wszystkie procesy' />
           <Tab sx={{ color: "#38373D" }} label='Procesy z błędem' />
-          <Tab sx={{ color: "#38373D" }} label='Replikacja' />
         </Tabs>
         <TabPanel value={tab} index={1}>
           <JobsWithErrorComponent />
         </TabPanel>
         <TabPanel value={tab} index={0}>
           <JobsComponent />
-        </TabPanel>
-        <TabPanel value={tab} index={2}>
-          <ReplicationComponent />
         </TabPanel>
       </Box>
       <SnackbarAlert alert={snackbar} />

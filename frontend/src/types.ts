@@ -55,13 +55,6 @@ export interface JobTypes {
   TM_FORMAT_START?: Date;
 }
 
-export interface ReplicationTypes {
-  ID: 1;
-  PROD_TIME: string;
-  REPLICATION_TIME: string;
-  DELAY_SECONDS: string;
-}
-
 export interface JiraTypes {
   jiraKey: string;
   auto: boolean;

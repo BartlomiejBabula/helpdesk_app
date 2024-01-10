@@ -1,10 +1,4 @@
-import {
-  JiraTypes,
-  JobTypes,
-  ReplicationTypes,
-  StoreTypes,
-  UserTypes,
-} from "../types";
+import { JiraTypes, JobTypes, StoreTypes, UserTypes } from "../types";
 import {
   GET_STORELIST,
   GET_USER,
@@ -14,7 +8,6 @@ import {
   GET_JOBS,
   UPDATE_STORELIST,
   BLOCK_REPORT,
-  GET_REPLICATION,
   GET_JIRA,
 } from "./UserActions";
 
@@ -26,13 +19,7 @@ export type ActionTypes =
   | ActionGetJobsTypes
   | ActionAddStoreToStoreListTypes
   | ActionGetBlockRaport
-  | ActionGetReplication
   | ActionGetJira;
-
-export type ActionGetReplication = {
-  type: typeof GET_REPLICATION;
-  payload: ReplicationTypes;
-};
 
 export type ActionGetJira = {
   type: typeof GET_JIRA;
