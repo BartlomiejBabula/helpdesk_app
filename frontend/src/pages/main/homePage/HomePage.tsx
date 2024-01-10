@@ -5,7 +5,7 @@ import { getBlockRaport } from "../../../actions/UserActions";
 import { Report } from "./reportComponent";
 import { Dispatcher, useAppDispatch } from "../../../store/AppStore";
 import { Monitoring } from "./monitComponent";
-import { getJobs, getReplication } from "../../../actions/UserActions";
+import { getJobs } from "../../../actions/UserActions";
 import api, { destroyToken, saveToken, setAuthHeader } from "../../../api/api";
 import SnackbarAlert from "../../../components/SnackbarAlert";
 
@@ -27,7 +27,6 @@ const HomePage = () => {
           setAuthHeader(response.data.token);
           dispatch(getBlockRaport());
           dispatch(getJobs());
-          dispatch(getReplication());
         })
         .catch((error) => {
           destroyToken();
@@ -41,7 +40,6 @@ const HomePage = () => {
 
   const handleGetActualData = () => {
     dispatch(getJobs());
-    dispatch(getReplication());
     setSnackbar({
       children: "Pobieram aktualne dane - operacja może potrwać kilka minut",
       severity: "success",

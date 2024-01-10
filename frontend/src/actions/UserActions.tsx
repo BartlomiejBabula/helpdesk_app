@@ -1,19 +1,12 @@
 import api from "../api/api";
 import { Dispatch } from "react";
-import {
-  JobTypes,
-  ReplicationTypes,
-  StoreTypes,
-  UserTypes,
-  JiraTypes,
-} from "../types";
+import { JobTypes, StoreTypes, UserTypes, JiraTypes } from "../types";
 import {
   ActionAddStoreToStoreListTypes,
   ActionEditStoreTypes,
   ActionGetBlockRaport,
   ActionGetJira,
   ActionGetJobsTypes,
-  ActionGetReplication,
   ActionGetStoreList,
   ActionGetUserProfileTypes,
 } from "./types";
@@ -25,7 +18,6 @@ export const USER_LOGGED_OUT = "USER_LOGGED_OUT";
 export const USER_LOGGED_IN = "USER_LOGGED_IN";
 export const GET_JOBS = "GET_JOBS";
 export const BLOCK_REPORT = "BLOCK_REPORT";
-export const GET_REPLICATION = "GET_REPLICATION";
 export const GET_JIRA = "GET_JIRA";
 
 export const logOutAction = () => ({
@@ -138,34 +130,6 @@ export const getBlockRaport =
         dispatch({
           type: BLOCK_REPORT,
           payload: blockedRaports,
-        });
-      })
-      .catch((error: any) => {
-        console.log("Auth error");
-      });
-  };
-
-export const getReplication =
-  () => (dispatch: Dispatch<ActionGetReplication>) => {
-    api
-      .get(`/replication`)
-      .then((response) => {
-        let delay = new Date(response.data[0].DELAY_SECONDS * 1000)
-          .toISOString()
-          .substr(11, 8);
-        let prodTime = formatDate(new Date(response.data[0].PROD_TIME));
-        let replicationTime = formatDate(
-          new Date(response.data[0].REPLICATION_TIME)
-        );
-        let replication: ReplicationTypes = {
-          ID: 1,
-          PROD_TIME: prodTime,
-          REPLICATION_TIME: replicationTime,
-          DELAY_SECONDS: delay,
-        };
-        dispatch({
-          type: GET_REPLICATION,
-          payload: replication,
         });
       })
       .catch((error: any) => {

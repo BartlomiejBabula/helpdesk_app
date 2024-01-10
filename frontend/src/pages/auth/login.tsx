@@ -9,7 +9,6 @@ import {
   logInAction,
   getUserProfile,
   getJobs,
-  getReplication,
 } from "../../actions/UserActions";
 import { Box, Stack, Button, TextField, Typography } from "@mui/material";
 import { Dispatcher, useAppDispatch } from "../../store/AppStore";
@@ -58,7 +57,6 @@ export const LoginComponent = () => {
           dispatch(logInAction());
           dispatch(getUserProfile());
           dispatch(getJobs());
-          dispatch(getReplication());
           navigate({ pathname: "/dashboard/" });
         })
         .catch((error) => {

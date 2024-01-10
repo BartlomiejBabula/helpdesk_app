@@ -1,8 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridActionsCellItem } from "@mui/x-data-grid";
-import { selectJobs, selectReplication } from "../../../selectors/user";
-import { JobTypes, ReplicationTypes } from "../../../types";
+import { selectJobs } from "../../../selectors/user";
+import { JobTypes } from "../../../types";
 import { formatDate, formatErrorMessage } from "../../../actions/UserActions";
 import { useAppSelector } from "../../../store/AppStore";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
@@ -17,7 +17,6 @@ export const Monitoring = () => {
   >("");
   const [filteredJobs, setFilteredJobs] = useState<JobTypes[]>();
   let jobs: JobTypes[] = useAppSelector(selectJobs);
-  let replication: ReplicationTypes[] = useAppSelector(selectReplication);
 
   const columnsProcess: GridColDef[] = [
     {
@@ -95,24 +94,6 @@ export const Monitoring = () => {
     },
   ];
 
-  const columnsReplication: GridColDef[] = [
-    {
-      field: "PROD_TIME",
-      headerName: "Aktualna godzina",
-      width: 220,
-    },
-    {
-      field: "REPLICATION_TIME",
-      headerName: "Zreplikowana godzina",
-      width: 220,
-    },
-    {
-      field: "DELAY_SECONDS",
-      headerName: "Opóźnienie",
-      width: 220,
-    },
-  ];
-
   useEffect(() => {
     if (jobs !== undefined) {
       let compareDate = new Date(Date.now() - 3600 * 1000 * 240); // current day -240 h / 10days
@@ -136,7 +117,7 @@ export const Monitoring = () => {
       );
       setFilteredJobs(filer);
     }
-  }, [jobs, replication]);
+  }, [jobs]);
 
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
@@ -156,7 +137,7 @@ export const Monitoring = () => {
         Długo przetwarzające się procesy
       </Typography>
       <DataGrid
-        style={{ height: "44vh", minHeight: 260, backgroundColor: "white" }}
+        style={{ height: "60vh", minHeight: 260, backgroundColor: "white" }}
         rows={filteredJobs ? filteredJobs : []}
         columns={columnsProcess}
         disableColumnMenu={true}
@@ -165,29 +146,6 @@ export const Monitoring = () => {
             sortModel: [{ field: "col4", sort: "asc" }],
           },
         }}
-        density={"compact"}
-      />
-      <Typography
-        variant='subtitle1'
-        sx={{
-          marginTop: 3,
-          letterSpacing: 1,
-          color: "#38373D",
-          marginBottom: 1,
-          fontWeight: "medium",
-          marginLeft: 1,
-        }}
-      >
-        Replikacja
-      </Typography>
-      <DataGrid
-        style={{ backgroundColor: "white" }}
-        getRowId={(row) => row.ID}
-        sx={{ height: 76.5 }}
-        rows={replication ? replication : []}
-        columns={columnsReplication}
-        hideFooter
-        disableColumnMenu={true}
         density={"compact"}
       />
       <JobModal

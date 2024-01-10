@@ -6,7 +6,6 @@ import { USER_LOGGED_OUT } from "../actions/UserActions";
 import { GET_USER } from "../actions/UserActions";
 import { GET_JOBS } from "../actions/UserActions";
 import { BLOCK_REPORT } from "../actions/UserActions";
-import { GET_REPLICATION } from "../actions/UserActions";
 import { GET_JIRA } from "../actions/UserActions";
 import { ActionTypes } from "../actions/types";
 import { StateTypes, StoreTypes } from "../types";
@@ -47,9 +46,6 @@ export const userReducer = (state = initState, action: ActionTypes) => {
     }
     case GET_JOBS: {
       return { ...state, jobs: action.payload };
-    }
-    case GET_REPLICATION: {
-      return { ...state, replication: [action.payload] };
     }
     case BLOCK_REPORT: {
       return {
