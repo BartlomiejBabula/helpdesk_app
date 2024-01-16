@@ -101,19 +101,26 @@ export const Monitoring = () => {
       let compareDate3 = new Date(Date.now() - 3600 * 1000 * 0.5);
       let filer = jobs.filter(
         (job: JobTypes) =>
-          formatDate(
+          (formatDate(
             job.TM_FORMAT_RESTART !== undefined
               ? job.TM_FORMAT_RESTART
               : new Date(0)
           ) !== "01.01.1970 01:00:00" &&
-          formatDate(
-            job.TM_FORMAT_START !== undefined
-              ? job.TM_FORMAT_START
-              : new Date(0)
-          ) !== "01.01.1970 01:00:00" &&
-          new Date(job.TM_CREATE) > compareDate &&
-          new Date(job.TM_RESTART) < compareDate2 &&
-          new Date(job.TM_START) < compareDate3
+            formatDate(
+              job.TM_FORMAT_START !== undefined
+                ? job.TM_FORMAT_START
+                : new Date(0)
+            ) !== "01.01.1970 01:00:00" &&
+            new Date(job.TM_CREATE) > compareDate &&
+            new Date(job.TM_RESTART) < compareDate2 &&
+            new Date(job.TM_START) < compareDate3) ||
+          (job.ERROR_MESSAGE !== null &&
+            new Date(job.TM_CREATE) > compareDate &&
+            formatDate(
+              job.TM_FORMAT_START !== undefined
+                ? job.TM_FORMAT_START
+                : new Date(0)
+            ) !== "01.01.1970 01:00:00")
       );
       setFilteredJobs(filer);
     }
@@ -137,7 +144,7 @@ export const Monitoring = () => {
         Długo przetwarzające się procesy
       </Typography>
       <DataGrid
-        style={{ height: "60vh", minHeight: 260, backgroundColor: "white" }}
+        style={{ height: "54vh", minHeight: 360, backgroundColor: "white" }}
         rows={filteredJobs ? filteredJobs : []}
         columns={columnsProcess}
         disableColumnMenu={true}

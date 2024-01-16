@@ -33,6 +33,7 @@ RUN pip install robotframework
 RUN pip install --upgrade robotframework-seleniumlibrary
 RUN pip install selenium==4.9.1
 RUN pip install robotframework-browser
+RUN pip install requests
 RUN rfbrowser init
 RUN apt-get -y install firefox
 RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.25.0/geckodriver-v0.25.0-linux64.tar.gz

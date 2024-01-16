@@ -4,6 +4,7 @@ import { stores } from "./routes/stores";
 import { reports } from "./routes/reports/reports";
 import { jira } from "./routes/jira";
 import { job } from "./routes/job";
+import { storeList } from "./routes/storeList";
 
 const cors = require("cors");
 require("dotenv").config();
@@ -43,3 +44,4 @@ app.use("/refresh-token", auth);
 app.use("/reports", reports);
 app.use("/jira", jira);
 app.use("/job", job);
+app.use("/store-list", storeList);
