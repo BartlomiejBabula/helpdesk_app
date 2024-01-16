@@ -1,16 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  Box,
-  Paper,
-  Button,
-  Typography,
-  Stack,
-  Modal,
-  Fade,
-  Backdrop,
-  TextField,
-  Select,
-} from "@mui/material";
+import { Paper, Button, Typography, Grid } from "@mui/material";
 import api from "../../../api/api";
 import { AlertProps } from "@mui/material/Alert";
 import { selectBlockReports } from "../../../selectors/user";
@@ -20,38 +9,34 @@ import {
   useAppDispatch,
   useAppSelector,
 } from "../../../store/AppStore";
-import { useFormik } from "formik";
-import * as yup from "yup";
-import CloseIcon from "@mui/icons-material/Close";
 import SnackbarAlert from "../../../components/SnackbarAlert";
+import { ModalStoreList } from "./storeListModal";
+import { ModalJiraSLA } from "./jiraSLAModal";
 
 const raportList: { name: string; btt: string }[] = [
   { name: "RAPORT PORANNY", btt: "morning" },
   { name: "RAPORT WOLUMETRYKA", btt: "volumetrics" },
   { name: "RAPORT JIRA SLA", btt: "jiraSLA" },
   { name: "TESTY SELENIUM", btt: "selenium" },
+  { name: "LISTA SKLEPÓW", btt: "storeList" },
 ];
-
-interface formikValues {
-  type: string;
-  issue: string;
-  exceptionsDates: string;
-}
 
 export const Report = () => {
   const dispatch: Dispatcher = useAppDispatch();
   let blockReports: string[] = useAppSelector(selectBlockReports);
   const [openModal, setModalOpen] = useState(false);
+  const [openModalStoreList, setModalOpenStoreList] = useState(false);
   const [snackbar, setSnackbar] = useState<Pick<
     AlertProps,
     "children" | "severity"
   > | null>(null);
 
   const handleOpenModal = () => setModalOpen(true);
+  const handleOpenModalStoreList = () => setModalOpenStoreList(true);
 
   const handleCloseModal = () => {
     setModalOpen(false);
-    formikJira.resetForm();
+    setModalOpenStoreList(false);
   };
 
   const handleRaportGenerate = async (button: string) => {
@@ -86,54 +71,13 @@ export const Report = () => {
           severity: "success",
         });
         break;
+      case "LISTA SKLEPÓW":
+        handleOpenModalStoreList();
+        break;
       default:
         break;
     }
   };
-
-  const formikJira = useFormik({
-    validationSchema: yup.object().shape({
-      issue: yup.string().required("Pole obowiązkowe"),
-    }),
-
-    initialValues: {
-      type: "esambo",
-      issue: "",
-      exceptionsDates: "",
-    },
-
-    onSubmit: async (values: formikValues, { resetForm }) => {
-      let exceptionsDatesArr = values.exceptionsDates
-        .replace(/\s+/g, "")
-        .split(",");
-      exceptionsDatesArr = exceptionsDatesArr.filter((item) => item.length > 0);
-
-      let reqData = {
-        type: values.type,
-        issue: values.issue.replace(/\s+/g, ""),
-        exceptionsDates: exceptionsDatesArr,
-      };
-      handleCloseModal();
-      resetForm();
-
-      await api
-        .post(`/reports/sla`, reqData)
-        .then(() => {
-          setSnackbar({
-            children:
-              "Zlecono generacje raportu - raport zostanie wysłany na twojego maila",
-            severity: "success",
-          });
-        })
-        .catch((error) => {
-          setSnackbar({
-            children: "Błędne żądanie - raport nie zostanie wygenerowany",
-            severity: "error",
-          });
-        });
-      dispatch(getBlockRaport());
-    },
-  });
 
   useEffect(() => {
     dispatch(getBlockRaport());
@@ -161,149 +105,43 @@ export const Report = () => {
       >
         Generowanie ręczne
       </Typography>
-      <Stack direction={"row"} spacing={4} sx={{ alignSelf: "center" }}>
+      <Grid sx={{ paddingLeft: 3 }} container rowSpacing={1.5} flexWrap='wrap'>
         {raportList.map((raport, id) => (
-          <Button
-            key={id}
-            variant='contained'
-            size='large'
-            style={{
-              marginBottom: 10,
-              width: "16.5vw",
-              minWidth: 185,
-              backgroundImage:
-                "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
-            }}
-            disabled={blockReports?.includes(raport.btt) ? true : false}
-            onClick={() => {
-              handleRaportGenerate(raport.name);
-            }}
-          >
-            {raport.name}
-          </Button>
-        ))}
-        <SnackbarAlert alert={snackbar} />
-      </Stack>
-      <Modal
-        open={openModal}
-        onClose={handleCloseModal}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-      >
-        <Fade in={openModal}>
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: 425,
-              borderRadius: 1,
-              bgcolor: "background.paper",
-              boxShadow: 24,
-              p: 4,
-              textAlign: "center",
-            }}
-          >
-            <CloseIcon
-              sx={{
-                position: "absolute",
-                top: 10,
-                right: 10,
-                color: "black",
-                cursor: "pointer",
-                fontSize: 20,
+          <Grid item key={id} xs={4}>
+            <Button
+              key={id}
+              variant='contained'
+              size='large'
+              style={{
+                marginBottom: 10,
+                width: "24vw",
+                minWidth: 250,
+                backgroundImage:
+                  "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
               }}
-              onClick={handleCloseModal}
-            />
-            <Typography variant='h6' component='h2'>
-              Parametry generacji raportu
-            </Typography>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                marginBottom: 3,
-                marginTop: 3,
-                color: "rgba(0, 0, 0, 0.6)",
+              disabled={blockReports?.includes(raport.btt) ? true : false}
+              onClick={() => {
+                handleRaportGenerate(raport.name);
               }}
             >
-              Uzupełnij numer nadrzędnego zadania oraz daty w formacie
-              YYYY-MM-DD dni wykluczeń z SLA, przedzielone przecinkami
-            </Typography>
-            <form onSubmit={formikJira.handleSubmit}>
-              <Select
-                id='type'
-                name='type'
-                sx={{ width: 350, height: 1, marginBottom: 3 }}
-                value={formikJira.values.type}
-                onChange={formikJira.handleChange}
-                error={
-                  formikJira.touched.type && Boolean(formikJira.errors.type)
-                }
-                native
-                autoFocus
-              >
-                <option value='esambo'>eSambo</option>
-                <option value='qlik'>QlikView</option>
-              </Select>
-              <TextField
-                autoComplete='off'
-                label='Zadanie nadrzędne'
-                placeholder={
-                  formikJira.values.type === "qlik" ? "QVHD-439" : "ES-37288"
-                }
-                id='issue'
-                name='issue'
-                type='text'
-                onChange={formikJira.handleChange}
-                value={formikJira.values.issue}
-                onBlur={formikJira.handleBlur}
-                error={
-                  formikJira.touched.issue && Boolean(formikJira.errors.issue)
-                }
-                helperText={formikJira.touched.issue && formikJira.errors.issue}
-                sx={{ width: 350 }}
-              />
-              <TextField
-                autoComplete='off'
-                label='Dni wyłączone z SLA'
-                placeholder='2023-08-06, 2023-08-13, 2023-08-20, 2023-08-27, 2023-09-03'
-                id='exceptionsDates'
-                name='exceptionsDates'
-                type='text'
-                multiline
-                rows={3}
-                onChange={formikJira.handleChange}
-                value={formikJira.values.exceptionsDates}
-                onBlur={formikJira.handleBlur}
-                error={
-                  formikJira.touched.exceptionsDates &&
-                  Boolean(formikJira.errors.exceptionsDates)
-                }
-                helperText={
-                  formikJira.touched.exceptionsDates &&
-                  formikJira.errors.exceptionsDates
-                }
-                sx={{ width: 350, marginTop: 2 }}
-              />
-              <Button
-                sx={{
-                  letterSpacing: 2,
-                  height: 42,
-                  width: 200,
-                  marginTop: 10,
-                  backgroundImage:
-                    "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
-                }}
-                type='submit'
-                variant='contained'
-              >
-                Zleć raport
-              </Button>
-            </form>
-          </Box>
-        </Fade>
-      </Modal>
+              <Typography noWrap fontWeight={"500"}>
+                {raport.name}
+              </Typography>
+            </Button>
+          </Grid>
+        ))}
+        <SnackbarAlert alert={snackbar} />
+      </Grid>
+      <ModalJiraSLA
+        isOpen={openModal}
+        close={handleCloseModal}
+        setSnackbar={setSnackbar}
+      />
+      <ModalStoreList
+        isOpen={openModalStoreList}
+        close={handleCloseModal}
+        setSnackbar={setSnackbar}
+      />
     </Paper>
   );
 };

@@ -54,7 +54,7 @@ export const getUserProfile =
         });
       })
       .catch((error: any) => {
-        console.log("Auth error");
+        window.location.replace("/");
       });
   };
 
@@ -114,7 +114,7 @@ export const getJobs = () => (dispatch: Dispatch<ActionGetJobsTypes>) => {
       });
     })
     .catch((error: any) => {
-      console.log("Auth error");
+      window.location.replace("/");
     });
 };
 
@@ -133,7 +133,7 @@ export const getBlockRaport =
         });
       })
       .catch((error: any) => {
-        console.log("Auth error");
+        window.location.replace("/");
       });
   };
 
