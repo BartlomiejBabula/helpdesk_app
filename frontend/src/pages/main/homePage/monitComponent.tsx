@@ -116,6 +116,7 @@ export const Monitoring = () => {
             new Date(job.TM_START) < compareDate3) ||
           (job.ERROR_MESSAGE !== null &&
             new Date(job.TM_CREATE) > compareDate &&
+            new Date(job.TM_CREATE) < compareDate2 &&
             formatDate(
               job.TM_FORMAT_START !== undefined
                 ? job.TM_FORMAT_START

@@ -5,6 +5,7 @@ const buttonList: string[] = [
   "WIKI",
   "ICINGA",
   "GRAFANA",
+  "ZABBIX",
   "WEBLOGIC",
   "DOMAIN HEALTH",
   "ENTERPRISE MANAGER",
@@ -15,6 +16,7 @@ const eSamboList: string[] = [
   "TESTOWE",
   "LABO",
   "DEVELOPERSKIE",
+  "CSB",
 ];
 
 const RedirectionPage = () => {
@@ -28,6 +30,9 @@ const RedirectionPage = () => {
         break;
       case "ICINGA":
         window.open(process.env.REACT_APP_ICINGA, "_blank");
+        break;
+      case "ZABBIX":
+        window.open(process.env.REACT_APP_ZABBIX, "_blank");
         break;
       case "GRAFANA":
         window.open(process.env.REACT_APP_GRAFANA, "_blank");
@@ -52,6 +57,9 @@ const RedirectionPage = () => {
         break;
       case "DEVELOPERSKIE":
         window.open(process.env.REACT_APP_ESAMBO_DEV, "_blank");
+        break;
+      case "CSB":
+        window.open(process.env.REACT_APP_CSB, "_blank");
         break;
       default:
         break;

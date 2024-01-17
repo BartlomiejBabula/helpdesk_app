@@ -60,11 +60,13 @@ export const LoginComponent = () => {
           navigate({ pathname: "/dashboard/" });
         })
         .catch((error) => {
-          if (error.response.status === 401) {
-            error.message = error.response.data;
-          } else error.message = "Problem z Backend - zgłosić do Bartka :)";
+          let message = "";
+          if (error.response?.status === 401) {
+            message = error.response.data;
+          } else message = "Problem z Backend - zgłosić do Bartka :)";
+
           setSnackbar({
-            children: error.message,
+            children: message,
             severity: "error",
           });
         });

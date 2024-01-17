@@ -12,6 +12,10 @@ let dbIP = process.env.SAMBODB_IP;
 let dbPort = process.env.SAMBODB_PORT;
 let dbSID = process.env.SAMBODB_SID;
 
+let zabbixUser = process.env.ZABBIX_USER;
+let zabbixPassword = process.env.ZABBIX_PASSWORD;
+let zabbixUrl = process.env.ZABBIX_URL;
+
 export const runVolumetrics = async (
   req: Request,
   res: Response,
@@ -24,7 +28,7 @@ export const runVolumetrics = async (
     const path = require("path");
     const fs = require("fs");
     child_process.exec(
-      `python3 /usr/src/app/src/scripts/Raport_wolumetryka.py ${dbUser} ${dbPassword} ${dbIP} ${dbPort} ${dbSID}`,
+      `python3 /usr/src/app/src/scripts/Raport_wolumetryka.py ${dbUser} ${dbPassword} ${dbIP} ${dbPort} ${dbSID} ${zabbixUrl} ${zabbixUser} ${zabbixPassword}`,
       function (err: any, stdout: any, stderr: any) {
         if (err) {
           console.log("child processes failed with error code: " + err);
@@ -36,12 +40,23 @@ export const runVolumetrics = async (
                 filename: `Wolumetryka.xlsx`,
                 path: path.join("/usr/src/app/src/scripts/Wolumetryka.xlsx"),
               },
+              {
+                filename: `eSambo wolumetryka serwerów.doc`,
+                path: path.join(
+                  "/usr/src/app/src/scripts/eSambo wolumetryka serwerów.doc"
+                ),
+              },
             ],
             from: EMAIL,
             to: email,
             subject: "Dane do Wolumetryki",
             html: `<p>Cześć,</br>
-w załączniku przesyłam pliki z danymi do raportu Wolumetryki</p>`,
+            </br>
+w załączniku przesyłam pliki z danymi do raportu Wolumetryki,</br>
+do wszystkich potrzebnych danych należy pobrać wykres pamięci z Zabbix, zgodnie z artykułem na wiki.</br>
+</br>
+Artykuł na wiki:</br>
+https://wiki.skg.pl/wiki/index.php/Raport_-_Wolumetryka_serwer%C3%B3w</p>`,
           })
           .then((info: any) => {
             console.log({ info });

@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { AlertProps } from "@mui/material/Alert";
-import { getBlockRaport } from "../../../actions/UserActions";
 import { Report } from "./reportComponent";
 import { Dispatcher, useAppDispatch } from "../../../store/AppStore";
 import { Monitoring } from "./monitComponent";
 import { getJobs } from "../../../actions/UserActions";
-import api, { destroyToken, saveToken, setAuthHeader } from "../../../api/api";
 import SnackbarAlert from "../../../components/SnackbarAlert";
 
 const HomePage = () => {
@@ -15,28 +13,6 @@ const HomePage = () => {
     AlertProps,
     "children" | "severity"
   > | null>(null);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const refreshToken = localStorage.getItem("refresh");
-      setAuthHeader(refreshToken);
-      api
-        .get("/refresh-token")
-        .then((response) => {
-          saveToken(response);
-          setAuthHeader(response.data.token);
-          dispatch(getBlockRaport());
-          dispatch(getJobs());
-        })
-        .catch((error) => {
-          destroyToken();
-          if (error.response.data === "Błędny refresh token - sesja wygasła") {
-            window.location.replace("/");
-          }
-        });
-    }, 60000 * 2);
-    return () => clearInterval(interval);
-  }, [dispatch]);
 
   const handleGetActualData = () => {
     dispatch(getJobs());
