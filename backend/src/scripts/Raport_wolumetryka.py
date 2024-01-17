@@ -17,6 +17,9 @@ dbPassword = str(sys.argv[2])
 dbIP = str(sys.argv[3])
 dbPort = str(sys.argv[4])
 dbSID = str(sys.argv[5])
+zabbixUrl = str(sys.argv[6])
+zabbixUser = str(sys.argv[7]) 
+zabbixPassword = str(sys.argv[8])
 
 today = date.today()
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -25,7 +28,7 @@ sheet = wb['Obliczenia']
 sheet2 = wb['Tabela']
 cx_Oracle.init_oracle_client(lib_dir=r"/usr/src/app/src/oracle/instantclient_19_19")
 conn = cx_Oracle.connect(f'{dbUser}/{dbPassword}@{dbIP}:{dbPort}/{dbSID}') 
-r = requests.post('http://100.106.226.210/api_jsonrpc.php', json={"jsonrpc": "2.0", "method":"user.login", "params":{"username": "helpdesk","password": "0104HD2024"},"id": 1 })
+r = requests.post(f'{zabbixUrl}', json={"jsonrpc": "2.0", "method":"user.login", "params":{"username": zabbixUser,"password": zabbixPassword},"id": 1 })
 token = r.json()['result']
 
 
