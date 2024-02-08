@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { Box } from "@mui/material";
 import { DataGrid, GridColDef, GridActionsCellItem } from "@mui/x-data-grid";
-import { selectJobs } from "../../../selectors/user";
-import { JobTypes } from "../../../types";
-import { useAppSelector } from "../../../store/AppStore";
-import { formatDate, formatErrorMessage } from "../../../actions/UserActions";
+import {
+  formatDate,
+  formatErrorMessage,
+} from "../../../function/formatingDataFunction";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { JobModal } from "../../../components/JobModal";
+import { useAppSelector } from "../../../redux/AppStore";
+import { jobsSelector } from "../../../redux/jobs/JobsSlice";
+import { JobType } from "../../../redux/types";
 
 export const JobsComponent = () => {
-  let jobs: JobTypes[] = useAppSelector(selectJobs);
+  let jobs: JobType[] = useAppSelector(jobsSelector);
   const [openModal, setModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
   const [selectedAction, setSelectedAction] = useState<
@@ -19,6 +22,13 @@ export const JobsComponent = () => {
 
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
+
+  let formatedJobs = jobs.map((job: JobType) => {
+    let TM_FORMAT_START = new Date(job.TM_START);
+    let TM_FORMAT_RESTART = new Date(job.TM_RESTART);
+    job = { ...job, TM_FORMAT_START, TM_FORMAT_RESTART };
+    return job;
+  });
 
   const columnsProcess: GridColDef[] = [
     {
@@ -102,7 +112,7 @@ export const JobsComponent = () => {
     <Box style={{ height: "78vh", minHeight: 560 }}>
       <DataGrid
         style={{ backgroundColor: "white" }}
-        rows={jobs ? jobs : []}
+        rows={jobs ? formatedJobs : []}
         columns={columnsProcess}
         disableColumnMenu={true}
         initialState={{

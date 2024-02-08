@@ -5,19 +5,27 @@ import CssBaseline from "@mui/material/CssBaseline";
 import WelcomePage from "./pages/auth/WelcomePage";
 import Dashboard from "./pages/main/dashboard/Dashboard";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import { selectUser } from "./selectors/user";
-import { getUserProfile } from "./actions/UserActions";
+import { useAppDispatch, useAppSelector } from "./redux/AppStore";
+import { userSelector } from "./redux/user/UserSlice";
+import { getJobs } from "./redux/jobs/getJobs";
+import { getJira } from "./redux/jira/getJira";
+import { getUserProfile } from "./redux/user/getUserProfile";
+import { getStoreList } from "./redux/stores/getStoreList";
 
 const App = () => {
-  const dispatch = useDispatch<any>();
-  let user = useSelector(selectUser);
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(userSelector);
+  const refreshToken = localStorage.getItem("refresh");
 
   useEffect(() => {
-    if (window.location.pathname !== "/") {
+    if (window.location.pathname !== "/" && refreshToken !== null) {
       dispatch(getUserProfile());
+      dispatch(getJira());
+      dispatch(getJobs());
+      dispatch(getStoreList());
     }
+    if (window.location.pathname !== "/" && refreshToken === null)
+      window.location.replace("/");
   }, [dispatch]);
 
   return (

@@ -1,13 +1,16 @@
 import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridActionsCellItem } from "@mui/x-data-grid";
-import { selectJobs } from "../../../selectors/user";
-import { JobTypes } from "../../../types";
-import { formatDate, formatErrorMessage } from "../../../actions/UserActions";
-import { useAppSelector } from "../../../store/AppStore";
+import {
+  formatDate,
+  formatErrorMessage,
+} from "../../../function/formatingDataFunction";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { JobModal } from "../../../components/JobModal";
+import { useAppSelector } from "../../../redux/AppStore";
+import { jobsSelector } from "../../../redux/jobs/JobsSlice";
+import { JobType } from "../../../redux/types";
 
 export const Monitoring = () => {
   const [openModal, setModalOpen] = useState(false);
@@ -15,8 +18,8 @@ export const Monitoring = () => {
   const [selectedAction, setSelectedAction] = useState<
     "delete" | "restart" | ""
   >("");
-  const [filteredJobs, setFilteredJobs] = useState<JobTypes[]>();
-  let jobs: JobTypes[] = useAppSelector(selectJobs);
+  const [filteredJobs, setFilteredJobs] = useState<JobType[]>();
+  const jobs = useAppSelector(jobsSelector);
 
   const columnsProcess: GridColDef[] = [
     {
@@ -99,16 +102,16 @@ export const Monitoring = () => {
       let compareDate = new Date(Date.now() - 3600 * 1000 * 240); // current day -240 h / 10days
       let compareDate2 = new Date(Date.now() - 3600 * 1000 * 0.25);
       let compareDate3 = new Date(Date.now() - 3600 * 1000 * 0.5);
-      let filer = jobs.filter(
-        (job: JobTypes) =>
+      let filter = jobs.filter(
+        (job: JobType) =>
           (formatDate(
-            job.TM_FORMAT_RESTART !== undefined
-              ? job.TM_FORMAT_RESTART
+            new Date(job.TM_RESTART) !== undefined
+              ? new Date(job.TM_RESTART)
               : new Date(0)
           ) !== "01.01.1970 01:00:00" &&
             formatDate(
-              job.TM_FORMAT_START !== undefined
-                ? job.TM_FORMAT_START
+              new Date(job.TM_START) !== undefined
+                ? new Date(job.TM_START)
                 : new Date(0)
             ) !== "01.01.1970 01:00:00" &&
             new Date(job.TM_CREATE) > compareDate &&
@@ -118,12 +121,18 @@ export const Monitoring = () => {
             new Date(job.TM_CREATE) > compareDate &&
             new Date(job.TM_CREATE) < compareDate2 &&
             formatDate(
-              job.TM_FORMAT_START !== undefined
-                ? job.TM_FORMAT_START
+              new Date(job.TM_START) !== undefined
+                ? new Date(job.TM_START)
                 : new Date(0)
             ) !== "01.01.1970 01:00:00")
       );
-      setFilteredJobs(filer);
+      let filteredArray = filter.map((job: JobType) => {
+        let TM_FORMAT_START = new Date(job.TM_START);
+        let TM_FORMAT_RESTART = new Date(job.TM_RESTART);
+        job = { ...job, TM_FORMAT_START, TM_FORMAT_RESTART };
+        return job;
+      });
+      setFilteredJobs(filteredArray);
     }
   }, [jobs]);
 

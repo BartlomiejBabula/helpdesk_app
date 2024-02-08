@@ -1,27 +1,10 @@
-export interface StoreTypes {
-  id: number;
-  storeNumber: string;
-  storeType: string;
-  status: string;
-  information?: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface StateTypes {
-  isLogged: boolean;
-  storeList?: [StoreTypes] | any;
-  reportsBlock: string[];
-  jira?: JiraTypes;
-}
-
-export interface UserTypes {
+export interface UserType {
   id: number;
   email: string;
   createdAt: string;
 }
 
-export interface JobTypes {
+export interface JobType {
   CFG_ORDER_ID: any;
   COMMENT_MESSAGE: any;
   DOC_ID: number;
@@ -55,7 +38,19 @@ export interface JobTypes {
   TM_FORMAT_START?: Date;
 }
 
-export interface JiraTypes {
+export interface StoreType {
+  id: number;
+  storeNumber: string;
+  storeType: string;
+  status: string;
+  information?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface JiraType {
+  error?: null | string;
+  status?: "loading" | "succeeded" | "failed" | null;
   jiraKey: string;
   auto: boolean;
 }

@@ -1,10 +1,10 @@
 import { Box, Typography, Button, Fade, Modal, Backdrop } from "@mui/material";
-import { useAppDispatch, Dispatcher } from "../store/AppStore";
-import { getJobs } from "../actions/UserActions";
 import api from "../api/api";
 import { useState } from "react";
 import { AlertProps } from "@mui/material/Alert";
 import SnackbarAlert from "./SnackbarAlert";
+import { useAppDispatch } from "../redux/AppStore";
+import { getJobs } from "../redux/jobs/getJobs";
 
 interface JobModalType {
   row: any;
@@ -19,7 +19,7 @@ export const JobModal = ({
   handleCloseModal,
   selectedAction,
 }: JobModalType) => {
-  const dispatch: Dispatcher = useAppDispatch();
+  const dispatch = useAppDispatch();
   const [snackbar, setSnackbar] = useState<Pick<
     AlertProps,
     "children" | "severity"

@@ -2,16 +2,12 @@ import { useState, useEffect } from "react";
 import { Paper, Button, Typography, Grid } from "@mui/material";
 import api from "../../../api/api";
 import { AlertProps } from "@mui/material/Alert";
-import { selectBlockReports } from "../../../selectors/user";
-import { getBlockRaport } from "../../../actions/UserActions";
-import {
-  Dispatcher,
-  useAppDispatch,
-  useAppSelector,
-} from "../../../store/AppStore";
 import SnackbarAlert from "../../../components/SnackbarAlert";
 import { ModalStoreList } from "./storeListModal";
 import { ModalJiraSLA } from "./jiraSLAModal";
+import { useAppDispatch, useAppSelector } from "../../../redux/AppStore";
+import { reportsSelector } from "../../../redux/reports/ReportsSlice";
+import { getBlockedReports } from "../../../redux/reports/getBlockedReports";
 
 const raportList: { name: string; btt: string }[] = [
   { name: "RAPORT PORANNY", btt: "morning" },
@@ -22,8 +18,8 @@ const raportList: { name: string; btt: string }[] = [
 ];
 
 export const Report = () => {
-  const dispatch: Dispatcher = useAppDispatch();
-  let blockReports: string[] = useAppSelector(selectBlockReports);
+  const dispatch = useAppDispatch();
+  const blockReports = useAppSelector(reportsSelector);
   const [openModal, setModalOpen] = useState(false);
   const [openModalStoreList, setModalOpenStoreList] = useState(false);
   const [snackbar, setSnackbar] = useState<Pick<
@@ -43,7 +39,7 @@ export const Report = () => {
     switch (button) {
       case "RAPORT PORANNY":
         await api.get(`/reports/morning`);
-        dispatch(getBlockRaport());
+        dispatch(getBlockedReports());
         setSnackbar({
           children:
             "Zlecono generacje raportu - raport zostanie wysłany na twojego maila",
@@ -52,7 +48,7 @@ export const Report = () => {
         break;
       case "RAPORT WOLUMETRYKA":
         await api.get(`/reports/volumetrics`);
-        dispatch(getBlockRaport());
+        dispatch(getBlockedReports());
         setSnackbar({
           children:
             "Zlecono generacje raportu - raport zostanie wysłany na twojego maila",
@@ -64,7 +60,7 @@ export const Report = () => {
         break;
       case "TESTY SELENIUM":
         await api.get(`/reports/selenium`); // dla dev /reports/selenium-dev
-        dispatch(getBlockRaport());
+        dispatch(getBlockedReports());
         setSnackbar({
           children:
             "Uruchomiono selenium - raport zostanie wysłany na twojego maila",
@@ -80,7 +76,7 @@ export const Report = () => {
   };
 
   useEffect(() => {
-    dispatch(getBlockRaport());
+    dispatch(getBlockedReports());
   }, [dispatch]);
 
   return (
@@ -119,7 +115,9 @@ export const Report = () => {
                 backgroundImage:
                   "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
               }}
-              disabled={blockReports?.includes(raport.btt) ? true : false}
+              disabled={
+                blockReports.blocked?.includes(raport.btt) ? true : false
+              }
               onClick={() => {
                 handleRaportGenerate(raport.name);
               }}

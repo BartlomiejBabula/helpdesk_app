@@ -13,7 +13,7 @@ setAuthHeader(localStorage.getItem("access"));
 
 export const saveToken = (response: any) => {
   localStorage.setItem("refresh", response.data.refreshToken);
-  localStorage.setItem("access", response.data.token);
+  localStorage.setItem("access", response.data.accessToken);
 };
 
 export const destroyToken = () => {

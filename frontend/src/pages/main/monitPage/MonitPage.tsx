@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { AlertProps } from "@mui/material/Alert";
-import { getJobs } from "../../../actions/UserActions";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { JobsComponent } from "./jobsComponent";
 import { JobsWithErrorComponent } from "./jobsWithErrorComponent";
-import { Dispatcher, useAppDispatch } from "../../../store/AppStore";
 import SnackbarAlert from "../../../components/SnackbarAlert";
+import { useAppDispatch } from "../../../redux/AppStore";
+import { getJobs } from "../../../redux/jobs/getJobs";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -36,7 +36,7 @@ function TabPanel(props: TabPanelProps) {
 }
 
 const MonitPage = () => {
-  const dispatch: Dispatcher = useAppDispatch();
+  const dispatch = useAppDispatch();
   const [tab, setTab] = useState<number>(0);
   const [snackbar, setSnackbar] = useState<Pick<
     AlertProps,

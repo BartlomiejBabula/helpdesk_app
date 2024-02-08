@@ -8,15 +8,19 @@ import {
   Button,
   Paper,
 } from "@mui/material";
-import { editJira } from "../../../actions/UserActions";
-import { Dispatcher, useAppDispatch } from "../../../store/AppStore";
 import { useSelector } from "react-redux";
-import { selectJira } from "../../../selectors/user";
-import { JiraTypes } from "../../../types";
+import { useAppDispatch } from "../../../redux/AppStore";
+import { jiraSelector } from "../../../redux/jira/JiraSlice";
+import { editJira } from "../../../redux/jira/editJira";
+
+interface PostJiraType {
+  jiraKey: string;
+  auto: boolean;
+}
 
 const JiraPage = () => {
-  const dispatch: Dispatcher = useAppDispatch();
-  let jira = useSelector(selectJira);
+  const dispatch = useAppDispatch();
+  let jira = useSelector(jiraSelector);
   const [checked, setChecked] = useState(false);
   const [input, setInput] = useState("");
 
@@ -25,14 +29,16 @@ const JiraPage = () => {
   };
 
   useEffect(() => {
-    if (jira) {
+    if (jira.auto) {
       setChecked(jira.auto);
+    }
+    if (jira.jiraKey) {
       setInput(jira.jiraKey);
     }
   }, [jira]);
 
   const handleSubmit = () => {
-    let newJira: JiraTypes = {
+    let newJira: PostJiraType = {
       auto: checked,
       jiraKey: input.replace(/\s/g, ""),
     };
