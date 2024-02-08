@@ -6,36 +6,43 @@ import { Card, Box } from "@mui/material";
 import { LeftMenu } from "./leftMenuComponent";
 import JiraPage from "../jiraPage/jiraPage";
 import RedirectionPage from "../redirectionPage/RedirectionPage";
-
 import { useEffect } from "react";
-import { getBlockRaport } from "../../../actions/UserActions";
-import { Dispatcher, useAppDispatch } from "../../../store/AppStore";
-import { getJobs } from "../../../actions/UserActions";
 import api, { destroyToken, saveToken, setAuthHeader } from "../../../api/api";
+import { useAppDispatch } from "../../../redux/AppStore";
+import { getJobs } from "../../../redux/jobs/getJobs";
+import { getBlockedReports } from "../../../redux/reports/getBlockedReports";
+import { getStoreList } from "../../../redux/stores/getStoreList";
+// import SnackbarZabbix from "../../../components/SnackbarZabbix";
 
 const Dashboard = () => {
-  const dispatch: Dispatcher = useAppDispatch();
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     const interval = setInterval(() => {
       const refreshToken = localStorage.getItem("refresh");
-      setAuthHeader(refreshToken);
-      api
-        .get("/refresh-token")
-        .then((response) => {
-          saveToken(response);
-          setAuthHeader(response.data.token);
-          dispatch(getBlockRaport());
-          dispatch(getJobs());
-        })
-        .catch((error) => {
-          destroyToken();
-          if (error.response.data === "Błędny refresh token - sesja wygasła") {
-            window.location.replace("/");
-          }
-        });
+      if (refreshToken !== null && refreshToken !== undefined) {
+        setAuthHeader(refreshToken);
+        api
+          .get("/refresh-token")
+          .then((response) => {
+            saveToken(response);
+            setAuthHeader(response.data.token);
+            dispatch(getBlockedReports());
+            dispatch(getJobs());
+            dispatch(getStoreList());
+          })
+          .catch((error) => {
+            destroyToken();
+            if (
+              error.response.data === "Błędny refresh token - sesja wygasła"
+            ) {
+              window.location.replace("/");
+            }
+          });
+      } else window.location.replace("/");
     }, 60000 * 2);
     return () => clearInterval(interval);
-  }, [dispatch]);
+  }, []);
 
   return (
     <Card
@@ -54,6 +61,7 @@ const Dashboard = () => {
           <Route path='/monit' element={<MonitPage />} />
           <Route path='/' element={<HomePage />} />
         </Routes>
+        {/* <SnackbarZabbix /> */}
       </Box>
     </Card>
   );

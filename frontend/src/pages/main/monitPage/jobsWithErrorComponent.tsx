@@ -1,13 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Box } from "@mui/material";
 import { DataGrid, GridColDef, GridActionsCellItem } from "@mui/x-data-grid";
-import { selectJobs } from "../../../selectors/user";
-import { useAppSelector } from "../../../store/AppStore";
-import { JobTypes } from "../../../types";
-import { formatDate, formatErrorMessage } from "../../../actions/UserActions";
+import {
+  formatDate,
+  formatErrorMessage,
+} from "../../../function/formatingDataFunction";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { JobModal } from "../../../components/JobModal";
+import { useAppSelector } from "../../../redux/AppStore";
+import { jobsSelector } from "../../../redux/jobs/JobsSlice";
+import { JobType } from "../../../redux/types";
 
 export const JobsWithErrorComponent = () => {
   const [openModal, setModalOpen] = useState(false);
@@ -15,8 +18,7 @@ export const JobsWithErrorComponent = () => {
   const [selectedAction, setSelectedAction] = useState<
     "delete" | "restart" | ""
   >("");
-  const [filteredJobs, setFilteredJobs] = useState<JobTypes[]>();
-  let jobs: JobTypes[] = useAppSelector(selectJobs);
+  let jobs: JobType[] = useAppSelector(jobsSelector);
 
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
@@ -79,7 +81,7 @@ export const JobsWithErrorComponent = () => {
       width: 200,
       headerClassName: "data-grid-header",
       type: "date",
-      renderCell: (params) => formatDate(params.row?.TM_FORMAT_START),
+      renderCell: (params) => formatDate(params.row?.TM_START),
     },
     {
       field: "TM_FORMAT_RESTART",
@@ -87,7 +89,7 @@ export const JobsWithErrorComponent = () => {
       width: 200,
       headerClassName: "data-grid-header",
       type: "date",
-      renderCell: (params) => formatDate(params.row?.TM_FORMAT_RESTART),
+      renderCell: (params) => formatDate(params.row?.TM_RESTART),
     },
     {
       field: "ERROR_MESSAGE",
@@ -97,18 +99,19 @@ export const JobsWithErrorComponent = () => {
     },
   ];
 
-  useEffect(() => {
-    if (jobs !== undefined) {
-      let filer = jobs.filter((job: JobTypes) => job.ERROR_MESSAGE !== null);
-      setFilteredJobs(filer);
-    }
-  }, [jobs]);
+  let filter = jobs.filter((job: JobType) => job.ERROR_MESSAGE !== null);
+  let formatedJobs = filter.map((job: JobType) => {
+    let TM_FORMAT_START = new Date(job.TM_START);
+    let TM_FORMAT_RESTART = new Date(job.TM_RESTART);
+    job = { ...job, TM_FORMAT_START, TM_FORMAT_RESTART };
+    return job;
+  });
 
   return (
     <Box style={{ height: "78vh", minHeight: 560 }}>
       <DataGrid
         style={{ backgroundColor: "white" }}
-        rows={filteredJobs ? filteredJobs : []}
+        rows={jobs ? formatedJobs : []}
         columns={columnsProcess}
         disableColumnMenu={true}
         density={"compact"}

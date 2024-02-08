@@ -2,17 +2,27 @@ import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { setAuthHeader, AppURL } from "../../api/api";
-import axios from "axios";
 import { AlertProps } from "@mui/material/Alert";
-import {
-  logInAction,
-  getUserProfile,
-  getJobs,
-} from "../../actions/UserActions";
 import { Box, Stack, Button, TextField, Typography } from "@mui/material";
-import { Dispatcher, useAppDispatch } from "../../store/AppStore";
 import SnackbarAlert from "../../components/SnackbarAlert";
+import { useAppDispatch, useAppSelector } from "../../redux/AppStore";
+import {
+  userSelectorError,
+  userSelectorStatus,
+} from "../../redux/user/UserSlice";
+import { loginAction } from "../../redux/user/loginUser";
+import { getUserProfile } from "../../redux/user/getUserProfile";
+import { getJira } from "../../redux/jira/getJira";
+import {
+  jiraSelectorError,
+  jiraSelectorStatus,
+} from "../../redux/jira/JiraSlice";
+import { getJobs } from "../../redux/jobs/getJobs";
+import {
+  jobsSelectorError,
+  jobsSelectorStatus,
+} from "../../redux/jobs/JobsSlice";
+import { getStoreList } from "../../redux/stores/getStoreList";
 
 interface LoginValues {
   email: string;
@@ -24,8 +34,45 @@ export const LoginComponent = () => {
     AlertProps,
     "children" | "severity"
   > | null>(null);
-  const dispatch: Dispatcher = useAppDispatch();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const selectUserError = useAppSelector(userSelectorError);
+  const selectUserStatus = useAppSelector(userSelectorStatus);
+
+  const selectJiraError = useAppSelector(jiraSelectorError);
+  const selectJiraStatus = useAppSelector(jiraSelectorStatus);
+
+  const selectJobsError = useAppSelector(jobsSelectorError);
+  const selectJobsStatus = useAppSelector(jobsSelectorStatus);
+
+  useEffect(() => {
+    if (selectUserError !== null && selectUserStatus === "failed") {
+      setSnackbar({
+        children: selectUserError,
+        severity: "error",
+      });
+    }
+    if (selectJiraError !== null && selectJiraStatus === "failed") {
+      setSnackbar({
+        children: selectJiraError,
+        severity: "error",
+      });
+    }
+    if (selectJobsError !== null && selectJobsStatus === "failed") {
+      setSnackbar({
+        children: selectJobsError,
+        severity: "error",
+      });
+    }
+  }, [
+    selectUserError,
+    selectUserStatus,
+    selectJiraError,
+    selectJiraStatus,
+    selectJobsError,
+    selectJobsStatus,
+  ]);
 
   const formik = useFormik({
     validationSchema: yup.object().shape({
@@ -46,30 +93,14 @@ export const LoginComponent = () => {
       password: "",
     },
 
-    onSubmit: (values: LoginValues) => {
+    onSubmit: async (values: LoginValues) => {
       const user = { email: values.email, password: values.password };
-      axios
-        .post(`${AppURL}/login`, user)
-        .then((response) => {
-          localStorage.setItem("refresh", response.data.refreshToken);
-          localStorage.setItem("access", response.data.accessToken);
-          setAuthHeader(response.data.accessToken);
-          dispatch(logInAction());
-          dispatch(getUserProfile());
-          dispatch(getJobs());
-          navigate({ pathname: "/dashboard/" });
-        })
-        .catch((error) => {
-          let message = "";
-          if (error.response?.status === 401) {
-            message = error.response.data;
-          } else message = "Problem z Backend - zgłosić do Bartka :)";
-
-          setSnackbar({
-            children: message,
-            severity: "error",
-          });
-        });
+      await dispatch(loginAction(user));
+      await dispatch(getUserProfile());
+      await dispatch(getJira());
+      await dispatch(getJobs());
+      await dispatch(getStoreList());
+      navigate({ pathname: "/dashboard/" });
     },
   });
 

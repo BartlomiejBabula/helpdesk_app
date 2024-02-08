@@ -2,13 +2,13 @@ import { useState } from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { AlertProps } from "@mui/material/Alert";
 import { Report } from "./reportComponent";
-import { Dispatcher, useAppDispatch } from "../../../store/AppStore";
 import { Monitoring } from "./monitComponent";
-import { getJobs } from "../../../actions/UserActions";
 import SnackbarAlert from "../../../components/SnackbarAlert";
+import { useAppDispatch } from "../../../redux/AppStore";
+import { getJobs } from "../../../redux/jobs/getJobs";
 
 const HomePage = () => {
-  const dispatch: Dispatcher = useAppDispatch();
+  const dispatch = useAppDispatch();
   const [snackbar, setSnackbar] = useState<Pick<
     AlertProps,
     "children" | "severity"

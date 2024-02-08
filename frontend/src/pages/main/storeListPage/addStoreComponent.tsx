@@ -4,15 +4,11 @@ import Select from "@mui/material/Select";
 import { AlertProps } from "@mui/material/Alert";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { selectStoreList } from "../../../selectors/user";
-import { addStoreToStoreList } from "../../../actions/UserActions";
-import {
-  Dispatcher,
-  useAppDispatch,
-  useAppSelector,
-} from "../../../store/AppStore";
-import { StoreTypes } from "../../../types";
 import SnackbarAlert from "../../../components/SnackbarAlert";
+import { useAppDispatch, useAppSelector } from "../../../redux/AppStore";
+import { StoreType } from "../../../redux/types";
+import { storesSelector } from "../../../redux/stores/StoresSlice";
+import { addStore } from "../../../redux/stores/addStore";
 
 interface formikValues {
   storeNumber: string;
@@ -22,8 +18,8 @@ interface formikValues {
 }
 
 export const AddShop = () => {
-  const dispatch: Dispatcher = useAppDispatch();
-  let storeList: StoreTypes[] = useAppSelector(selectStoreList);
+  const dispatch = useAppDispatch();
+  const storeList = useAppSelector(storesSelector);
   const [snackbar, setSnackbar] = React.useState<Pick<
     AlertProps,
     "children" | "severity"
@@ -56,7 +52,7 @@ export const AddShop = () => {
         information: values.information && values.information,
       };
       let storeExist: boolean = false;
-      storeList.forEach((store: StoreTypes) => {
+      storeList.forEach((store: StoreType) => {
         if (store.storeNumber === newStore.storeNumber) {
           storeExist = true;
         }
@@ -67,7 +63,7 @@ export const AddShop = () => {
           severity: "error",
         });
       } else {
-        dispatch(addStoreToStoreList(newStore));
+        dispatch(addStore(newStore));
         resetForm();
         setSnackbar({
           children: "Utworzono sklep",

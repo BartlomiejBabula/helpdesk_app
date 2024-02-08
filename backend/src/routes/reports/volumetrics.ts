@@ -87,7 +87,7 @@ const automaticVolumetrics = schedule.scheduleJob("0 45 5 * * 6", async () => {
   const path = require("path");
   const fs = require("fs");
   child_process.exec(
-    `python3 /usr/src/app/src/scripts/Raport_wolumetryka.py ${dbUser} ${dbPassword} ${dbIP} ${dbPort} ${dbSID}`,
+    `python3 /usr/src/app/src/scripts/Raport_wolumetryka.py ${dbUser} ${dbPassword} ${dbIP} ${dbPort} ${dbSID} ${zabbixUrl} ${zabbixUser} ${zabbixPassword}`,
     function (err: any, stdout: any, stderr: any) {
       if (err) {
         console.log("child processes failed with error code: " + err);

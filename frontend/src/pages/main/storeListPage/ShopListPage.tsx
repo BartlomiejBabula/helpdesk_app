@@ -11,17 +11,17 @@ import {
 import { Box, Button, Typography } from "@mui/material";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { AlertProps } from "@mui/material/Alert";
-import { selectStoreList } from "../../../selectors/user";
 import { useSelector } from "react-redux";
-import { editStore } from "../../../actions/UserActions";
 import { AddShop } from "./addStoreComponent";
-import { StoreTypes } from "../../../types";
-import { Dispatcher, useAppDispatch } from "../../../store/AppStore";
 import SnackbarAlert from "../../../components/SnackbarAlert";
+import { useAppDispatch } from "../../../redux/AppStore";
+import { StoreType } from "../../../redux/types";
+import { storesSelector } from "../../../redux/stores/StoresSlice";
+import { editStore } from "../../../redux/stores/editStore";
 
 const ShopListPage = () => {
-  const dispatch: Dispatcher = useAppDispatch();
-  let storeList: StoreTypes[] = useSelector(selectStoreList);
+  const dispatch = useAppDispatch();
+  const storeList: StoreType[] = useSelector(storesSelector);
   const [addStore, setAddStore] = useState(false);
   const [snackbar, setSnackbar] = useState<Pick<
     AlertProps,
@@ -118,7 +118,7 @@ const ShopListPage = () => {
 
   const processRowUpdate = React.useCallback(
     async (editRow: GridRowModel) => {
-      let newStore: StoreTypes = {
+      let newStore: StoreType = {
         id: editRow.id,
         storeNumber: editRow.storeNumber,
         storeType: editRow.storeType,
