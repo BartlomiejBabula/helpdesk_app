@@ -12,7 +12,7 @@ import { getBlockedReports } from "../../../redux/reports/getBlockedReports";
 const raportList: { name: string; btt: string }[] = [
   { name: "RAPORT PORANNY", btt: "morning" },
   { name: "RAPORT WOLUMETRYKA", btt: "volumetrics" },
-  { name: "RAPORT JIRA SLA", btt: "jiraSLA" },
+  { name: "RAPORT JIRA SLA", btt: "sla" },
   { name: "TESTY SELENIUM", btt: "selenium" },
   { name: "LISTA SKLEPÓW", btt: "storeList" },
 ];

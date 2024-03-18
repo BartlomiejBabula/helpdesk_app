@@ -13,15 +13,7 @@ import {
 import { loginAction } from "../../redux/user/loginUser";
 import { getUserProfile } from "../../redux/user/getUserProfile";
 import { getJira } from "../../redux/jira/getJira";
-import {
-  jiraSelectorError,
-  jiraSelectorStatus,
-} from "../../redux/jira/JiraSlice";
 import { getJobs } from "../../redux/jobs/getJobs";
-import {
-  jobsSelectorError,
-  jobsSelectorStatus,
-} from "../../redux/jobs/JobsSlice";
 import { getStoreList } from "../../redux/stores/getStoreList";
 
 interface LoginValues {
@@ -39,40 +31,6 @@ export const LoginComponent = () => {
 
   const selectUserError = useAppSelector(userSelectorError);
   const selectUserStatus = useAppSelector(userSelectorStatus);
-
-  const selectJiraError = useAppSelector(jiraSelectorError);
-  const selectJiraStatus = useAppSelector(jiraSelectorStatus);
-
-  const selectJobsError = useAppSelector(jobsSelectorError);
-  const selectJobsStatus = useAppSelector(jobsSelectorStatus);
-
-  useEffect(() => {
-    if (selectUserError !== null && selectUserStatus === "failed") {
-      setSnackbar({
-        children: selectUserError,
-        severity: "error",
-      });
-    }
-    if (selectJiraError !== null && selectJiraStatus === "failed") {
-      setSnackbar({
-        children: selectJiraError,
-        severity: "error",
-      });
-    }
-    if (selectJobsError !== null && selectJobsStatus === "failed") {
-      setSnackbar({
-        children: selectJobsError,
-        severity: "error",
-      });
-    }
-  }, [
-    selectUserError,
-    selectUserStatus,
-    selectJiraError,
-    selectJiraStatus,
-    selectJobsError,
-    selectJobsStatus,
-  ]);
 
   const formik = useFormik({
     validationSchema: yup.object().shape({
@@ -96,11 +54,11 @@ export const LoginComponent = () => {
     onSubmit: async (values: LoginValues) => {
       const user = { email: values.email, password: values.password };
       await dispatch(loginAction(user));
-      await dispatch(getUserProfile());
-      await dispatch(getJira());
-      await dispatch(getJobs());
-      await dispatch(getStoreList());
-      navigate({ pathname: "/dashboard/" });
+      // await dispatch(getUserProfile());
+      // await dispatch(getJira());
+      // await dispatch(getJobs());
+      // await dispatch(getStoreList());
+      // navigate({ pathname: "/dashboard/" });
     },
   });
 
@@ -109,9 +67,23 @@ export const LoginComponent = () => {
   };
 
   useEffect(() => {
-    if (localStorage.getItem("refresh") !== null)
+    if (localStorage.getItem("refresh") !== null) {
       navigate({ pathname: "/dashboard/" });
-  }, [navigate]);
+    }
+    if (selectUserError !== null) {
+      setSnackbar({
+        children: selectUserError,
+        severity: "error",
+      });
+    }
+    if (selectUserStatus === "succeeded") {
+      dispatch(getUserProfile());
+      dispatch(getJira());
+      dispatch(getJobs());
+      dispatch(getStoreList());
+      navigate({ pathname: "/dashboard/" });
+    }
+  }, [navigate, dispatch, selectUserStatus, selectUserError]);
 
   return (
     <>
@@ -153,6 +125,7 @@ export const LoginComponent = () => {
           </Stack>
           <Button
             size='large'
+            disabled={selectUserStatus === "loading" && true}
             sx={{
               width: 200,
               marginTop: 8,

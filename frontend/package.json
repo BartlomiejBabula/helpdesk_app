@@ -1,5 +1,5 @@
 {
-  "name": "helpdesk_app",
+  "name": "helpdesk-app-frontend",
   "version": "1.0.0",
   "private": true,
   "dependencies": {

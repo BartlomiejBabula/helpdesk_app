@@ -14,14 +14,11 @@ import {
   ListItemIcon,
   ListItemButton,
 } from "@mui/material";
-import { userSlice } from "../../../redux/user/UserSlice";
-import api from "../../../api/api";
+import { logOut } from "../../../redux/user/UserSlice";
 import { useState } from "react";
 import { useAppDispatch } from "../../../redux/AppStore";
-import { storesSlice } from "../../../redux/stores/StoresSlice";
-import { jiraSlice } from "../../../redux/jira/JiraSlice";
-import { jobsSlice } from "../../../redux/jobs/JobsSlice";
-import { reportsSlice } from "../../../redux/reports/ReportsSlice";
+import { AppURL } from "../../../api/api";
+import axios from "axios";
 
 interface Values {
   tab: string;
@@ -33,13 +30,12 @@ export const LeftMenu = () => {
   const dispatch = useAppDispatch();
 
   const handleLogout = () => {
-    const refreshToken = { refresh: localStorage.refresh };
-    api.post("/logout", refreshToken);
-    dispatch(userSlice.actions.logOut());
-    dispatch(storesSlice.actions.logOut());
-    dispatch(jiraSlice.actions.logOut());
-    dispatch(jobsSlice.actions.logOut());
-    dispatch(reportsSlice.actions.logOut());
+    axios.get(`${AppURL}/auth/logout`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.refresh}`,
+      },
+    });
+    dispatch(logOut());
     localStorage.removeItem("refresh");
     localStorage.removeItem("access");
     navigate({ pathname: "/" }, { replace: true });

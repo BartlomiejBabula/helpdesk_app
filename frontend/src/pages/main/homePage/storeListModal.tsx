@@ -63,7 +63,7 @@ export const ModalStoreList = ({
       };
 
       await api
-        .post(`/store-list`, req)
+        .post(`stores/store-list`, req)
         .then((response) => {
           const element = document.createElement("a");
           const file = new Blob([response.data.join("\n")], {

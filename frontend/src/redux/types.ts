@@ -5,37 +5,21 @@ export interface UserType {
 }
 
 export interface JobType {
-  CFG_ORDER_ID: any;
-  COMMENT_MESSAGE: any;
-  DOC_ID: number;
-  DOC_SEMAFOR_VALUE: any;
-  ERROR_MESSAGE: string;
-  EXEC_NO_TRIES: number;
-  EXEC_STATUS: any;
-  EXEC_TM_START: string;
-  EXEC_WLS_NAME: string;
-  ID: number;
-  INFO_MESSAGE: string;
-  NO_TRIES: number;
-  OPERATION_CODE: any;
-  ORDERED: string;
-  ORDER_ID: string;
-  ORG_ID: number;
-  PARENT_ID: any;
-  PARENT_ORDER_ID: any;
-  PRIORITY: number;
-  PROGRESS: number;
-  QUEUE: string;
-  STATUS: string;
-  STORE_NUMBER: string;
-  TM_CREATE: string;
-  TM_END: any;
-  TM_RESTART: string;
-  TM_START: string;
-  VERSION: number;
   id: number;
-  TM_FORMAT_RESTART?: Date;
+  jobId: number;
+  storeNumber: string;
+  queue: string;
+  status: string;
+  docId: null | number;
+  parentId: null | number;
+  ordered: string;
+  tmStart: string;
+  tmCreate: string;
+  tmRestart: string;
+  infoMessage: string | null;
+  errorMessage: string | null;
   TM_FORMAT_START?: Date;
+  TM_FORMAT_RESTART?: Date;
 }
 
 export interface StoreType {
@@ -49,8 +33,9 @@ export interface StoreType {
 }
 
 export interface JiraType {
-  error?: null | string;
-  status?: "loading" | "succeeded" | "failed" | null;
+  id?: number;
   jiraKey: string;
   auto: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

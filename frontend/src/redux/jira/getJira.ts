@@ -18,8 +18,11 @@ export const getJira = createAsyncThunk<
   async (_, { rejectWithValue }) => {
     const jira = await api
       .get(`/jira`)
-      .then((response3) => {
-        let jira: JiraType = response3.data[0];
+      .then((response) => {
+        let jira: JiraType = { auto: false, jiraKey: "" };
+        if (response.data !== undefined) {
+          jira = response.data;
+        }
         return jira;
       })
       .catch((error) => {

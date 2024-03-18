@@ -17,7 +17,7 @@ export const getJobs = createAsyncThunk<
 
   async (_, { rejectWithValue }) => {
     const jobs = await api
-      .get(`/job`)
+      .get(`/jobs`)
       .then((response) => {
         let jobList: JobType[] = response.data.map(
           (job: JobType, i: number) => {

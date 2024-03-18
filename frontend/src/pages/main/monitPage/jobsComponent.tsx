@@ -24,8 +24,8 @@ export const JobsComponent = () => {
   const handleCloseModal = () => setModalOpen(false);
 
   let formatedJobs = jobs.map((job: JobType) => {
-    let TM_FORMAT_START = new Date(job.TM_START);
-    let TM_FORMAT_RESTART = new Date(job.TM_RESTART);
+    let TM_FORMAT_START = new Date(job.tmStart);
+    let TM_FORMAT_RESTART = new Date(job.tmRestart);
     job = { ...job, TM_FORMAT_START, TM_FORMAT_RESTART };
     return job;
   });
@@ -38,8 +38,8 @@ export const JobsComponent = () => {
       width: 80,
       renderCell: (item: any) => {
         return (
-          item.row.QUEUE === "GenerateReportQueue" &&
-          item.row.STATUS === "B" && (
+          item.row.queue === "GenerateReportQueue" &&
+          item.row.status === "B" && (
             <>
               <GridActionsCellItem
                 icon={
@@ -70,15 +70,15 @@ export const JobsComponent = () => {
         );
       },
     },
-    { field: "ID", headerName: "JobID", width: 110 },
-    { field: "STORE_NUMBER", headerName: "Sklep", width: 60 },
+    { field: "jobId", headerName: "JobID", width: 110 },
+    { field: "storeNumber", headerName: "Sklep", width: 60 },
     {
-      field: "QUEUE",
+      field: "queue",
       headerName: "Typ operacji",
       width: 200,
     },
     {
-      field: "STATUS",
+      field: "status",
       headerName: "Status",
       width: 65,
     },
@@ -98,13 +98,13 @@ export const JobsComponent = () => {
       type: "date",
       renderCell: (params) => formatDate(params.row?.TM_FORMAT_RESTART),
     },
-    { field: "DOC_ID", headerName: "DOC_ID", width: 110 },
-    { field: "ORDERED", headerName: "Zlecony przez", width: 200 },
+    { field: "docId", headerName: "DOC_ID", width: 110 },
+    { field: "ordered", headerName: "Zlecony przez", width: 200 },
     {
-      field: "ERROR_MESSAGE",
+      field: "errorMessage",
       headerName: "Error",
       width: 1200,
-      renderCell: (params) => formatErrorMessage(params.row?.ERROR_MESSAGE),
+      renderCell: (params) => formatErrorMessage(params.row?.errorMessage),
     },
   ];
 

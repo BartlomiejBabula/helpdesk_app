@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../AppStore";
 import { loginAction } from "./loginUser";
 import { getUserProfile } from "./getUserProfile";
@@ -21,11 +21,7 @@ const initialState: initialStateType = {
 export const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {
-    logOut: (state) => {
-      return initialState;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     //login
     builder.addCase(loginAction.pending, (state) => {
@@ -57,6 +53,9 @@ export const userSlice = createSlice({
       state.status = "failed";
       if (payload) state.error = payload.message;
     });
+
+    //logout
+    builder.addCase(logOut, () => initialState);
   },
 });
 
@@ -65,3 +64,5 @@ export const userSelectorStatus = (state: RootState) => state.user.status;
 export const userSelectorError = (state: RootState) => state.user.error;
 
 export default userSlice.reducer;
+
+export const logOut = createAction("logout");

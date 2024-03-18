@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../AppStore";
 import { getJira } from "./getJira";
 import { editJira } from "./editJira";
+import { logOut } from "../user/UserSlice";
 
 type initialStateType = {
   error: null | string;
@@ -18,11 +19,7 @@ const initialState: initialStateType = {
 export const jiraSlice = createSlice({
   name: "jira",
   initialState,
-  reducers: {
-    logOut: (state) => {
-      return initialState;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     //Get
     builder.addCase(getJira.pending, (state) => {
@@ -53,6 +50,9 @@ export const jiraSlice = createSlice({
       state.status = "failed";
       if (payload) state.error = payload.message;
     });
+
+    //logout
+    builder.addCase(logOut, () => initialState);
   },
 });
 

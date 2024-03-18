@@ -4,6 +4,7 @@ import { StoreType } from "../types";
 import { getStoreList } from "./getStoreList";
 import { addStore } from "./addStore";
 import { editStore } from "./editStore";
+import { logOut } from "../user/UserSlice";
 
 type initialStateType = {
   error: null | string;
@@ -20,11 +21,7 @@ const initialState: initialStateType = {
 export const storesSlice = createSlice({
   name: "stores",
   initialState,
-  reducers: {
-    logOut: (state) => {
-      return initialState;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     //GetStoreList
     builder.addCase(getStoreList.pending, (state) => {
@@ -69,6 +66,9 @@ export const storesSlice = createSlice({
       state.status = "failed";
       if (payload) state.error = payload.message;
     });
+
+    //logout
+    builder.addCase(logOut, () => initialState);
   },
 });
 

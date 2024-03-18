@@ -31,8 +31,8 @@ export const JobsWithErrorComponent = () => {
       width: 80,
       renderCell: (item: any) => {
         return (
-          item.row.QUEUE === "GenerateReportQueue" &&
-          item.row.STATUS === "B" && (
+          item.row.queue === "GenerateReportQueue" &&
+          item.row.status === "B" && (
             <>
               <GridActionsCellItem
                 icon={
@@ -63,15 +63,15 @@ export const JobsWithErrorComponent = () => {
         );
       },
     },
-    { field: "ID", headerName: "JobID", width: 110 },
-    { field: "STORE_NUMBER", headerName: "Sklep", width: 60 },
+    { field: "jobId", headerName: "JobID", width: 110 },
+    { field: "storeNumber", headerName: "Sklep", width: 60 },
     {
-      field: "QUEUE",
+      field: "queue",
       headerName: "Typ operacji",
       width: 200,
     },
     {
-      field: "STATUS",
+      field: "status",
       headerName: "Status",
       width: 65,
     },
@@ -81,7 +81,7 @@ export const JobsWithErrorComponent = () => {
       width: 200,
       headerClassName: "data-grid-header",
       type: "date",
-      renderCell: (params) => formatDate(params.row?.TM_START),
+      renderCell: (params) => formatDate(params.row?.TM_FORMAT_START),
     },
     {
       field: "TM_FORMAT_RESTART",
@@ -89,20 +89,20 @@ export const JobsWithErrorComponent = () => {
       width: 200,
       headerClassName: "data-grid-header",
       type: "date",
-      renderCell: (params) => formatDate(params.row?.TM_RESTART),
+      renderCell: (params) => formatDate(params.row?.TM_FORMAT_RESTART),
     },
     {
-      field: "ERROR_MESSAGE",
+      field: "errorMessage",
       headerName: "Error",
       width: 1200,
-      renderCell: (params) => formatErrorMessage(params.row?.ERROR_MESSAGE),
+      renderCell: (params) => formatErrorMessage(params.row?.errorMessage),
     },
   ];
 
-  let filter = jobs.filter((job: JobType) => job.ERROR_MESSAGE !== null);
+  let filter = jobs.filter((job: JobType) => job.errorMessage !== null);
   let formatedJobs = filter.map((job: JobType) => {
-    let TM_FORMAT_START = new Date(job.TM_START);
-    let TM_FORMAT_RESTART = new Date(job.TM_RESTART);
+    let TM_FORMAT_START = new Date(job.tmStart);
+    let TM_FORMAT_RESTART = new Date(job.tmRestart);
     job = { ...job, TM_FORMAT_START, TM_FORMAT_RESTART };
     return job;
   });
