@@ -34,13 +34,14 @@ RUN pip install --upgrade robotframework-seleniumlibrary
 RUN pip install selenium==4.9.1
 RUN pip install robotframework-browser
 RUN pip install requests
+RUN wget -qO- https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y nodejs
 RUN rfbrowser init
 RUN apt-get -y install firefox
 RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.25.0/geckodriver-v0.25.0-linux64.tar.gz
 
-# Update node
-RUN wget -qO- https://deb.nodesource.com/setup_18.x | bash -
-RUN apt-get install -y nodejs
+# Install NestJS
+RUN npm i -g @nestjs/cli
 
 # Install node_modules
 RUN npm install
@@ -55,11 +56,10 @@ RUN ldconfig
 #CLEAR
 RUN apt autoremove -y
 
-COPY . .
-
-RUN npm run build
+# RUN nest build
 RUN ldconfig
 
+COPY . .
 
 
 

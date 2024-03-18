@@ -23,10 +23,10 @@ const Dashboard = () => {
       if (refreshToken !== null && refreshToken !== undefined) {
         setAuthHeader(refreshToken);
         api
-          .get("/refresh-token")
+          .get("/auth/refresh")
           .then((response) => {
             saveToken(response);
-            setAuthHeader(response.data.token);
+            setAuthHeader(response.data.accessToken);
             dispatch(getBlockedReports());
             dispatch(getJobs());
             dispatch(getStoreList());

@@ -22,7 +22,7 @@ export const loginAction = createAsyncThunk<
 
   async (loginUser: LoginUserType, { rejectWithValue }) => {
     const response = await axios
-      .post(`${AppURL}/login`, loginUser)
+      .post(`${AppURL}/auth/login`, loginUser)
       .then((response) => {
         setAuthHeader(response.data.accessToken);
         saveToken(response);
@@ -30,13 +30,18 @@ export const loginAction = createAsyncThunk<
         return true;
       })
       .catch((error) => {
-        let message = "";
-        if (error.response?.status === 401) {
-          message = error.response.data;
-        } else message = "Problem z Backend - zgłosić do Bartka :)";
-        return rejectWithValue({
-          message: message,
-        });
+        if (
+          error.response.data.message === null ||
+          error.response.data.message === undefined
+        ) {
+          return rejectWithValue({
+            message: "Błąd z backend - zgłosić do Bartka :)",
+          });
+        } else {
+          return rejectWithValue({
+            message: error.response.data.message,
+          });
+        }
       });
     return response;
   }

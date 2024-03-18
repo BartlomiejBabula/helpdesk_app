@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../AppStore";
 import { getBlockedReports } from "./getBlockedReports";
+import { logOut } from "../user/UserSlice";
 
 type initialStateType = {
   error: null | string;
@@ -17,11 +18,7 @@ const initialState: initialStateType = {
 export const reportsSlice = createSlice({
   name: "reports",
   initialState,
-  reducers: {
-    logOut: (state) => {
-      return initialState;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getBlockedReports.pending, (state) => {
       state.status = "loading";
@@ -35,6 +32,9 @@ export const reportsSlice = createSlice({
       state.status = "failed";
       if (payload) state.error = payload.message;
     });
+
+    //logout
+    builder.addCase(logOut, () => initialState);
   },
 });
 

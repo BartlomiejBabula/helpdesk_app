@@ -1,10 +1,10 @@
 import { Box, Typography, Button, Fade, Modal, Backdrop } from "@mui/material";
-import api from "../api/api";
 import { useState } from "react";
 import { AlertProps } from "@mui/material/Alert";
 import SnackbarAlert from "./SnackbarAlert";
 import { useAppDispatch } from "../redux/AppStore";
-import { getJobs } from "../redux/jobs/getJobs";
+import { endJob } from "../redux/jobs/endJob";
+import { restartJob } from "../redux/jobs/restartJob";
 
 interface JobModalType {
   row: any;
@@ -35,44 +35,12 @@ export const JobModal = ({
   };
 
   const handleRestartJob = (row: any) => {
-    api
-      .post("/job/restart", { id: row.ID })
-      .then(() => {
-        dispatch(getJobs());
-        handleCloseModal();
-        setSnackbar({
-          children: "Zrestartowano zadanie",
-          severity: "success",
-        });
-      })
-      .catch((error: Error) => {
-        console.log(error);
-        setSnackbar({
-          children: "Wystąpił błąd w operacji",
-          severity: "error",
-        });
-      });
+    dispatch(restartJob(row));
     handleCloseModal();
   };
 
   const handleEndJob = (row: any) => {
-    api
-      .post("/job/end", { id: row.ID })
-      .then(() => {
-        dispatch(getJobs());
-        handleCloseModal();
-        setSnackbar({
-          children: "Zakończono zadanie",
-          severity: "success",
-        });
-      })
-      .catch((error: Error) => {
-        console.log(error);
-        setSnackbar({
-          children: "Wystąpił błąd w operacji",
-          severity: "error",
-        });
-      });
+    dispatch(endJob(row));
     handleCloseModal();
   };
 

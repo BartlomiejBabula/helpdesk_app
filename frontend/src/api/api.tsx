@@ -39,12 +39,12 @@ function createAxiosResponseInterceptor() {
       const refreshToken = localStorage.getItem("refresh");
       setAuthHeader(refreshToken);
       return axiosInstance
-        .get("/refresh-token")
+        .get("/auth/refresh")
         .then((response) => {
           saveToken(response);
-          setAuthHeader(response.data.token);
+          setAuthHeader(response.data.accessToken);
           error.response.config.headers["Authorization"] =
-            "Bearer " + response.data.token;
+            "Bearer " + response.data.accessToken;
           return axiosInstance(error.response.config);
         })
         .catch((error) => {

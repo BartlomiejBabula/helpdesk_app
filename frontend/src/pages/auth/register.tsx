@@ -52,7 +52,7 @@ export const RegisterComponent = () => {
         password: values.password,
       };
       axios
-        .post(`${AppURL}/users`, newUser)
+        .post(`${AppURL}/auth/register`, newUser)
         .then((response) => {
           setSnackbar({
             children: "Konto zostało utworzone",
@@ -62,7 +62,7 @@ export const RegisterComponent = () => {
         })
         .catch((error) => {
           setSnackbar({
-            children: error.response.data,
+            children: error.response.data.message,
             severity: "error",
           });
         });

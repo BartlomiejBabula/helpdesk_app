@@ -1,4 +1,4 @@
-version: "3.6"
+version: '3.6'
 
 services:
   mysqldb:
@@ -31,7 +31,7 @@ services:
       - DB_PORT=$MYSQLDB_DOCKER_PORT
     stdin_open: true
     tty: true
-    #command: npm run dev
-    command: npm run start
+    command: npm run start:prod
+    #command: npm run start:dev
 volumes:
   db:
