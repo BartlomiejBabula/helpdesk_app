@@ -139,7 +139,7 @@ export class JiraService {
                                             issueFound === false) ||
                                           (element.fields.status.id === '6' &&
                                             element.fields.parent.key ===
-                                              jira[0].jiraKey &&
+                                              jira.jiraKey &&
                                             issueFound === false)
                                         ) {
                                           issueFound = true;
@@ -219,7 +219,7 @@ export class JiraService {
                                                 id: '10690',
                                               },
                                               parent: {
-                                                key: jira[0].jiraKey,
+                                                key: jira.jiraKey,
                                               },
                                               summary: `${key} : ${store} : ${topic}`,
                                               description: IssuesBody,
