@@ -23,7 +23,7 @@ zabbixPassword = str(sys.argv[8])
 
 today = date.today()
 dir_path = os.path.dirname(os.path.realpath(__file__))
-wb = load_workbook(rf'/usr/src/app/src/scripts/RAPORT BAZY.xlsx')
+wb = load_workbook(rf'/usr/src/app/src/reports/report/volumetrics/RAPORT BAZY.xlsx')
 sheet = wb['Obliczenia']
 sheet2 = wb['Tabela']
 cx_Oracle.init_oracle_client(lib_dir=r"/usr/src/app/src/oracle/instantclient_19_19")
