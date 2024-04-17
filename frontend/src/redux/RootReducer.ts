@@ -4,6 +4,7 @@ import jiraSlice from "./jira/JiraSlice";
 import jobsSlice from "./jobs/JobsSlice";
 import reportsSlice from "./reports/ReportsSlice";
 import storesSlice from "./stores/StoresSlice";
+import gicaSlice from "./gica/GicaSlice";
 
 export const rootReducer = combineSlices({
   user: userSlice,
@@ -11,4 +12,5 @@ export const rootReducer = combineSlices({
   jobs: jobsSlice,
   reports: reportsSlice,
   stores: storesSlice,
+  gica: gicaSlice,
 });

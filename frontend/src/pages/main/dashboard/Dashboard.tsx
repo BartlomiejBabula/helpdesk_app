@@ -4,7 +4,8 @@ import MonitPage from "../monitPage/MonitPage";
 import HomePage from "../homePage/HomePage";
 import { Card, Box } from "@mui/material";
 import { LeftMenu } from "./leftMenuComponent";
-import JiraPage from "../jiraPage/jiraPage";
+import JiraPage from "../jiraPage/JiraPage";
+import GicaPage from "../gica/GicaPage";
 import RedirectionPage from "../redirectionPage/RedirectionPage";
 import { useEffect } from "react";
 import api, { destroyToken, saveToken, setAuthHeader } from "../../../api/api";
@@ -55,6 +56,7 @@ const Dashboard = () => {
       <LeftMenu />
       <Box sx={{ width: "100%" }}>
         <Routes>
+          <Route path='/gica' element={<GicaPage />} />
           <Route path='/redirection' element={<RedirectionPage />} />
           <Route path='/jira' element={<JiraPage />} />
           <Route path='/shoplist' element={<ShopListPage />} />

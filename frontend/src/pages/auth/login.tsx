@@ -15,6 +15,7 @@ import { getUserProfile } from "../../redux/user/getUserProfile";
 import { getJira } from "../../redux/jira/getJira";
 import { getJobs } from "../../redux/jobs/getJobs";
 import { getStoreList } from "../../redux/stores/getStoreList";
+import { getGica } from "../../redux/gica/getGica";
 
 interface LoginValues {
   email: string;
@@ -54,11 +55,6 @@ export const LoginComponent = () => {
     onSubmit: async (values: LoginValues) => {
       const user = { email: values.email, password: values.password };
       await dispatch(loginAction(user));
-      // await dispatch(getUserProfile());
-      // await dispatch(getJira());
-      // await dispatch(getJobs());
-      // await dispatch(getStoreList());
-      // navigate({ pathname: "/dashboard/" });
     },
   });
 
@@ -81,6 +77,7 @@ export const LoginComponent = () => {
       dispatch(getJira());
       dispatch(getJobs());
       dispatch(getStoreList());
+      dispatch(getGica());
       navigate({ pathname: "/dashboard/" });
     }
   }, [navigate, dispatch, selectUserStatus, selectUserError]);
