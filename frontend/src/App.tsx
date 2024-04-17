@@ -11,6 +11,7 @@ import { getJobs } from "./redux/jobs/getJobs";
 import { getJira } from "./redux/jira/getJira";
 import { getUserProfile } from "./redux/user/getUserProfile";
 import { getStoreList } from "./redux/stores/getStoreList";
+import { getGica } from "./redux/gica/getGica";
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -20,6 +21,7 @@ const App = () => {
   useEffect(() => {
     if (window.location.pathname !== "/" && refreshToken !== null) {
       dispatch(getUserProfile());
+      dispatch(getGica());
       dispatch(getJira());
       dispatch(getJobs());
       dispatch(getStoreList());

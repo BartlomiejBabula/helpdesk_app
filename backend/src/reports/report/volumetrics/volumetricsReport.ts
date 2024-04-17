@@ -45,7 +45,7 @@ export async function generateVolumetrics(email: string) {
           html: `<p>Cześć,</br>
             </br>
 w załączniku przesyłam pliki z danymi do raportu Wolumetryki,</br>
-do wszystkich potrzebnych danych należy pobrać wykres pamięci z Zabbix, zgodnie z artykułem na wiki.</br>
+do wszystkich potrzebnych danych należy pobrać wykres pamięci z Enterprise Managera, zgodnie z artykułem na wiki.</br>
 </br>
 Artykuł na wiki:</br>
 https://wiki.skg.pl/wiki/index.php/Raport_-_Wolumetryka_serwer%C3%B3w</p>`,

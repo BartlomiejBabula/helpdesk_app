@@ -4,6 +4,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import HomeIcon from "@mui/icons-material/Home";
 import ShortcutIcon from "@mui/icons-material/Shortcut";
+import ChartIcon from "@mui/icons-material/BarChart";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -57,6 +58,9 @@ export const LeftMenu = () => {
         break;
       case "redirection":
         navigate({ pathname: "./redirection" });
+        break;
+      case "gica":
+        navigate({ pathname: "./gica" });
         break;
       default:
         break;
@@ -151,6 +155,30 @@ export const LeftMenu = () => {
               <MonitIcon sx={{ fontSize: 20 }} />
             </ListItemIcon>
             <ListItemText primary='Monitoring' />
+          </ListItemButton>
+        </ListItem>
+        <ListItem
+          disablePadding
+          sx={{
+            backgroundImage:
+              window.location.pathname === "/dashboard/gica"
+                ? "linear-gradient(to bottom right, #4fa8e0, #457b9d)"
+                : "none",
+            borderRadius: 1,
+            color:
+              window.location.pathname === "/dashboard/gica" ? "white" : "#ccc",
+          }}
+        >
+          <ListItemButton
+            onClick={() => {
+              changeTab("gica");
+              setTab("gica");
+            }}
+          >
+            <ListItemIcon>
+              <ChartIcon sx={{ fontSize: 20 }} />
+            </ListItemIcon>
+            <ListItemText primary='GICA' />
           </ListItemButton>
         </ListItem>
         <ListItem

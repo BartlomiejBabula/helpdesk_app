@@ -46,3 +46,20 @@ export function formatErrorMessage(error: string | null) {
   });
   return errorMessage;
 }
+
+export function formatDateWithoutHours(date: Date) {
+  if (date === new Date(0)) {
+    return "";
+  } else {
+    let d = new Date(date),
+      month = "" + (d.getMonth() + 1),
+      day = "" + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
+
+    let formattedDate = day + "." + month + "." + year;
+    return formattedDate;
+  }
+}

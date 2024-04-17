@@ -10,7 +10,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { JobsModule } from './jobs/jobs.module';
 import { StoresModule } from './stores/stores.module';
 import { ReportsModule } from './reports/reports.module';
-
+import { GicaModule } from './gica/gica.module';
 
 @Module({
   imports: [
@@ -35,6 +35,7 @@ import { ReportsModule } from './reports/reports.module';
     JobsModule,
     StoresModule,
     ReportsModule,
+    GicaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

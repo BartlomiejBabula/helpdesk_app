@@ -39,3 +39,29 @@ export interface JiraType {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export interface ApiGicaType {
+  date: string;
+  ReceiveStart: string;
+  ReceiveEnd: string;
+  ReceiveTimeInMinutes: number;
+  NetworkStoreStart: string;
+  NetworkStoreEnd: string;
+  NetworkStoreTimeInMinutes: number;
+  HypermarketStart: string;
+  HypermarketEnd: string;
+  HypermarketTimeInMinutes: number;
+}
+
+export interface ChartGicaType {
+  date: string;
+  ReceiveStart?: Date;
+  ReceiveEnd?: Date;
+  ReceiveTimeInMinutes: number;
+  NetworkStoreStart?: Date;
+  NetworkStoreEnd?: Date;
+  NetworkStoreTimeInMinutes: number;
+  HypermarketStart?: Date;
+  HypermarketEnd?: Date;
+  HypermarketTimeInMinutes: number;
+}

@@ -44,15 +44,15 @@ export class JiraService {
     let date: Date | string = new Date();
     date.setTime(Date.now());
     date = date.toISOString();
-    console.log('automatic jira register');
+    // console.log('automatic jira register');
     let jira = await this.jiraRepository.findOne({ where: { id: 1 } });
     if (jira && jira.auto === true) {
       imaps
         .connect(configImap)
         .then((connection: any) => {
-          console.log('Connection - email');
+          // console.log('Connection - email');
           return connection.openBox('INBOX').then(() => {
-            console.log('Open INBOX');
+            // console.log('Open INBOX');
             let searchCriteria = [
               ['SINCE', date],
               'UNSEEN',
@@ -135,12 +135,13 @@ export class JiraService {
                                       (element: any) => {
                                         if (
                                           (element.fields.status.id ===
-                                            '10003' &&
-                                            issueFound === false) ||
-                                          (element.fields.status.id === '6' &&
-                                            element.fields.parent.key ===
-                                              jira.jiraKey &&
-                                            issueFound === false)
+                                            '10003' ||
+                                            element.fields.status.id === '6' ||
+                                            element.fields.status.id === '4' ||
+                                            element.fields.status.id === '1') &&
+                                          element.fields.parent.key ===
+                                            jira.jiraKey &&
+                                          issueFound === false
                                         ) {
                                           issueFound = true;
                                           let startIndexBody =
@@ -180,9 +181,9 @@ export class JiraService {
                                                     );
                                                     reject(err);
                                                   }
-                                                  console.log(
-                                                    'Delete readed email',
-                                                  );
+                                                  // console.log(
+                                                  //   'Delete readed email',
+                                                  // );
                                                   resolve(); //Final resolve
                                                 },
                                               );
@@ -252,9 +253,9 @@ export class JiraService {
                                                 );
                                                 reject(err);
                                               }
-                                              console.log(
-                                                'Delete readed email',
-                                              );
+                                              // console.log(
+                                              //   'Delete readed email',
+                                              // );
                                               resolve(); //Final resolve
                                             },
                                           );
@@ -282,9 +283,9 @@ export class JiraService {
                     if (err) {
                       console.log(err);
                     }
-                    console.log('Close INBOX');
+                    // console.log('Close INBOX');
                   });
-                  console.log('Connection close - email');
+                  // console.log('Connection close - email');
                   connection.end();
                 });
               })

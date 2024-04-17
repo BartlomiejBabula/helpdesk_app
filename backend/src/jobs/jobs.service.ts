@@ -47,7 +47,6 @@ export class JobsService {
   async automaticUpdateJobs() {
     await this.jobsRepository.clear();
     try {
-      console.log('automatic jobs update');
       let conn = await oracledb.getConnection(samboDbConfig);
       const result = await conn.execute(
         "select s.store_number, j.* from s_jobs j join es_stores s on j.org_id = s.org_id where j.queue like '%Queue' and j.status in ('P','R','B')",
