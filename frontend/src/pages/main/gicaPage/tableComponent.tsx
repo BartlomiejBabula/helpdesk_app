@@ -1,5 +1,8 @@
 import { Box, Typography, Paper } from "@mui/material";
-import { formatDate } from "./../../../function/formatingDataFunction";
+import {
+  formatDate,
+  valueFormatter,
+} from "../../../function/formatingDataFunction";
 import FormattedTable from "../../../components/FormattedTable";
 import { ChartGicaType } from "../../../redux/types";
 
@@ -16,8 +19,6 @@ interface TableComponentType {
 }
 
 const TableComponent = ({ selectedData, GICA }: TableComponentType) => {
-  const valueFormatter = (value: number | null) => `${value} min`;
-
   return (
     <Box
       sx={{

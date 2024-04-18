@@ -63,3 +63,9 @@ export function formatDateWithoutHours(date: Date) {
     return formattedDate;
   }
 }
+
+export function valueFormatter(value: number | any) {
+  const int = Math.floor(value);
+  const decimal = value - int;
+  return `${int} min ${Math.round(decimal * 60)} sec`;
+}

@@ -1,6 +1,9 @@
 import { Button, Typography, Paper } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
-import { formatDate } from "../../../function/formatingDataFunction";
+import {
+  formatDate,
+  valueFormatter,
+} from "../../../function/formatingDataFunction";
 import { ChartGicaType } from "../../../redux/types";
 
 interface ChartComponentType {
@@ -9,7 +12,6 @@ interface ChartComponentType {
 }
 
 const ChartComponent = ({ GICA, setSelectedData }: ChartComponentType) => {
-  const valueFormatter = (value: number | null) => `${value} min`;
   const handleGenerateGicaRaport = () => {
     let downloadData = [
       "Dzien;Odbior danych z GICA start;Odbior danych z GICA end;Sklepy sieciowe i franczyzowe start;Sklepy sieciowe i franczyzowe end;Hipermarkety start;Hipermarkety end;",
