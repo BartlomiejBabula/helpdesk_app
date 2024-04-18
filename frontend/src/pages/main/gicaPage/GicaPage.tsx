@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
-import { formatDateWithoutHours } from "./../../../function/formatingDataFunction";
+import { formatDateWithoutHours } from "../../../function/formatingDataFunction";
 import { useSelector } from "react-redux";
 import { gicaSelector } from "../../../redux/gica/GicaSlice";
 import { ApiGicaType, ChartGicaType } from "../../../redux/types";

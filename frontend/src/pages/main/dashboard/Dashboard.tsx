@@ -5,7 +5,7 @@ import HomePage from "../homePage/HomePage";
 import { Card, Box } from "@mui/material";
 import { LeftMenu } from "./leftMenuComponent";
 import JiraPage from "../jiraPage/JiraPage";
-import GicaPage from "../gica/GicaPage";
+import GicaPage from "../gicaPage/GicaPage";
 import RedirectionPage from "../redirectionPage/RedirectionPage";
 import { useEffect } from "react";
 import api, { destroyToken, saveToken, setAuthHeader } from "../../../api/api";
@@ -13,7 +13,6 @@ import { useAppDispatch } from "../../../redux/AppStore";
 import { getJobs } from "../../../redux/jobs/getJobs";
 import { getBlockedReports } from "../../../redux/reports/getBlockedReports";
 import { getStoreList } from "../../../redux/stores/getStoreList";
-// import SnackbarZabbix from "../../../components/SnackbarZabbix";
 
 const Dashboard = () => {
   const dispatch = useAppDispatch();
@@ -63,7 +62,6 @@ const Dashboard = () => {
           <Route path='/monit' element={<MonitPage />} />
           <Route path='/' element={<HomePage />} />
         </Routes>
-        {/* <SnackbarZabbix /> */}
       </Box>
     </Card>
   );
