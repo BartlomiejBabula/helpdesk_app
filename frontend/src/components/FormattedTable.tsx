@@ -1,17 +1,20 @@
 import { Box, Typography, Divider, Stack } from "@mui/material";
+import { SxProps } from "@mui/material/styles";
 
 interface TableType {
   titleColumnsArray: string[];
   dataArray: any[];
   widthColumnsArray: any[];
+  style?: SxProps;
 }
 const FormattedTable = ({
   titleColumnsArray,
   dataArray,
   widthColumnsArray,
+  style,
 }: TableType) => {
   return (
-    <Box>
+    <Box sx={style}>
       <Stack direction='row'>
         {titleColumnsArray.map((title: string, i: number) => (
           <Typography

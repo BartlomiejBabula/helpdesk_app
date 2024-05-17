@@ -11,6 +11,7 @@ import { JobsModule } from './jobs/jobs.module';
 import { StoresModule } from './stores/stores.module';
 import { ReportsModule } from './reports/reports.module';
 import { GicaModule } from './gica/gica.module';
+import { ZabbixModule } from './zabbix/zabbix.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { GicaModule } from './gica/gica.module';
     StoresModule,
     ReportsModule,
     GicaModule,
+    ZabbixModule,
   ],
   controllers: [AppController],
   providers: [AppService],

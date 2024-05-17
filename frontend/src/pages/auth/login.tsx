@@ -16,6 +16,7 @@ import { getJira } from "../../redux/jira/getJira";
 import { getJobs } from "../../redux/jobs/getJobs";
 import { getStoreList } from "../../redux/stores/getStoreList";
 import { getGica } from "../../redux/gica/getGica";
+import { getZabbix } from "../../redux/zabbix/getZabbix";
 
 interface LoginValues {
   email: string;
@@ -78,6 +79,7 @@ export const LoginComponent = () => {
       dispatch(getJobs());
       dispatch(getStoreList());
       dispatch(getGica());
+      dispatch(getZabbix());
       navigate({ pathname: "/dashboard/" });
     }
   }, [navigate, dispatch, selectUserStatus, selectUserError]);

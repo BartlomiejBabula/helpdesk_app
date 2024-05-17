@@ -136,8 +136,12 @@ export class JiraService {
                                         if (
                                           (element.fields.status.id ===
                                             '10003' ||
+                                            element.fields.status.id ===
+                                              '10002' ||
                                             element.fields.status.id === '6' ||
+                                            element.fields.status.id === '5' ||
                                             element.fields.status.id === '4' ||
+                                            element.fields.status.id === '3' ||
                                             element.fields.status.id === '1') &&
                                           element.fields.parent.key ===
                                             jira.jiraKey &&

@@ -5,6 +5,7 @@ import jobsSlice from "./jobs/JobsSlice";
 import reportsSlice from "./reports/ReportsSlice";
 import storesSlice from "./stores/StoresSlice";
 import gicaSlice from "./gica/GicaSlice";
+import zabbixSlice from "./zabbix/ZabbixSlice";
 
 export const rootReducer = combineSlices({
   user: userSlice,
@@ -13,4 +14,5 @@ export const rootReducer = combineSlices({
   reports: reportsSlice,
   stores: storesSlice,
   gica: gicaSlice,
+  zabbix: zabbixSlice,
 });
