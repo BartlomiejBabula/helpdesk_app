@@ -8,13 +8,11 @@ import { AlertProps } from "@mui/material/Alert";
 import { Box, Stack, Button, TextField, Typography } from "@mui/material";
 import SnackbarAlert from "../../components/SnackbarAlert";
 
-interface RegisterValues {
+interface ResetPasswordValues {
   email: string;
-  password: string;
-  rePassword: string;
 }
 
-export const RegisterComponent = () => {
+export const ResetPasswordSendEmailComponent = () => {
   const [snackbar, setSnackbar] = React.useState<Pick<
     AlertProps,
     "children" | "severity"
@@ -30,35 +28,27 @@ export const RegisterComponent = () => {
         .min(6, "Login musi zawierać przynajmniej 6 liter")
         .max(28, "Za długi login - maksymalnie 28 liter")
         .required("Pole obowiązkowe"),
-      password: yup
-        .string()
-        .min(6, "Hasło musi zawierać przynajmniej 6 liter")
-        .required("Pole obowiązkowe"),
-      rePassword: yup
-        .string()
-        .oneOf([yup.ref("password"), null], "Niepoprawnie powtórzone hasło")
-        .required("Pole obowiązkowe"),
     }),
 
     initialValues: {
       email: "",
-      password: "",
-      rePassword: "",
     },
 
-    onSubmit: (values: RegisterValues, { resetForm }) => {
-      const newUser = {
+    onSubmit: (values: ResetPasswordValues, { resetForm }) => {
+      const reestPassowrd = {
         email: values.email,
-        password: values.password,
       };
       axios
-        .post(`${AppURL}/auth/register`, newUser)
+        .post(`${AppURL}/auth/forgot-password`, reestPassowrd)
         .then((response) => {
           setSnackbar({
-            children: "Konto zostało utworzone",
+            children: "Wysłano mail z resetem hasła",
             severity: "success",
           });
           resetForm();
+          setTimeout(() => {
+            navigateToLogin();
+          }, 3000);
         })
         .catch((error) => {
           setSnackbar({
@@ -81,10 +71,13 @@ export const RegisterComponent = () => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            mt: 4,
+            mt: 7,
           }}
         >
-          <Stack spacing={1} sx={{ width: 300 }}>
+          <Stack spacing={3} sx={{ width: 300 }}>
+            <Typography sx={{ color: "#457b9d", fontSize: 16 }}>
+              Chcesz zresetować hasło ?
+            </Typography>
             <TextField
               autoComplete='off'
               label='Email'
@@ -98,34 +91,15 @@ export const RegisterComponent = () => {
               error={formik.touched.email && Boolean(formik.errors.email)}
               helperText={formik.touched.email && formik.errors.email}
             />
-            <TextField
-              autoComplete='off'
-              label='Hasło'
-              variant='standard'
-              id='password'
-              name='password'
-              type='password'
-              onChange={formik.handleChange}
-              value={formik.values.password}
-              onBlur={formik.handleBlur}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password}
-            />
-            <TextField
-              autoComplete='off'
-              label='Powtórz hasło'
-              variant='standard'
-              id='rePassword'
-              name='rePassword'
-              type='password'
-              onChange={formik.handleChange}
-              value={formik.values.rePassword}
-              onBlur={formik.handleBlur}
-              error={
-                formik.touched.rePassword && Boolean(formik.errors.rePassword)
-              }
-              helperText={formik.touched.rePassword && formik.errors.rePassword}
-            />
+            <Typography
+              sx={{
+                color: "rgba(0, 0, 0, 0.6)",
+                fontSize: 13,
+              }}
+            >
+              Na podany adres mailowy wyślemy do Ciebie mail z linkiem
+              resetującym hasło
+            </Typography>
           </Stack>
           <Button
             size='large'
@@ -138,31 +112,16 @@ export const RegisterComponent = () => {
             type='submit'
             variant='contained'
           >
-            Zarejestruj się
+            Resetuj hasło
           </Button>
-          <Box
-            sx={{
-              marginTop: 4,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "baseline",
-              justifyContent: "center",
-            }}
+          <Button
+            type='button'
+            variant='text'
+            sx={{ mt: 1, color: "rgba(0, 0, 0, 0.6)", fontSize: 13 }}
+            onClick={navigateToLogin}
           >
-            <Typography
-              sx={{ color: "rgba(0, 0, 0, 0.6)", fontSize: 14, marginRight: 1 }}
-            >
-              Masz konto?
-            </Typography>
-            <Button
-              type='button'
-              variant='text'
-              sx={{ fontSize: 14 }}
-              onClick={navigateToLogin}
-            >
-              Zaloguj się
-            </Button>
-          </Box>
+            Zaloguj się
+          </Button>
         </Box>
       </form>
       <SnackbarAlert alert={snackbar} />
