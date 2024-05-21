@@ -7,34 +7,14 @@ import {
   Body,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import {
-  IsNotEmpty,
-  IsString,
-  MinLength,
-  MaxLength,
-  Matches,
-} from 'class-validator';
 import { LocalAuthGuard } from './local-auth.guard';
 import { RefreshTokenGuard } from './refreshToken.guard';
 import { CreateUserDto } from 'src/users/dto/createUser';
 import { UsersService } from 'src/users/users.service';
-
-export class LoginUserDto {
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(4)
-  @MaxLength(20)
-  username: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(4)
-  @MaxLength(20)
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'password too weak',
-  })
-  password: string;
-}
+import {
+  ResetPasswordDto,
+  SendEmailForgotPasswordDto,
+} from './dto/resetPassword';
 
 @Controller('auth')
 export class AuthController {
@@ -66,5 +46,17 @@ export class AuthController {
   @Post('register')
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
+  }
+
+  @Post('forgot-password')
+  sendEmailForgotPassword(
+    @Body() sendEmailForgotPasswordDto: SendEmailForgotPasswordDto,
+  ) {
+    return this.authService.sendEmailForgotPassword(sendEmailForgotPasswordDto);
+  }
+
+  @Post('reset-password')
+  resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return this.authService.resetPassword(resetPasswordDto);
   }
 }

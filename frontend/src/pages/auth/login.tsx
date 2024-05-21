@@ -63,6 +63,10 @@ export const LoginComponent = () => {
     navigate({ pathname: "/register" });
   };
 
+  const navigateToResetPassword = () => {
+    navigate({ pathname: "/resetpassword" });
+  };
+
   useEffect(() => {
     if (localStorage.getItem("refresh") !== null) {
       navigate({ pathname: "/dashboard/" });
@@ -137,9 +141,17 @@ export const LoginComponent = () => {
           >
             Zaloguj się
           </Button>
+          <Button
+            type='button'
+            sx={{ fontSize: 13, mt: 1, color: "rgba(0, 0, 0, 0.6)" }}
+            variant='text'
+            onClick={navigateToResetPassword}
+          >
+            Nie pamiętasz hasła?
+          </Button>
           <Box
             sx={{
-              marginTop: 3,
+              marginTop: 4,
               display: "flex",
               flexDirection: "row",
               alignItems: "baseline",
@@ -147,11 +159,16 @@ export const LoginComponent = () => {
             }}
           >
             <Typography
-              sx={{ color: "rgba(0, 0, 0, 0.6)", fontSize: 16, marginRight: 1 }}
+              sx={{ color: "rgba(0, 0, 0, 0.6)", fontSize: 14, marginRight: 1 }}
             >
               Nie masz konta?
             </Typography>
-            <Button type='button' variant='text' onClick={navigateToRegister}>
+            <Button
+              type='button'
+              variant='text'
+              sx={{ fontSize: 14 }}
+              onClick={navigateToRegister}
+            >
               Zarejestruj się
             </Button>
           </Box>

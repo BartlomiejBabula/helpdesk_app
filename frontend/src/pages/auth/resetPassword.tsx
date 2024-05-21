@@ -8,13 +8,12 @@ import { AlertProps } from "@mui/material/Alert";
 import { Box, Stack, Button, TextField, Typography } from "@mui/material";
 import SnackbarAlert from "../../components/SnackbarAlert";
 
-interface RegisterValues {
-  email: string;
+interface ResetPasswordValues {
   password: string;
   rePassword: string;
 }
 
-export const RegisterComponent = () => {
+export const ResetPasswordComponent = () => {
   const [snackbar, setSnackbar] = React.useState<Pick<
     AlertProps,
     "children" | "severity"
@@ -23,13 +22,6 @@ export const RegisterComponent = () => {
 
   const formik = useFormik({
     validationSchema: yup.object().shape({
-      email: yup
-        .string()
-        .email("Błędny adres email")
-        .matches(/@asseco.pl/, "Adres email musi być w domenie asseco.pl")
-        .min(6, "Login musi zawierać przynajmniej 6 liter")
-        .max(28, "Za długi login - maksymalnie 28 liter")
-        .required("Pole obowiązkowe"),
       password: yup
         .string()
         .min(6, "Hasło musi zawierać przynajmniej 6 liter")
@@ -41,24 +33,27 @@ export const RegisterComponent = () => {
     }),
 
     initialValues: {
-      email: "",
       password: "",
       rePassword: "",
     },
 
-    onSubmit: (values: RegisterValues, { resetForm }) => {
-      const newUser = {
-        email: values.email,
+    onSubmit: (values: ResetPasswordValues, { resetForm }) => {
+      const reestPassowrd = {
         password: values.password,
+        token: window.location.pathname.slice(15),
       };
+
       axios
-        .post(`${AppURL}/auth/register`, newUser)
+        .post(`${AppURL}/auth/reset-password`, reestPassowrd)
         .then((response) => {
+          resetForm();
           setSnackbar({
-            children: "Konto zostało utworzone",
+            children: "Zresetowano hasło",
             severity: "success",
           });
-          resetForm();
+          setTimeout(() => {
+            navigateToLogin();
+          }, 3000);
         })
         .catch((error) => {
           setSnackbar({
@@ -81,23 +76,15 @@ export const RegisterComponent = () => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            mt: 4,
+            mt: 6,
           }}
         >
-          <Stack spacing={1} sx={{ width: 300 }}>
-            <TextField
-              autoComplete='off'
-              label='Email'
-              variant='standard'
-              id='email'
-              name='email'
-              type='text'
-              onChange={formik.handleChange}
-              value={formik.values.email}
-              onBlur={formik.handleBlur}
-              error={formik.touched.email && Boolean(formik.errors.email)}
-              helperText={formik.touched.email && formik.errors.email}
-            />
+          <Stack spacing={2} sx={{ width: 300 }}>
+            <Typography
+              sx={{ color: "#457b9d", fontSize: 16, paddingBottom: 1 }}
+            >
+              Chcesz zresetować hasło ?
+            </Typography>
             <TextField
               autoComplete='off'
               label='Hasło'
@@ -130,7 +117,7 @@ export const RegisterComponent = () => {
           <Button
             size='large'
             sx={{
-              marginTop: 5,
+              marginTop: 6,
               letterSpacing: 2,
               backgroundImage:
                 "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
@@ -138,31 +125,16 @@ export const RegisterComponent = () => {
             type='submit'
             variant='contained'
           >
-            Zarejestruj się
+            Resetuj hasło
           </Button>
-          <Box
-            sx={{
-              marginTop: 4,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "baseline",
-              justifyContent: "center",
-            }}
+          <Button
+            type='button'
+            variant='text'
+            sx={{ mt: 1, color: "rgba(0, 0, 0, 0.6)", fontSize: 13 }}
+            onClick={navigateToLogin}
           >
-            <Typography
-              sx={{ color: "rgba(0, 0, 0, 0.6)", fontSize: 14, marginRight: 1 }}
-            >
-              Masz konto?
-            </Typography>
-            <Button
-              type='button'
-              variant='text'
-              sx={{ fontSize: 14 }}
-              onClick={navigateToLogin}
-            >
-              Zaloguj się
-            </Button>
-          </Box>
+            Zaloguj się
+          </Button>
         </Box>
       </form>
       <SnackbarAlert alert={snackbar} />

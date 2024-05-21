@@ -33,6 +33,12 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { email } });
   }
 
+  async findByResetPasswordToken(
+    resetPasswordToken: string,
+  ): Promise<User | null> {
+    return this.usersRepository.findOne({ where: { resetPasswordToken } });
+  }
+
   async findById(id: string): Promise<User | null> {
     return this.usersRepository.findOne({ where: { id: parseInt(id) } });
   }
@@ -45,6 +51,14 @@ export class UsersService {
 
   async update(id: number, updateUserDto: any): Promise<any> {
     return this.usersRepository.update(id, updateUserDto);
+  }
+
+  async updatePassword(id: number, password: string): Promise<any> {
+    const salt = await bcrypt.genSalt();
+    const newPassword = await bcrypt.hash(password, salt);
+    this.usersRepository.update(id, { password: newPassword });
+    this.usersRepository.update(id, { resetPasswordToken: null });
+    return 'Password Updated';
   }
 
   async getProfile(accessToken: string): Promise<any> {

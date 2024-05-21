@@ -2,6 +2,8 @@ import { Routes, Route } from "react-router-dom";
 import { LoginComponent } from "./login";
 import { RegisterComponent } from "./register";
 import { Card, CardMedia, Container, Typography } from "@mui/material";
+import { ResetPasswordComponent } from "./resetPassword";
+import { ResetPasswordSendEmailComponent } from "./resetPasswordSendEmail";
 
 const WelcomePage = () => {
   return (
@@ -37,6 +39,11 @@ const WelcomePage = () => {
         <Routes>
           <Route path='/' element={<LoginComponent />} />
           <Route path='/register' element={<RegisterComponent />} />
+          <Route
+            path='/resetpassword'
+            element={<ResetPasswordSendEmailComponent />}
+          />
+          <Route path='/resetpassword/*' element={<ResetPasswordComponent />} />
         </Routes>
       </Card>
     </Container>

@@ -28,7 +28,11 @@ const App = () => {
       dispatch(getStoreList());
       dispatch(getZabbix());
     }
-    if (window.location.pathname !== "/" && refreshToken === null)
+    if (
+      window.location.pathname !== "/" &&
+      window.location.href.indexOf("/resetpassword") < -1 &&
+      refreshToken === null
+    )
       window.location.replace("/");
   }, [dispatch]);
 
