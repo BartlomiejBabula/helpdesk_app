@@ -9,13 +9,17 @@ import GicaPage from "../gicaPage/GicaPage";
 import RedirectionPage from "../redirectionPage/RedirectionPage";
 import { useEffect } from "react";
 import api, { destroyToken, saveToken, setAuthHeader } from "../../../api/api";
-import { useAppDispatch } from "../../../redux/AppStore";
+import { useAppDispatch, useAppSelector } from "../../../redux/AppStore";
 import { getJobs } from "../../../redux/jobs/getJobs";
 import { getBlockedReports } from "../../../redux/reports/getBlockedReports";
 import { getStoreList } from "../../../redux/stores/getStoreList";
+import SnackbarZabbix from "../../../components/SnackbarZabbix";
+import { getZabbix } from "../../../redux/zabbix/getZabbix";
+import { zabbixSelectorShowed } from "../../../redux/zabbix/ZabbixSlice";
 
 const Dashboard = () => {
   const dispatch = useAppDispatch();
+  const zabbixSnackbarActive = useAppSelector(zabbixSelectorShowed);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -30,6 +34,7 @@ const Dashboard = () => {
             dispatch(getBlockedReports());
             dispatch(getJobs());
             dispatch(getStoreList());
+            dispatch(getZabbix());
           })
           .catch((error) => {
             destroyToken();
@@ -62,6 +67,7 @@ const Dashboard = () => {
           <Route path='/monit' element={<MonitPage />} />
           <Route path='/' element={<HomePage />} />
         </Routes>
+        {!zabbixSnackbarActive && <SnackbarZabbix />}
       </Box>
     </Card>
   );

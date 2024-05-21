@@ -65,3 +65,15 @@ export interface ChartGicaType {
   HypermarketEnd?: Date;
   HypermarketTimeInMinutes: number;
 }
+
+export interface ApiZabbixType {
+  id: number;
+  eventId: number;
+  recoveryEventId: number;
+  objectId: number;
+  severity: number;
+  clock: Date;
+  opdata: string;
+  host: string;
+  name: string;
+}

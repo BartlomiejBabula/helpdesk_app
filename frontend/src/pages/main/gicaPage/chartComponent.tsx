@@ -63,7 +63,7 @@ const ChartComponent = ({ GICA, setSelectedData }: ChartComponentType) => {
           fontWeight: "medium",
         }}
       >
-        Analiza ostatniego miesiąca
+        Analiza za ostatnie 30 dni
       </Typography>
       {GICA.days.length > 0 && (
         <BarChart

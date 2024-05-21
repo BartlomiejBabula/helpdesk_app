@@ -104,22 +104,34 @@ const TableComponent = ({ selectedData, GICA }: TableComponentType) => {
             fontWeight: "medium",
           }}
         >
-          Uśrednione dane za miesiąc
+          Uśrednione dane za 30 dni
         </Typography>
         <FormattedTable
           titleColumnsArray={["Proces", "Czas trwania"]}
           dataArray={[
             [
               "Średni czas odbioru danych z GICA",
-              valueFormatter(GICA.averagedReceiveTimeInMinutes),
+              valueFormatter(
+                GICA.averagedReceiveTimeInMinutes
+                  ? GICA.averagedReceiveTimeInMinutes
+                  : 0
+              ),
             ],
             [
               "Średni czas aktualizacji na sklepach sieciowych",
-              valueFormatter(GICA.averagedNetworkStoreTimeInMinutes),
+              valueFormatter(
+                GICA.averagedNetworkStoreTimeInMinutes
+                  ? GICA.averagedNetworkStoreTimeInMinutes
+                  : 0
+              ),
             ],
             [
               "Średni czas aktualizacji na hipermarketach",
-              valueFormatter(GICA.averagedHypermarketTimeInMinutes),
+              valueFormatter(
+                GICA.averagedHypermarketTimeInMinutes
+                  ? GICA.averagedHypermarketTimeInMinutes
+                  : 0
+              ),
             ],
           ]}
           widthColumnsArray={["75%", 80]}

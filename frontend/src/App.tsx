@@ -12,6 +12,7 @@ import { getJira } from "./redux/jira/getJira";
 import { getUserProfile } from "./redux/user/getUserProfile";
 import { getStoreList } from "./redux/stores/getStoreList";
 import { getGica } from "./redux/gica/getGica";
+import { getZabbix } from "./redux/zabbix/getZabbix";
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -25,6 +26,7 @@ const App = () => {
       dispatch(getJira());
       dispatch(getJobs());
       dispatch(getStoreList());
+      dispatch(getZabbix());
     }
     if (window.location.pathname !== "/" && refreshToken === null)
       window.location.replace("/");
