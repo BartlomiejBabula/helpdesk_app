@@ -106,7 +106,7 @@ export class AuthService {
       await this.usersService.update(user.id, {
         resetPasswordToken: hashedResetPasswordToken,
       });
-      const resetPasswordLink = `http://localhost:3000/resetpassword/${hashedResetPasswordToken}`;
+      const resetPasswordLink = `https://esambohd.skg.pl/resetpassword/${hashedResetPasswordToken}`;
       transporter
         .sendMail({
           from: EMAIL,
