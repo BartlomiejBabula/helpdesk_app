@@ -106,7 +106,7 @@ export class AuthService {
       await this.usersService.update(user.id, {
         resetPasswordToken: hashedResetPasswordToken,
       });
-      const resetPasswordLink = `http://localhost:3000/resetpassword/${hashedResetPasswordToken}`;
+      const resetPasswordLink = `https://esambohd.skg.pl/resetpassword/${hashedResetPasswordToken}`;
       transporter
         .sendMail({
           from: EMAIL,
@@ -117,7 +117,7 @@ export class AuthService {
   <p><a href=${resetPasswordLink}>Resetuj Hasło</a></p>`,
         })
         .then((info: any) => {
-          return 'Email send';
+          return 'Forgot password email send';
         })
         .catch(console.error);
     } else {
@@ -143,6 +143,7 @@ export class AuthService {
           user.id,
           resetPasswordDto.password,
         );
+        return 'Password has been reset';
       }
     } else throw new BadRequestException('Wrong token');
   }
