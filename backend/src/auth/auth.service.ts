@@ -117,7 +117,7 @@ export class AuthService {
   <p><a href=${resetPasswordLink}>Resetuj Hasło</a></p>`,
         })
         .then((info: any) => {
-          return 'Email send';
+          return 'Forgot password email send';
         })
         .catch(console.error);
     } else {
@@ -143,6 +143,7 @@ export class AuthService {
           user.id,
           resetPasswordDto.password,
         );
+        return 'Password has been reset';
       }
     } else throw new BadRequestException('Wrong token');
   }
