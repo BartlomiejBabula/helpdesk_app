@@ -27,13 +27,13 @@ const App = () => {
       dispatch(getJobs());
       dispatch(getStoreList());
       dispatch(getZabbix());
-    }
-    if (
+    } else if (
+      !(window.location.href.indexOf("/resetpassword") > -1) &&
       window.location.pathname !== "/" &&
-      window.location.href.indexOf("/resetpassword") < -1 &&
       refreshToken === null
-    )
+    ) {
       window.location.replace("/");
+    }
   }, [dispatch]);
 
   return (

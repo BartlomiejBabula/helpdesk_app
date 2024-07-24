@@ -52,7 +52,7 @@ const ChartComponent = ({ GICA, setSelectedData }: ChartComponentType) => {
         onClick={handleGenerateGicaRaport}
         sx={{ position: "absolute", top: 4, right: 20, zIndex: 1 }}
       >
-        Pobierz dane za cały miesiąc
+        Pobierz dane do pliku .csv
       </Button>
       <Typography
         variant='subtitle1'
