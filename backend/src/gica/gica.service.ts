@@ -73,17 +73,22 @@ ORDER BY tm_end DESC fetch first 1 rows only`,
     return parseFloat(((date2.getTime() - date1.getTime()) / 60000).toFixed(2));
   }
 
-  @Cron('0 00 6 * * *')
+  @Cron('0 30 5 * * *')
   async automaticYesterdayGICA() {
     try {
       let GICA = new Gica();
       console.log('automatic get yesterday GICA');
-      const year = new Date().getFullYear();
-      const month = String(new Date().getMonth() + 1).padStart(2, '0');
-      const day = String(new Date().getDate()).padStart(2, '0');
-      const day2 = String(new Date().getDate() - 1).padStart(2, '0');
+      let date = new Date();
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
       const today = `${year}-${month}-${day} 15:00:00`;
-      let yest = `${year}-${month}-${day2} 00:00:00`;
+      let date2 = new Date();
+      date2.setDate(date2.getDate() - 1);
+      const day2 = String(date2.getDate()).padStart(2, '0');
+      const month2 = String(date2.getMonth() + 1).padStart(2, '0');
+      const year2 = date2.getFullYear();
+      const yest = `${year2}-${month2}-${day2} 00:00:00`;
       let gicaReceive = await this.getGicaReceiveTime(yest, today);
       let gicaTimeNetworkStore = await this.getGicaTimeByStoreType(
         'N',

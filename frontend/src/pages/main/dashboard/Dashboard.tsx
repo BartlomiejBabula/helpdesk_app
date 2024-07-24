@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import ShopListPage from "../storeListPage/ShopListPage";
-import MonitPage from "../monitPage/MonitPage";
+import JobsPage from "../jobPage/JobsPage";
 import HomePage from "../homePage/HomePage";
 import { Card, Box } from "@mui/material";
 import { LeftMenu } from "./leftMenuComponent";
@@ -64,7 +64,7 @@ const Dashboard = () => {
           <Route path='/redirection' element={<RedirectionPage />} />
           <Route path='/jira' element={<JiraPage />} />
           <Route path='/shoplist' element={<ShopListPage />} />
-          <Route path='/monit' element={<MonitPage />} />
+          <Route path='/jobs' element={<JobsPage />} />
           <Route path='/' element={<HomePage />} />
         </Routes>
         {!zabbixSnackbarActive && <SnackbarZabbix />}

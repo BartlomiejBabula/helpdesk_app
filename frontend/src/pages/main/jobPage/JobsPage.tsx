@@ -1,13 +1,9 @@
 import { useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
-import { AlertProps } from "@mui/material/Alert";
+import { Box, Typography } from "@mui/material";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { JobsComponent } from "./jobsComponent";
 import { JobsWithErrorComponent } from "./jobsWithErrorComponent";
-import SnackbarAlert from "../../../components/SnackbarAlert";
-import { useAppDispatch } from "../../../redux/AppStore";
-import { getJobs } from "../../../redux/jobs/getJobs";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -35,21 +31,8 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const MonitPage = () => {
-  const dispatch = useAppDispatch();
+const JobsPage = () => {
   const [tab, setTab] = useState<number>(0);
-  const [snackbar, setSnackbar] = useState<Pick<
-    AlertProps,
-    "children" | "severity"
-  > | null>(null);
-
-  const handleGetActualData = () => {
-    dispatch(getJobs());
-    setSnackbar({
-      children: "Pobieram aktualne dane - operacja może potrwać kilka minut",
-      severity: "success",
-    });
-  };
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTab(newValue);
@@ -75,12 +58,6 @@ const MonitPage = () => {
         >
           Monitoring
         </Typography>
-        <Button
-          onClick={handleGetActualData}
-          sx={{ position: "absolute", top: 15, right: 20, zIndex: 1 }}
-        >
-          pobierz aktualne dane
-        </Button>
         <Tabs value={tab} onChange={handleChange}>
           <Tab sx={{ color: "#38373D" }} label='Wszystkie procesy' />
           <Tab sx={{ color: "#38373D" }} label='Procesy z błędem' />
@@ -92,9 +69,8 @@ const MonitPage = () => {
           <JobsComponent />
         </TabPanel>
       </Box>
-      <SnackbarAlert alert={snackbar} />
     </Box>
   );
 };
 
-export default MonitPage;
+export default JobsPage;

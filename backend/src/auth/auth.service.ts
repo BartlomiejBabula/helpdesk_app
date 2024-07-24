@@ -116,10 +116,9 @@ export class AuthService {
   jeśli chcesz zresetować hasło do aplikacji kliknij na poniższy link<br><br>
   <p><a href=${resetPasswordLink}>Resetuj Hasło</a></p>`,
         })
-        .then((info: any) => {
-          return 'Forgot password email send';
-        })
+        .then((info: any) => {})
         .catch(console.error);
+      return 'Forgot password email send';
     } else {
       throw new BadRequestException('Cannot find email address');
     }

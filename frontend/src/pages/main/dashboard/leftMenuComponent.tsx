@@ -44,8 +44,8 @@ export const LeftMenu = () => {
 
   const changeTab = (tab: Values["tab"]) => {
     switch (tab) {
-      case "monitoring":
-        navigate({ pathname: "./monit" });
+      case "procesy":
+        navigate({ pathname: "./jobs" });
         break;
       case "shopList":
         navigate({ pathname: "./shoplist" });
@@ -135,26 +135,24 @@ export const LeftMenu = () => {
           disablePadding
           sx={{
             backgroundImage:
-              window.location.pathname === "/dashboard/monit"
+              window.location.pathname === "/dashboard/jobs"
                 ? "linear-gradient(to bottom right, #4fa8e0, #457b9d)"
                 : "none",
             borderRadius: 1,
             color:
-              window.location.pathname === "/dashboard/monit"
-                ? "white"
-                : "#ccc",
+              window.location.pathname === "/dashboard/jobs" ? "white" : "#ccc",
           }}
         >
           <ListItemButton
             onClick={() => {
-              changeTab("monitoring");
-              setTab("monitoring");
+              changeTab("procesy");
+              setTab("procesy");
             }}
           >
             <ListItemIcon>
               <MonitIcon sx={{ fontSize: 20 }} />
             </ListItemIcon>
-            <ListItemText primary='Monitoring' />
+            <ListItemText primary='Procesy' />
           </ListItemButton>
         </ListItem>
         <ListItem
@@ -257,6 +255,7 @@ export const LeftMenu = () => {
             <ListItemText primary='Serwisy' />
           </ListItemButton>
         </ListItem>
+
         <ListItem
           disablePadding
           sx={{
