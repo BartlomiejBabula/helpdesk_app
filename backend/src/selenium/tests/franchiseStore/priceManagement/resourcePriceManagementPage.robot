@@ -64,11 +64,11 @@ Click Search Icon
 Activate Special Offer
     Click Element                       xpath: //*[contains(text(), "Zatwierdź")]
     Click Element                       xpath: //*[contains(text(), "Zatwierdź")]
-    Wait Until Page Contains Element    xpath: //*[contains(@value, "Zatwierdź")]    timeout=10s
-    Click Element                       xpath: //*[contains(@value, "Zatwierdź")]
-    Wait Until Page Contains Element    xpath: //*[contains(@value, "Uruchom Zadanie")]    timeout=10s
-    Click Element                       xpath: //*[contains(@value, "Uruchom Zadanie")]
-    Refresh Until                       xpath: //*[contains(@class, "btnClose")]                     
+    Wait Until Page Contains Element    xpath: //*[contains(text(), "Zatwierdź")]   timeout=10s
+    Click Element                       xpath: //*[contains(text(), "Zatwierdź")]
+    Wait Until Page Contains Element    xpath: //*[contains(text(), "Uruchom Zadanie")]    timeout=10s
+    Click Element                       xpath: //*[contains(text(), "Uruchom Zadanie")]
+    Refresh Until                       xpath: //*[contains(@class, "dialog-level-2")]//button[contains(text(), "Zamknij")]               
    
 Special offer Should Be Active
     Wait Until Page Contains Element    xpath: //*[contains(text(), "Aktywna")]    timeout=30s
@@ -96,12 +96,12 @@ Input Article Quanitity In Quanitity Offer
 
 Confirm Quanitity Offer
     Click Element                       xpath: //*[contains(text(), "Zatwierdź")]
-    Refresh Until                       xpath: //td/span[contains(text(), "Zatwierdzone")] 
+    Refresh Until Page Contains         xpath: //div[@class="window_header"]/span[contains(text(), "Zatwierdzone")] 
 
 Activate Quanitity Offer
     Click Element                       xpath: //*[contains(text(), "Aktywuj")]
-    Refresh Until                       xpath: //td/span[contains(text(), "Aktywne")]  
+    Refresh Until Page Contains         xpath: //div[@class="window_header"]/span[contains(text(), "Aktywne")]  
 
 Quanitity Offer Should Be Active
-    Wait Until Page Contains Element    xpath: //td/span[contains(text(), "Aktywne")]     timeout=30s
+    Wait Until Page Contains Element    xpath: //div[@class="window_header"]/span[contains(text(), "Aktywne")]     timeout=30s
      

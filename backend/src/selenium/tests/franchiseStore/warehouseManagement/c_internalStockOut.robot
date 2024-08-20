@@ -14,7 +14,7 @@ Create And Confirm WM
     Select Type Of Document To Be Created                 Wydanie magazynowe WM / STRATA
     Document Should Open                                  WYDANIE MAGAZYNOWE WM / STRATY 
     Input Comments
-    Input WD Doc Delivery
+    Input WD Doc Delivery                                 AutomaticWM
     Input Good Name In Article Line
     Select Article From Modal List                        2
     Input Quantity In Article Line

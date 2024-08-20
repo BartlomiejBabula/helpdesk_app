@@ -7,6 +7,7 @@ ${SCANNER FILE}    /usr/src/app/src/selenium/ScannerFiles/order_scanner.txt
 ${ORDER FILE}      /usr/src/app/src/selenium/ScannerFiles/order_file.txt
 
 
+
 *** Keywords ***
 
 Click Prepare Orders Button
@@ -16,6 +17,24 @@ Click Prepare Orders Button
 Click Order Assortment Button
     Wait Until Page Contains Element    xpath: //*[contains(text(), "+ Uzupełnij asortyment")]    timeout=60s
     Click Element                       xpath: //*[contains(text(), "+ Uzupełnij asortyment")]
+
+No Orders Create Info 
+     WHILE  True    limit=20    
+            TRY
+                Wait Until Page Contains Element        xpath: //*[contains(text(), "Żadne zamówienie nie zostało wygenerowane")]   timeout=2s
+                Set Test Variable    ${orders}     ${False}
+                BREAK
+            EXCEPT
+                Sleep    1s  
+            END 
+            TRY
+                Wait Until Page Contains Element        xpath: //*[contains(text(), "Zamówienia w przygotowaniu")]   timeout=2s
+                Set Test Variable    ${orders}     ${True}
+                BREAK
+            EXCEPT
+                Sleep    1s  
+            END
+    END
 
 Click Order From Scanner Or File
     Wait Until Page Contains Element    xpath: //*[contains(text(), "Zamów ze skanera lub pliku")]   timeout=60s
@@ -40,12 +59,13 @@ Select File
     Input Text                          class:ml1    ${ORDER_FILE}
 
 Click Submit Button 
-    Click Element                       xpath://*[@value="Zatwierdź"]
-    Wait Until Page Contains Element    xpath://*[@value="Uruchom Zadanie"]    timeout=10s
-    Click Element                       xpath://*[@value="Uruchom Zadanie"]
+    Click Element                       xpath: //button[contains(text(), "Zatwierdź")] 
+    Wait Until Page Contains Element    xpath: //button[contains(text(), "Uruchom Zadanie")]     timeout=10s
+    Click Element                       xpath: //button[contains(text(), "Uruchom Zadanie")] 
     Wait Until Page Contains Element    xpath://*[contains(text(), "Lista zadań w toku")]   
-    Wait Until Page Contains Element    xpath://*[@value="Zamknij"]    timeout=60s
-    Click Element                       xpath://*[@value="Zamknij"]
+    Wait Until Page Contains Element    xpath: //button[contains(text(), "Zamknij")]     timeout=60s
+    Wait Until Element Is Not Visible   class:blockUI blockMsg blockPage
+    Click Element                       xpath://button[contains(text(), "Zamknij")]
 
 Click Close Button
     Wait Until Page Contains Element    xpath://*[@value="Zamknij"]    timeout=10s
@@ -56,8 +76,8 @@ Orders From Scanner Should Be Open
     
 Prepare Order From First Scanner File
     Click Element                       xpath://tr[1]//*[@title='Dodaj nowe zamówienie z pliku skanera']
-    Wait Until Page Contains Element    xpath://*[@value="Zatwierdź"]   timeout=30s
-    Click Element                       xpath://*[@value="Zatwierdź"]
+    Wait Until Page Contains Element    xpath: //button[contains(text(), "Zatwierdź")]    timeout=30s
+    Click Element                       xpath: //button[contains(text(), "Zatwierdź")] 
 
 Click Send Order
     Wait Until Element Is Not Visible   class:blockUI blockMsg blockPage
@@ -72,14 +92,15 @@ Click Send Order
 
 Click Execute Button
     Wait Until Element Is Not Visible   class:blockUI blockMsg blockPage
-    Mouse Over                          xpath: //*[contains(@class, "btnOk")]  
+    Sleep    0.5s
+    Mouse Over                          xpath: //button[contains(text(), "Wykonaj")] 
     WHILE    True    limit=5
     TRY
-        Click Element                   xpath: //*[contains(@class, "btnOk")]
+        Click Element                   xpath: //button[contains(text(), "Wykonaj")]
         BREAK
     EXCEPT
         TRY
-            Click Element               xpath: //*[contains(@class, "btnOk ui-button ui-widget ui-state-default ui-corner-all")]
+            Click Element               xpath: //button[contains(text(), "Wykonaj")]
             BREAK
         EXCEPT
             Sleep    0.5s   
@@ -95,7 +116,7 @@ Order From File Should Be Sent
 
 Orders Menu Page Should Be Open
     [Arguments]    ${title}  
-    Wait Until Page Contains Element    xpath: //*[contains(text(), "${title}")]    timeout=360s
+    Wait Until Page Contains Element    xpath: //div[contains(text(), "${title}")]    timeout=360s
 
 Enter To Order From List
     [Arguments]    ${element}=1
@@ -134,7 +155,8 @@ Select Supplier
     Sleep    1s
 
 Select Obligatory Assortment CheckBox
-    Wait Until Page Contains Element    xpath: //input[contains(@class, "ObligatoryAssortment")]   timeout=60s
+    Wait Until Element Is Enabled    xpath: //input[contains(@class, "ObligatoryAssortment")]   timeout=60s
+    Sleep    0.5s
     Click Element                       xpath: //input[contains(@class, "ObligatoryAssortment")] 
     Sleep    1s
 

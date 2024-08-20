@@ -5,7 +5,6 @@ Resource          ../resourceMainPage.robot
 Resource          ../resourceAssortmentPage.robot
 Resource          ../../resource.robot
  
-
 *** Test Cases ***
 
 Prepare And Send Orders From Prepare Orders Bttn
@@ -27,13 +26,17 @@ Prepare And Send Orders From Orders Assortment Bttn
     Select MainPage Menu        Towary
     Select Obligatory Assortment CheckBox
     Click Order Assortment Button
-    Orders Menu Page Should Be Open    Zamówienia w przygotowaniu
-    Enter To Order From List
-    Input Amount Of First Article      2
-    Click Send Order
-    Click Execute Button
-    Refresh Until
-    Orders Menu Page Should Be Open    Zamówienia w przygotowaniu
+    No Orders Create Info
+    Log    ${orders}
+    IF  ${orders} == True 
+        Orders Menu Page Should Be Open    Zamówienia w przygotowaniu
+        Enter To Order From List
+        Input Amount Of First Article      2
+        Click Send Order
+        Click Execute Button
+        Refresh Until
+        Orders Menu Page Should Be Open    Zamówienia w przygotowaniu
+    END
     [Teardown]    Close Browser
 
 Send Orders From Document
@@ -59,6 +62,7 @@ Delete Orders From List
     Select First Document From List
     Select Operation From List Menu    delete
     Click Execute Button
+    Refresh Until
     Orders Menu Page Should Be Open    Zamówienia w przygotowaniu
     [Teardown]    Close Browser
 

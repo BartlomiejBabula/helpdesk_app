@@ -110,6 +110,13 @@ Input Quantity In Article Line
     Click Element                       xpath: //tbody//tr[${line}]/td[contains(@class, "quantity")]//input
     Input Text                          xpath: //tbody//tr[${line}]/td[contains(@class, "quantity")]//input    ${quantity}    
 
+Input RefShpPrice In Article Line
+    [Arguments]   ${refShpPrice}=1    ${line}=1
+    Wait Until Element Is Not Visible   class:blockUI blockMsg blockPage        timeout=60s
+    Wait Until Page Contains Element    xpath: //tbody//tr[1]/td[contains(@class, "refShpPrice")]//input
+    Click Element                       xpath: //tbody//tr[${line}]/td[contains(@class, "refShpPrice")]//input
+    Clear Element Text                  xpath: //tbody//tr[${line}]/td[contains(@class, "refShpPrice")]//input
+    Input Text                          xpath: //tbody//tr[${line}]/td[contains(@class, "refShpPrice")]//input    ${refShpPrice}    
 Confirm Document
     Wait Until Element Is Not Visible   class:blockUI blockMsg blockPage        timeout=60s
     Click Element                       xpath: //*[contains(text(), "Zatwierdź")]
@@ -117,17 +124,15 @@ Confirm Document
         Click Element                   xpath: //*[contains(text(), "Zatwierdź")]
     EXCEPT
         Sleep    2s
-    END
-    Wait Until Page Contains Element    xpath: //div[contains(@class, "flBtnClose")]
-    Click Element                       xpath: //div[contains(@class, "flBtnClose")]
-    Refresh Until                       xpath: //td/span[contains(text(), "Zatwierdzone")] 
+    END                     
+    Refresh Until Page Contains         xpath: //div[contains(@class, "window_header")]/*[contains(text(), "Zatwierdzone")] 
                  
 Document Should Open
     [Arguments]    ${docName}=PRZYJĘCIE ZEWNĘTRZNE PZ
     Wait Until Page Contains Element    xpath: //*[contains(text(), "${docName}")]    timeout=30s
 
 Document Should Be Confirmed
-    Wait Until Page Contains Element    xpath: //td/span[contains(text(), "Zatwierdzone")]      timeout=30s
+    Wait Until Page Contains Element    xpath: //div[contains(@class, "window_header")]/*[contains(text(), "Zatwierdzone")]      timeout=30s
 
 Input Doc Data
     Click Element                       xpath: //table[2]/tbody/tr/td[2]/div/span/input[@class="hasDatepicker"]
@@ -137,8 +142,8 @@ Input Doc Data
 
 Select Delivery Doc
     [Arguments]    ${element}=1
-    Wait Until Element Is Visible       xpath: //fieldset/table[1]/tbody/tr/td[3]/span[1]/a/span[1]
-    Click Element                       xpath: //fieldset/table[1]/tbody/tr/td[3]/span[1]/a/span[1]
+    Wait Until Element Is Visible       xpath: //table[1]/tbody/tr/td[3]/span[1]/a/span[1]
+    Click Element                       xpath: //table[1]/tbody/tr/td[3]/span[1]/a/span[1]
     Wait Until Page Contains Element    xpath: //div[1]/span/div/table[contains(@class, "dataview")]/tbody/tr[${element}]/td[1]      timeout=10s
     Click Element                       xpath: //div[1]/span/div/table[contains(@class, "dataview")]/tbody/tr[${element}]/td[1]
      
@@ -152,7 +157,7 @@ Select Article From List
     Wait Until Element Is Not Visible   class:blockUI blockMsg blockPage        timeout=60s
     Wait Until Page Contains Element    xpath: //span/table/tbody/tr[1]/td[1]/span/input      timeout=10s
     Click Element                       xpath: //span/table/tbody/tr[${element}]/td[1]/span/input
-    Click Element                       xpath: //input[contains(@value, "Zatwierdź")]
+    Click Element                       xpath: //button[contains(text(), "Zatwierdź")]
    
 Select Article From Modal List
     [Arguments]    ${element}=1

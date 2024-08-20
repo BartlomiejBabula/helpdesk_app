@@ -23,7 +23,8 @@ Create And Confirm WT
     Select From List Menu                                 Dodaj nową pozycję
     Input Good Name In Article Line                       Ziemniaki Luz
     Select Article From Modal List                        2
-    Input Quantity In Article Line                        9
+    Input Quantity In Article Line                        1
+    Input RefShpPrice In Article Line
     Click Recalculate
     Confirm Document
     Document Should Be Confirmed
