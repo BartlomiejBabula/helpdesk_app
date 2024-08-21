@@ -32,7 +32,7 @@ Create And Active Quantity Offer
     Select Left Menu                            Przeceny ilościowe
     Click Create New Quanitity Offer
     Quantity Offer Should Be Open
-    Input Offer Name                            AutomaticOffer
+    Input Offer Name                            AutomaticQuantityOffer
     Input Description                           
     Select From List Menu                       Dodaj nową pozycję
     Input Article In Offer                      485219

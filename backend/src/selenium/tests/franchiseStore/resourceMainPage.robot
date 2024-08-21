@@ -74,8 +74,8 @@ Select Orders Menu
     END
 
 Click Confirm Button
-    Wait Until Page Contains Element    xpath://*[@value="Zatwierdź"]   timeout=10s
-    Click Element                       xpath://*[@value="Zatwierdź"]
+    Wait Until Page Contains Element    xpath: //*[contains(text(), "Zatwierdź")]    timeout=10s
+    Click Element                       xpath: //*[contains(text(), "Zatwierdź")] 
 
 Close Info Dialog
     Wait Until Page Contains Element    xpath: //div[contains(@class, "flBtnClose")]   timeout=10s

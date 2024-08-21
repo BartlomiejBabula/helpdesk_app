@@ -14,7 +14,6 @@ ${LOGIN URL}         http://${SERVER}/esambo/login?0
 ${INVALID USER}      invalidUser
 ${INVALID PASSWORD}  invalidPass
   
-# robot --variable SERVER:10.5.1.125:17013 --variable BROWSER:headlessfirefox --variable VALID_USER:bartlomiej.babula.001 --variable VALID_PASSWORD:Szakal666 --variable FRANCHISE_STORE:A88  --suite login .
 
 *** Keywords ***
 Open Browser To Login Page
@@ -47,7 +46,7 @@ Error Login Should Be Show
 
 Select Shop
     [Arguments]    ${store}
-    Click Element  id:id2_title
+    Click Element  class: ddTitle
     Click Element  xpath: //span[text()[contains(.,'${store}')]]
     Click Button   name: login-button
 
@@ -61,20 +60,27 @@ Login FranchiseStore
     Select Frame    tag: iframe
 
 Refresh Until
-    [Arguments]    ${endLocator}=xpath: //*[contains(@class, "btnClose")] 
+    [Arguments]    ${endLocator}=xpath: //button[contains(text(), "Zamknij")] 
     WHILE  True    limit=20    
         Sleep            2s
-        TRY
-            Click Element        xpath: //div[contains(@class, "flBtnClose")]
+        TRY           
+            Wait Until Page Contains Element        xpath: //div[contains(text(), "100%")]    timeout=2s
+            Click Element                      ${endLocator} 
+            BREAK
         EXCEPT
-            TRY 
-                Click Element                      ${endLocator}
-                BREAK
-            EXCEPT
-                Click Element    xpath: //*[contains(@class, "refresh")] 
-            END   
-        END 
+            Click Element    xpath: //*[contains(@class, "refresh")]  
+        END  
     END
     
         
-    
+Refresh Until Page Contains
+    [Arguments]    ${endLocator}=xpath: //div[@class="window_header"]/span[contains(text(), "Zatwierdzone")] 
+    WHILE  True    limit=20    
+        Sleep            2s
+        TRY           
+            Wait Until Page Contains Element                     ${endLocator} 
+            BREAK
+        EXCEPT
+            Click Element    xpath: //*[contains(@class, "refresh")]  
+        END  
+    END

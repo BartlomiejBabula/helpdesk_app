@@ -34,7 +34,7 @@ Create And Confirm KPZ
     Input KPZ Doc Delivery
     Input Doc Data
     Input Doc Supplier
-    Select Delivery Doc                                   2
+    Select Delivery Doc                                   1
     Document Should Open                                  KOREKTA KPZ
     Input Comments
     Select From List Menu                                 Pokaż pozycje
