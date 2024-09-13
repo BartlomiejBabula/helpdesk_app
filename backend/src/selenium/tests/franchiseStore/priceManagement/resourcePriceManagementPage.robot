@@ -65,6 +65,7 @@ Activate Special Offer
     Click Element                       xpath: //*[contains(text(), "Zatwierdź")]
     Click Element                       xpath: //*[contains(text(), "Zatwierdź")]
     Wait Until Page Contains Element    xpath: //*[contains(text(), "Zatwierdź")]   timeout=10s
+    Wait Until Element Is Not Visible   class:blockUI blockMsg blockPage
     Click Element                       xpath: //*[contains(text(), "Zatwierdź")]
     Wait Until Page Contains Element    xpath: //*[contains(text(), "Uruchom Zadanie")]    timeout=10s
     Click Element                       xpath: //*[contains(text(), "Uruchom Zadanie")]

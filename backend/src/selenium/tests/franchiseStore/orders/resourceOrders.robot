@@ -6,8 +6,6 @@ Library           SeleniumLibrary
 ${SCANNER FILE}    /usr/src/app/src/selenium/ScannerFiles/order_scanner.txt
 ${ORDER FILE}      /usr/src/app/src/selenium/ScannerFiles/order_file.txt
 
-
-
 *** Keywords ***
 
 Click Prepare Orders Button
@@ -37,7 +35,8 @@ No Orders Create Info
     END
 
 Click Order From Scanner Or File
-    Wait Until Page Contains Element    xpath: //*[contains(text(), "Zamów ze skanera lub pliku")]   timeout=60s
+    Wait Until Element Is Enabled    xpath: //*[contains(text(), "Zamów ze skanera lub pliku")]   timeout=60s
+    Sleep     time_= 0.5s
     Click Element                       xpath: //*[contains(text(), "Zamów ze skanera lub pliku")] 
 
 Click Send Order From Scanner Button
