@@ -102,8 +102,8 @@ export class ReportsService {
     if (blockedReports.length > 0) {
       blockedReports.forEach((report: Reports) => {
         let compareDate = report.updatedAt;
-        compareDate.setMinutes(compareDate.getMinutes() + 90);
-        if (report.block === true && currentDate > compareDate) {
+        compareDate.setMinutes(compareDate.getMinutes() + 130); // 10min+
+        if (report.block === true && compareDate < currentDate) {
           console.log(`automatic report ${report.name} unblock`);
           this.reportsRepository.update({ id: report.id }, { block: false });
         }
