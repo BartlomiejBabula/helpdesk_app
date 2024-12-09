@@ -19,9 +19,8 @@ export class HealthService {
     private health: HealthCheckService,
     private http: HttpHealthIndicator,
   ) {}
-  @Cron('0 */15 * * * *')
+  @Cron('0 */45 * * * *')
   async automaticRunningSQLMonitoring() {
-    console.log('Checking long running sql');
     try {
       let conn = await oracledb.getConnection(samboDbConfig);
       const result = await conn.execute(
