@@ -19,7 +19,7 @@ export class HealthService {
     private health: HealthCheckService,
     private http: HttpHealthIndicator,
   ) {}
-  @Cron('0 */45 * * * *')
+  @Cron('0 */15 * * * *')
   async automaticRunningSQLMonitoring() {
     try {
       let conn = await oracledb.getConnection(samboDbConfig);
@@ -31,28 +31,31 @@ select round((sysdate - s.sql_exec_start) * 24 * 60 * 60, 0) as dur, s.osuser, s
 where 1=1 and status = 'ACTIVE' and osuser = 'weblogic' and tt.dur > 1 order by tt.dur desc`,
       );
       await conn.close();
-      let htmlRawText = '';
-      let alertEmail = false;
-      result.rows.forEach((sql: SQLType) => {
-        if (sql.DUR > 3600) {
-          if (alertEmail === false) {
-            alertEmail = true;
-          }
+      const fileredRows = result.rows.filter((row: SQLType, key: number) => {
+        if (row.DUR >= 1800) {
+          let check = result.rows.filter(
+            (check: SQLType, i: number) =>
+              key !== i && check.SQL_ID === row.SQL_ID && check.DUR >= 1800,
+          );
+          if (check.length > 0) return check;
+        }
+      });
+      if (fileredRows.length > 0) {
+        let htmlRawText = '';
+        fileredRows.forEach((sql: SQLType) => {
           htmlRawText =
             htmlRawText +
             `${sql.SQL_ID}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${sql.DUR}s<br />`;
-        }
-      });
-      if (alertEmail) {
+        });
         transporter
           .sendMail({
             from: EMAIL,
             to: 'esambo_hd@asseco.pl',
             subject: 'Warning: Długo przetwarzające się SQL',
             html: `<p>Długo przetwarzające SQL:<br />
-        <br />
-SQL_ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Czas trwania <br />
-${htmlRawText}</p>`,
+               <br />
+       SQL_ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Czas trwania <br />
+       ${htmlRawText}</p>`,
           })
           .then((info: any) => {
             console.log({ info });
