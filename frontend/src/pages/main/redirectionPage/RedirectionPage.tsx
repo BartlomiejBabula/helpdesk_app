@@ -77,7 +77,7 @@ const RedirectionPage = () => {
         variant='h6'
         sx={{
           letterSpacing: 2,
-          color: "#38373D",
+          color: "text.primary",
           marginLeft: 1,
           marginBottom: 1,
         }}
@@ -99,7 +99,7 @@ const RedirectionPage = () => {
             variant='subtitle1'
             sx={{
               letterSpacing: 1,
-              color: "#38373D",
+              color: "text.primary",
               marginBottom: 2,
               fontWeight: "medium",
               marginLeft: 1,
@@ -113,11 +113,10 @@ const RedirectionPage = () => {
                 key={id}
                 variant='contained'
                 size='large'
+                 color="secondary"
                 style={{
                   marginBottom: 10,
                   width: 330,
-                  backgroundImage:
-                    "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
                 }}
                 onClick={() => {
                   handleGoToExternalServices(esambo);
@@ -143,7 +142,7 @@ const RedirectionPage = () => {
             variant='subtitle1'
             sx={{
               letterSpacing: 1,
-              color: "#38373D",
+              color: "text.primary",
               marginBottom: 2,
               fontWeight: "medium",
               marginLeft: 1,
@@ -157,11 +156,10 @@ const RedirectionPage = () => {
                 key={id}
                 variant='contained'
                 size='large'
+                color="secondary"
                 style={{
                   marginBottom: 10,
                   width: 330,
-                  backgroundImage:
-                    "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
                 }}
                 onClick={() => {
                   handleGoToExternalServices(button);

@@ -5,6 +5,7 @@ import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutli
 import HomeIcon from "@mui/icons-material/Home";
 import ShortcutIcon from "@mui/icons-material/Shortcut";
 import ChartIcon from "@mui/icons-material/BarChart";
+import AccountIcon from "@mui/icons-material/AccountBox";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -62,6 +63,9 @@ export const LeftMenu = () => {
       case "gica":
         navigate({ pathname: "./gica" });
         break;
+      case "account":
+        navigate({ pathname: "./account" });
+        break;
       default:
         break;
     }
@@ -81,11 +85,11 @@ export const LeftMenu = () => {
         flexDirection: "column",
       }}
     >
-      <Typography variant='subtitle2' sx={{ letterSpacing: 4, color: "white" }}>
+      <Typography variant="subtitle2" sx={{ letterSpacing: 4, color: "white" }}>
         HELPDESK
       </Typography>
       <Typography
-        variant='h4'
+        variant="h4"
         sx={{
           letterSpacing: 2,
           fontWeight: "bold",
@@ -106,9 +110,9 @@ export const LeftMenu = () => {
         <ListItem
           disablePadding
           sx={{
-            backgroundImage:
+            bgcolor:
               window.location.pathname === "/dashboard/"
-                ? "linear-gradient(to bottom right, #4fa8e0, #457b9d)"
+                ? "secondary.main"
                 : "none",
             borderRadius: 1,
             color:
@@ -128,15 +132,15 @@ export const LeftMenu = () => {
                 }}
               />
             </ListItemIcon>
-            <ListItemText primary='Strona głowna' />
+            <ListItemText primary="Strona głowna" />
           </ListItemButton>
         </ListItem>
         <ListItem
           disablePadding
           sx={{
-            backgroundImage:
+            bgcolor:
               window.location.pathname === "/dashboard/jobs"
-                ? "linear-gradient(to bottom right, #4fa8e0, #457b9d)"
+                ? "secondary.main"
                 : "none",
             borderRadius: 1,
             color:
@@ -152,15 +156,15 @@ export const LeftMenu = () => {
             <ListItemIcon>
               <MonitIcon sx={{ fontSize: 20 }} />
             </ListItemIcon>
-            <ListItemText primary='Procesy' />
+            <ListItemText primary="Procesy" />
           </ListItemButton>
         </ListItem>
         <ListItem
           disablePadding
           sx={{
-            backgroundImage:
+            bgcolor:
               window.location.pathname === "/dashboard/gica"
-                ? "linear-gradient(to bottom right, #4fa8e0, #457b9d)"
+                ? "secondary.main"
                 : "none",
             borderRadius: 1,
             color:
@@ -176,15 +180,15 @@ export const LeftMenu = () => {
             <ListItemIcon>
               <ChartIcon sx={{ fontSize: 20 }} />
             </ListItemIcon>
-            <ListItemText primary='GICA' />
+            <ListItemText primary="GICA" />
           </ListItemButton>
         </ListItem>
         <ListItem
           disablePadding
           sx={{
-            backgroundImage:
+            bgcolor:
               window.location.pathname === "/dashboard/jira"
-                ? "linear-gradient(to bottom right, #4fa8e0, #457b9d)"
+                ? "secondary.main"
                 : "none",
             borderRadius: 1,
             color:
@@ -200,15 +204,15 @@ export const LeftMenu = () => {
             <ListItemIcon>
               <DriveFileRenameOutlineIcon sx={{ fontSize: 20 }} />
             </ListItemIcon>
-            <ListItemText primary='Automat JIRA' />
+            <ListItemText primary="Automat JIRA" />
           </ListItemButton>
         </ListItem>
         <ListItem
           disablePadding
           sx={{
-            backgroundImage:
+            bgcolor:
               window.location.pathname === "/dashboard/shoplist"
-                ? "linear-gradient(to bottom right, #4fa8e0, #457b9d)"
+                ? "secondary.main"
                 : "none",
             borderRadius: 1,
             color:
@@ -226,15 +230,15 @@ export const LeftMenu = () => {
             <ListItemIcon>
               <ListIcon sx={{ fontSize: 20 }} />
             </ListItemIcon>
-            <ListItemText primary='Lista sklepów' />
+            <ListItemText primary="Lista sklepów" />
           </ListItemButton>
         </ListItem>
         <ListItem
           disablePadding
           sx={{
-            backgroundImage:
+            bgcolor:
               window.location.pathname === "/dashboard/redirection"
-                ? "linear-gradient(to bottom right, #4fa8e0, #457b9d)"
+                ? "secondary.main"
                 : "none",
             borderRadius: 1,
             color:
@@ -252,17 +256,41 @@ export const LeftMenu = () => {
             <ListItemIcon>
               <ShortcutIcon sx={{ fontSize: 20 }} />
             </ListItemIcon>
-            <ListItemText primary='Serwisy' />
+            <ListItemText primary="Serwisy" />
           </ListItemButton>
         </ListItem>
-
+        <ListItem
+          disablePadding
+          sx={{
+            bgcolor:
+              window.location.pathname === "/dashboard/account"
+                ? "secondary.main"
+                : "none",
+            borderRadius: 1,
+            color:
+              window.location.pathname === "/dashboard/account"
+                ? "white"
+                : "#ccc",
+          }}
+        >
+          <ListItemButton
+            onClick={() => {
+              changeTab("account");
+              setTab("account");
+            }}
+          >
+            <ListItemIcon>
+              <AccountIcon sx={{ fontSize: 20 }} />
+            </ListItemIcon>
+            <ListItemText primary="Konto" />
+          </ListItemButton>
+        </ListItem>
         <ListItem
           disablePadding
           sx={{
             position: "absolute",
             bottom: 0,
-            backgroundImage:
-              "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
+            bgcolor: "secondary.main",
             borderRadius: 1,
             color: "white",
           }}
@@ -271,7 +299,7 @@ export const LeftMenu = () => {
             <ListItemIcon>
               <LogoutIcon sx={{ fontSize: 20 }} />
             </ListItemIcon>
-            <ListItemText primary='Wyloguj' />
+            <ListItemText primary="Wyloguj" />
           </ListItemButton>
         </ListItem>
       </List>

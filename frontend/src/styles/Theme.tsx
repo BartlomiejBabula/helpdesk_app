@@ -10,10 +10,18 @@ export const appTheme = createTheme({
       light: alpha(mainBlueBase, 0.7),
       contrastText:
         getContrastRatio(mainBlueBase, "#fff") > 4.5 ? "#fff" : "#111",
+      dark:'linear-gradient(to bottom right, #4fa8e0, #457b9d)'
     },
     secondary: {
-      main: "rgba(230, 57, 70, 1)",
+      main: "#498EBA",
     },
+    background:{
+      default: "#f7faff",
+    },
+    text:{
+      primary:"#38373D",
+      secondary:"rgba(0, 0, 0, 0.6)"
+    }
   },
   components: {
     MuiTextField: {
@@ -50,6 +58,72 @@ export const appTheme = createTheme({
         },
       },
     },
+  },
+});
+
+
+
+export const appDarkTheme = createTheme({
+  
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: blueMain,
+      light: alpha(mainBlueBase, 0.7),
+      contrastText:
+        getContrastRatio(mainBlueBase, "#fff") > 4.5 ? "#fff" : "#111",
+    },
+    secondary: {
+      main: alpha(mainBlueBase, 0.7),
+    },
+    background:{
+      default: "#131414",
+      paper:"#38373D"
+    },
+    text:{
+      primary:'#ccc',
+      secondary:"#999"
+    },
+    error:{
+      main:'#e57373'
+    }
+  },
+  components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          height: 70,
+        },
+      },
+    },
+    MuiListItemIcon: {
+      styleOverrides: {
+        root: {
+          color: "white",
+          minWidth: 0,
+          marginRight: 16,
+        },
+      },
+    },
+    MuiListItemText: {
+      defaultProps: {
+        primaryTypographyProps: {
+          variant: "subtitle2",
+          fontWeight: "normal",
+          letterSpacing: 0.5,
+        },
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          paddingTop: 6,
+          paddingBottom: 6,
+          paddingRight: 0,
+        },
+      },
+    },
+    
   },
 });
 

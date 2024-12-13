@@ -31,7 +31,7 @@ services:
       - DB_PORT=$MYSQLDB_DOCKER_PORT
     stdin_open: true
     tty: true
-    command: npm run start:prod
-    #command: npm run start:dev
+    #command: npm run start:prod
+    command: npm run start:dev
 volumes:
   db:

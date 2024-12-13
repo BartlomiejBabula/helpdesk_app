@@ -16,6 +16,7 @@ import { getStoreList } from "../../../redux/stores/getStoreList";
 import SnackbarZabbix from "../../../components/SnackbarZabbix";
 import { getZabbix } from "../../../redux/zabbix/getZabbix";
 import { zabbixSelectorShowed } from "../../../redux/zabbix/ZabbixSlice";
+import AccountPage from "../accountPage/AccountPage";
 
 const Dashboard = () => {
   const dispatch = useAppDispatch();
@@ -52,14 +53,16 @@ const Dashboard = () => {
   return (
     <Card
       sx={{
+        borderRadius:0,
         display: "flex",
         height: "100%",
-        backgroundColor: "#f7faff",
+        backgroundColor: "background.default",
       }}
     >
       <LeftMenu />
       <Box sx={{ width: "100%" }}>
         <Routes>
+        <Route path='/account' element={<AccountPage />} />
           <Route path='/gica' element={<GicaPage />} />
           <Route path='/redirection' element={<RedirectionPage />} />
           <Route path='/jira' element={<JiraPage />} />

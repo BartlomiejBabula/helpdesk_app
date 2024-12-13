@@ -18,6 +18,12 @@ export class User {
   password: string;
 
   @Column({ nullable: true })
+  role: 'helpdesk' | 'carrefour';
+
+  @Column({ nullable: true })
+  darkTheme: boolean;
+
+  @Column({ nullable: true })
   refreshToken: string;
 
   @Column({ nullable: true })

@@ -58,7 +58,7 @@ const JiraPage = () => {
         variant='h6'
         sx={{
           letterSpacing: 2,
-          color: "#38373D",
+          color: "text.primary",
           marginBottom: 1,
           marginLeft: 1,
         }}
@@ -78,7 +78,7 @@ const JiraPage = () => {
           variant='subtitle1'
           sx={{
             letterSpacing: 1,
-            color: "#38373D",
+            color: "text.primary",
             marginBottom: 2,
             fontWeight: "medium",
             marginLeft: 1,
@@ -104,7 +104,7 @@ const JiraPage = () => {
           value={input}
           sx={{ width: "100%", marginTop: 3, alignSelf: "center" }}
         />
-        <Typography variant='subtitle2' sx={{ color: "red" }}>
+        <Typography variant='subtitle2' sx={{ color: "error.main" }}>
           Uwaga! - ustawienie parametru uruchamia automatyczną rejestracje
           zgłoszeń z Carrefour, pod wskazanym nadrzędnym zadaniem - Hosting i
           utrzymanie sklepów za dany miesiąc
@@ -117,8 +117,6 @@ const JiraPage = () => {
             width: 200,
             marginTop: 5,
             marginBottom: 2,
-            backgroundImage:
-              "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
           }}
           disabled={
             jira
@@ -126,6 +124,7 @@ const JiraPage = () => {
                 jira.auto === checked
               : false
           }
+           color="secondary"
           onClick={handleSubmit}
           variant='contained'
         >

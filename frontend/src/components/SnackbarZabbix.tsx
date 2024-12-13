@@ -81,7 +81,7 @@ const SnackbarZabbix = () => {
         <AlertTitle
           sx={{
             letterSpacing: 1,
-            color: "#38373D",
+            color: "text.primary",
             marginBottom: 5,
             fontWeight: "medium",
           }}

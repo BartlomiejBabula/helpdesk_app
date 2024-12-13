@@ -79,10 +79,9 @@ export const JobModal = ({
             <Box>
               <Button
                 variant='contained'
+                 color="secondary"
                 style={{
                   width: 70,
-                  backgroundImage:
-                    "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
                 }}
                 onClick={() => {
                   handleConfirmAction();
@@ -92,11 +91,10 @@ export const JobModal = ({
               </Button>
               <Button
                 variant='contained'
+                 color="secondary"
                 style={{
                   marginLeft: 20,
                   width: 70,
-                  backgroundImage:
-                    "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
                 }}
                 onClick={() => {
                   handleCloseModal();

@@ -10,6 +10,7 @@ import {
   MenuItem,
   FormControl,
   CircularProgress,
+  InputLabel,
 } from "@mui/material";
 import api from "../../../api/api";
 import { useFormik } from "formik";
@@ -113,7 +114,6 @@ export const ModalStoreList = ({
               position: "absolute",
               top: 10,
               right: 10,
-              color: "black",
               cursor: "pointer",
               fontSize: 20,
             }}
@@ -127,7 +127,7 @@ export const ModalStoreList = ({
             sx={{
               marginBottom: 4,
               marginTop: 3,
-              color: "rgba(0, 0, 0, 0.6)",
+              color: "text.secondary",
               paddingX: 3,
             }}
           >
@@ -135,24 +135,24 @@ export const ModalStoreList = ({
             zgodną z podanymi poniżej parametrami.
           </Typography>
           <form onSubmit={formikStoreList.handleSubmit}>
+          <FormControl  sx={{ width: 300, marginBottom: 3 }} >
+          <InputLabel >Status</InputLabel>
             <Select
-              sx={{ width: 300, marginBottom: 3 }}
               id='type'
               name='type'
+              label="Status"
               value={formikStoreList.values.type}
               onChange={formikStoreList.handleChange}
               error={
                 formikStoreList.touched.type &&
                 Boolean(formikStoreList.errors.type)
               }
-              native
-              autoFocus
             >
-              <option value="'A'">Aktywne</option>
-              <option value="'N'">Nieaktywne</option>
-              <option value="'A', 'N'">Wszystkie</option>
+              <MenuItem value="'A'">Aktywne</MenuItem>
+              <MenuItem value="'N'">Nieaktywne</MenuItem>
+              <MenuItem value="'A', 'N'">Wszystkie</MenuItem>
             </Select>
-
+            </FormControl>
             <FormControl sx={{ width: 300 }}>
               <Select
                 multiple
@@ -183,9 +183,8 @@ export const ModalStoreList = ({
                 height: 42,
                 width: 200,
                 marginTop: 5,
-                backgroundImage:
-                  "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
               }}
+               color="secondary"
               type='submit'
               variant='contained'
             >
