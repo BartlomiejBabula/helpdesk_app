@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { ThemeProvider } from "@mui/material/styles";
-import { appTheme } from "./styles/Theme";
+import { appTheme, appDarkTheme } from "./styles/Theme";
 import CssBaseline from "@mui/material/CssBaseline";
 import WelcomePage from "./pages/auth/WelcomePage";
 import Dashboard from "./pages/main/dashboard/Dashboard";
@@ -37,7 +37,7 @@ const App = () => {
   }, [dispatch]);
 
   return (
-    <ThemeProvider theme={appTheme}>
+    <ThemeProvider theme={user.darkTheme ? appDarkTheme : appTheme}>
       <BrowserRouter>
         <CssBaseline />
         <div
@@ -53,9 +53,9 @@ const App = () => {
           }}
         >
           <Routes>
-            <Route path='/*' element={<WelcomePage />} />
+            <Route path="/*" element={<WelcomePage />} />
             {user.isLogged && (
-              <Route path='/dashboard/*' element={<Dashboard />} />
+              <Route path="/dashboard/*" element={<Dashboard />} />
             )}
           </Routes>
         </div>

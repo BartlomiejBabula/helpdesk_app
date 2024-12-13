@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Paper, Stack, Button, TextField } from "@mui/material";
+import { Paper, Stack, Button, TextField, MenuItem, InputLabel, FormControl } from "@mui/material";
 import Select from "@mui/material/Select";
 import { AlertProps } from "@mui/material/Alert";
 import { useFormik } from "formik";
@@ -101,45 +101,45 @@ export const AddShop = () => {
             }
             sx={{ width: 205 }}
           />
+          <FormControl sx={{ width: 130, height: 1 }} size="small">
+          <InputLabel>Status</InputLabel>
           <Select
             size='small'
             id='status'
             name='status'
-            sx={{ width: 130, height: 1 }}
+            label="Status"
             value={formikAddShop.values.status}
             onChange={formikAddShop.handleChange}
             error={
               formikAddShop.touched.status &&
               Boolean(formikAddShop.errors.status)
             }
-            native
-            autoFocus
           >
-            <option value=''>Status</option>
-            <option value='Nowy'>Nowy</option>
-            <option value='Otwarty'>Otwarty</option>
-            <option value='Zamknięty'>Zamknięty</option>
+            <MenuItem value='Nowy'>Nowy</MenuItem>
+            <MenuItem value='Otwarty'>Otwarty</MenuItem>
+            <MenuItem value='Zamknięty'>Zamknięty</MenuItem>
           </Select>
+          </FormControl>
+          <FormControl sx={{ width: 200, height: 1 }} size="small">
+          <InputLabel>Typ sklepu</InputLabel>
           <Select
             size='small'
             id='storeType'
             name='storeType'
-            sx={{ width: 200, height: 1 }}
+            label="Typ sklepu"
             value={formikAddShop.values.storeType}
             onChange={formikAddShop.handleChange}
             error={
               formikAddShop.touched.storeType &&
               Boolean(formikAddShop.errors.storeType)
             }
-            native
-            autoFocus
           >
-            <option value=''>Typ sklepu</option>
-            <option value='Franczyza'>Franczyza</option>
-            <option value='Sklep sieciowy'>Sklep sieciowy</option>
-            <option value='Multisambo'>Multisambo</option>
-            <option value='Centrala'>Centrala</option>
+            <MenuItem value='Franczyza'>Franczyza</MenuItem>
+            <MenuItem value='Sklep sieciowy'>Sklep sieciowy</MenuItem>
+            <MenuItem value='Multisambo'>Multisambo</MenuItem>
+            <MenuItem value='Centrala'>Centrala</MenuItem>
           </Select>
+          </FormControl>
           <TextField
             autoComplete='off'
             label='Informacje'
@@ -166,9 +166,8 @@ export const AddShop = () => {
             letterSpacing: 2,
             height: 42,
             width: 200,
-            backgroundImage:
-              "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
           }}
+          color="secondary"
           type='submit'
           variant='contained'
         >

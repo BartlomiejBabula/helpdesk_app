@@ -111,7 +111,7 @@ export const JobsComponent = () => {
   return (
     <Box style={{ height: "78vh", minHeight: 560 }}>
       <DataGrid
-        style={{ backgroundColor: "white" }}
+        sx={{ bgcolor: "background.paper" }}
         rows={jobs ? formatedJobs : []}
         columns={columnsProcess}
         disableColumnMenu={true}

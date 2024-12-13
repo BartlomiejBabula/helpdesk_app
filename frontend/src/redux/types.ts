@@ -2,6 +2,8 @@ export interface UserType {
   id: number;
   email: string;
   createdAt: string;
+  darkTheme: boolean;
+  role?: "helpdesk" | "carrefour";
 }
 
 export interface JobType {

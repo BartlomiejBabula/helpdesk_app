@@ -7,6 +7,9 @@ import {
   Backdrop,
   TextField,
   Select,
+  FormControl,
+  InputLabel,
+  MenuItem,
 } from "@mui/material";
 import api from "../../../api/api";
 import { useFormik } from "formik";
@@ -102,7 +105,6 @@ export const ModalJiraSLA = ({
               position: "absolute",
               top: 10,
               right: 10,
-              color: "black",
               cursor: "pointer",
               fontSize: 20,
             }}
@@ -116,26 +118,27 @@ export const ModalJiraSLA = ({
             sx={{
               marginBottom: 3,
               marginTop: 3,
-              color: "rgba(0, 0, 0, 0.6)",
+              color: "text.secondary",
             }}
           >
             Uzupełnij numer nadrzędnego zadania oraz daty w formacie YYYY-MM-DD
             dni wykluczeń z SLA, przedzielone przecinkami
           </Typography>
           <form onSubmit={formikJira.handleSubmit}>
+          <FormControl sx={{ width: 350, height: 1, marginBottom: 3 }}>
+          <InputLabel >Projekt</InputLabel>
             <Select
               id='type'
               name='type'
-              sx={{ width: 350, height: 1, marginBottom: 3 }}
+              label="Projekt"
               value={formikJira.values.type}
               onChange={formikJira.handleChange}
               error={formikJira.touched.type && Boolean(formikJira.errors.type)}
-              native
-              autoFocus
             >
-              <option value='esambo'>eSambo</option>
-              <option value='qlik'>QlikView</option>
+              <MenuItem value='esambo'>eSambo</MenuItem>
+              <MenuItem value='qlik'>QlikView</MenuItem>
             </Select>
+            </FormControl>
             <TextField
               autoComplete='off'
               label='Zadanie nadrzędne'
@@ -182,9 +185,8 @@ export const ModalJiraSLA = ({
                 height: 42,
                 width: 200,
                 marginTop: 10,
-                backgroundImage:
-                  "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
               }}
+               color="secondary"
               type='submit'
               variant='contained'
             >

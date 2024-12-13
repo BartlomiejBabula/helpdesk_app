@@ -9,6 +9,8 @@ type getUserProfileType = {
   id: number;
   email: string;
   createdAt: string;
+  darkTheme?: boolean;
+  role?: "helpdesk" | "carrefour";
 };
 
 export const getUserProfile = createAsyncThunk<

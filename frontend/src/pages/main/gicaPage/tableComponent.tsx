@@ -42,7 +42,7 @@ const TableComponent = ({ selectedData, GICA }: TableComponentType) => {
           variant='subtitle1'
           sx={{
             letterSpacing: 1,
-            color: "#38373D",
+            color: "text.primary",
             marginBottom: 3,
             fontWeight: "medium",
           }}
@@ -99,7 +99,7 @@ const TableComponent = ({ selectedData, GICA }: TableComponentType) => {
           variant='subtitle1'
           sx={{
             letterSpacing: 1,
-            color: "#38373D",
+            color: "text.primary",
             marginBottom: 3,
             fontWeight: "medium",
           }}

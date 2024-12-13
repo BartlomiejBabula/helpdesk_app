@@ -94,7 +94,7 @@ export const Report = () => {
         sx={{
           marginLeft: 1,
           letterSpacing: 1,
-          color: "#38373D",
+          color: "text.primary",
           marginBottom: 2,
           fontWeight: "medium",
         }}
@@ -108,12 +108,11 @@ export const Report = () => {
               key={id}
               variant='contained'
               size='large'
+              color="secondary"
               style={{
                 marginBottom: 10,
                 width: "24vw",
                 minWidth: 250,
-                backgroundImage:
-                  "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
               }}
               disabled={
                 blockReports.blocked?.includes(raport.btt) ? true : false

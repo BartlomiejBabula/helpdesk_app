@@ -5,6 +5,7 @@ import { User } from './entities/users.entity';
 import { CreateUserDto } from './dto/createUser';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { UpdateThemeDto } from './dto/updateTheme';
 
 @Injectable()
 export class UsersService {
@@ -19,6 +20,7 @@ export class UsersService {
     const salt = await bcrypt.genSalt();
     user.password = await bcrypt.hash(CreateUserDto.password, salt);
     user.email = CreateUserDto.email;
+    user.role = 'helpdesk';
     return this.usersRepository.save(user).catch((e) => {
       if (e.driverError.code === 'ER_DUP_ENTRY') {
         throw new BadRequestException(
@@ -61,6 +63,16 @@ export class UsersService {
     return 'Password Updated';
   }
 
+  async updateTheme(updateThemeDto: UpdateThemeDto): Promise<any> {
+    await this.usersRepository.update(updateThemeDto.id, {
+      darkTheme: updateThemeDto.darkTheme,
+    });
+    const user = await this.usersRepository.findOne({
+      where: { id: updateThemeDto.id },
+    });
+    return user.darkTheme;
+  }
+
   async getProfile(accessToken: string): Promise<any> {
     const userToken = this.jwtService.decode(accessToken);
     const fetchedUser = await this.findById(userToken.payload.sub);
@@ -69,6 +81,8 @@ export class UsersService {
       email: fetchedUser.email,
       createAt: fetchedUser.createdAt,
       updateAt: fetchedUser.updatedAt,
+      darkTheme: fetchedUser.darkTheme,
+      role: fetchedUser.role,
     };
     return user;
   }

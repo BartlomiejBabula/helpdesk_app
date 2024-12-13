@@ -51,7 +51,7 @@ const JobsPage = () => {
           variant='h6'
           sx={{
             letterSpacing: 2,
-            color: "#38373D",
+            color: "text.primary",
             marginLeft: 1,
             marginBottom: 1,
           }}
@@ -59,8 +59,8 @@ const JobsPage = () => {
           Monitoring
         </Typography>
         <Tabs value={tab} onChange={handleChange}>
-          <Tab sx={{ color: "#38373D" }} label='Wszystkie procesy' />
-          <Tab sx={{ color: "#38373D" }} label='Procesy z błędem' />
+          <Tab sx={{ color: "text.primary" }} label='Wszystkie procesy' />
+          <Tab sx={{ color: "text.primary" }} label='Procesy z błędem' />
         </Tabs>
         <TabPanel value={tab} index={1}>
           <JobsWithErrorComponent />

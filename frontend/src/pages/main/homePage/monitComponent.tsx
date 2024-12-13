@@ -145,7 +145,7 @@ export const Monitoring = () => {
         variant='subtitle1'
         sx={{
           letterSpacing: 1,
-          color: "#38373D",
+          color: "text.primary",
           marginBottom: 1,
           fontWeight: "medium",
           marginLeft: 1,
@@ -154,7 +154,7 @@ export const Monitoring = () => {
         Długo przetwarzające się procesy
       </Typography>
       <DataGrid
-        style={{ height: "54vh", minHeight: 360, backgroundColor: "white" }}
+        sx={{ height: "54vh", minHeight: 360, bgcolor: "background.paper" }}
         rows={filteredJobs ? filteredJobs : []}
         columns={columnsProcess}
         disableColumnMenu={true}

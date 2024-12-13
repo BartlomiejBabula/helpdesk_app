@@ -58,7 +58,7 @@ const ChartComponent = ({ GICA, setSelectedData }: ChartComponentType) => {
         variant='subtitle1'
         sx={{
           letterSpacing: 1,
-          color: "#38373D",
+          color: "text.primary",
           marginBottom: 6,
           fontWeight: "medium",
         }}
