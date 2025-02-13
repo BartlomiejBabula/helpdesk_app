@@ -8,6 +8,9 @@ import { samboDbConfig } from 'src/samboDB';
 import { GetStoreListDto } from './dto/getStoreList';
 import { Cron } from '@nestjs/schedule';
 import xlsx from 'node-xlsx';
+import { LoggerService } from 'src/logger/logger.service';
+import { LogStatus } from 'src/logger/dto/getLog';
+import { LogTaskType } from 'src/logger/dto/createLog';
 
 const oracledb = require('oracledb');
 
@@ -16,6 +19,7 @@ export class StoresService {
   constructor(
     @InjectRepository(Stores)
     private storesRepository: Repository<Stores>,
+    private loggerService: LoggerService,
   ) {}
 
   async getStores(): Promise<Stores[] | null> {
@@ -28,12 +32,25 @@ export class StoresService {
 
   async createNewStore(
     createStoreDto: CreateStoreDto,
+    accessToken: string,
   ): Promise<Stores | string> {
+    const id = await this.loggerService.createLog({
+      task: LogTaskType.CREATE_STORE,
+      status: LogStatus.OPEN,
+      accessToken: accessToken,
+    });
     const newStore = createStoreDto;
     const newStoreExist = await this.storesRepository.findOne({
       where: { storeNumber: newStore.storeNumber },
     });
     if (newStoreExist) {
+      await this.loggerService.createLog({
+        accessToken: accessToken,
+        task: LogTaskType.CREATE_STORE,
+        status: LogStatus.DONE,
+        taskId: id,
+        description: `Store exists with number ${newStore.storeNumber}`,
+      });
       return `Store exists with number ${newStore.storeNumber}`;
     } else {
       const store = new Stores();
@@ -42,6 +59,13 @@ export class StoresService {
       store.storeNumber = newStore.storeNumber;
       store.storeType = newStore.storeType;
       await this.storesRepository.save(store);
+      await this.loggerService.createLog({
+        accessToken: accessToken,
+        task: LogTaskType.CREATE_STORE,
+        status: LogStatus.DONE,
+        taskId: id,
+        description: `Store created ${newStore.storeNumber}`,
+      });
       return store;
     }
   }
@@ -49,7 +73,13 @@ export class StoresService {
   async updateStore(
     updateStoreDto: UpdateStoreDto,
     id: number,
+    accessToken: string,
   ): Promise<Stores | string> {
+    const logId = await this.loggerService.createLog({
+      task: LogTaskType.UPDATE_STORE_LIST,
+      status: LogStatus.OPEN,
+      accessToken: accessToken,
+    });
     const storeSelected = await this.storesRepository.findOne({
       where: { id },
     });
@@ -61,13 +91,34 @@ export class StoresService {
           updateStoreDto.information !== storeSelected.information)
       ) {
         await this.storesRepository.update({ id }, updateStoreDto);
+        await this.loggerService.createLog({
+          taskId: logId,
+          task: LogTaskType.UPDATE_STORE_LIST,
+          status: LogStatus.DONE,
+          accessToken: accessToken,
+          description: `Store ${storeSelected.storeNumber} updated`,
+        });
         return await this.storesRepository.findOne({
           where: { id },
         });
       } else {
+        await this.loggerService.createLog({
+          taskId: logId,
+          task: LogTaskType.UPDATE_STORE_LIST,
+          status: LogStatus.DONE,
+          accessToken: accessToken,
+          description: `No data to update`,
+        });
         return `No data to update`;
       }
     } else {
+      await this.loggerService.createLog({
+        taskId: logId,
+        task: LogTaskType.UPDATE_STORE_LIST,
+        status: LogStatus.DONE,
+        accessToken: accessToken,
+        description: `No store ID: ${id}`,
+      });
       return `No store ID: ${id}`;
     }
   }
@@ -85,12 +136,17 @@ export class StoresService {
     return storeList;
   }
 
-  @Cron('0 */30 * * * *')
+  @Cron('*/30 * * * *', {
+    name: LogTaskType.UPDATE_STORE_LIST,
+  })
   async automaticUpdateStores() {
+    const logId = await this.loggerService.createLog({
+      task: LogTaskType.UPDATE_STORE_LIST,
+      status: LogStatus.OPEN,
+    });
     try {
       const workSheetsFromFile = xlsx.parse(`/usr/src/app/lista-sklepow.xlsx`);
       await this.storesRepository.clear();
-      console.log('automatic stores list update');
       workSheetsFromFile[0].data.map((store: any, id) => {
         if (id !== 0) {
           let newStore = new Stores();
@@ -104,15 +160,32 @@ export class StoresService {
           this.storesRepository.save(newStore);
         }
       });
-
       const fs = require('fs');
       fs.existsSync(`/usr/src/app/lista-sklepow.xlsx`) &&
-        fs.unlink(`/usr/src/app/lista-sklepow.xlsx`, (err: any) => {
-          if (err) {
-            console.error(err);
+        fs.unlink(`/usr/src/app/lista-sklepow.xlsx`, (error: any) => {
+          if (error) {
+            this.loggerService.createLog({
+              taskId: logId,
+              task: LogTaskType.UPDATE_STORE_LIST,
+              status: LogStatus.DONE,
+              description: `${error}`,
+            });
             return;
           }
         });
-    } catch (error) {}
+      await this.loggerService.createLog({
+        taskId: logId,
+        task: LogTaskType.UPDATE_STORE_LIST,
+        status: LogStatus.DONE,
+        description: 'Store List updated',
+      });
+    } catch (error) {
+      await this.loggerService.createLog({
+        taskId: logId,
+        task: LogTaskType.UPDATE_STORE_LIST,
+        status: LogStatus.DONE,
+        description: `${error}`,
+      });
+    }
   }
 }

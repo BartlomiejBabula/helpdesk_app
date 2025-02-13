@@ -7,6 +7,11 @@ import {
   //   Matches,
 } from 'class-validator';
 
+export enum UserRoleType {
+  HELPDESK = 'helpdesk',
+  CARREFOUR = 'carrefour',
+}
+
 export class CreateUserDto {
   @IsNotEmpty()
   @IsEmail()

@@ -4,7 +4,6 @@ import JobsPage from "../jobPage/JobsPage";
 import HomePage from "../homePage/HomePage";
 import { Card, Box } from "@mui/material";
 import { LeftMenu } from "./leftMenuComponent";
-import JiraPage from "../jiraPage/JiraPage";
 import GicaPage from "../gicaPage/GicaPage";
 import RedirectionPage from "../redirectionPage/RedirectionPage";
 import { useEffect } from "react";
@@ -17,6 +16,10 @@ import SnackbarZabbix from "../../../components/SnackbarZabbix";
 import { getZabbix } from "../../../redux/zabbix/getZabbix";
 import { zabbixSelectorShowed } from "../../../redux/zabbix/ZabbixSlice";
 import AccountPage from "../accountPage/AccountPage";
+import SchedulePage from "../schedulePage/SchedulePage";
+import EditSchedulePage from "../schedulePage/EditSchedulePage";
+import { getSchedules } from "../../../redux/schedules/getSchedules";
+import LoggerPage from "../logggerPage/LoggerPage";
 
 const Dashboard = () => {
   const dispatch = useAppDispatch();
@@ -36,6 +39,7 @@ const Dashboard = () => {
             dispatch(getJobs());
             dispatch(getStoreList());
             dispatch(getZabbix());
+            dispatch(getSchedules());
           })
           .catch((error) => {
             destroyToken();
@@ -53,7 +57,7 @@ const Dashboard = () => {
   return (
     <Card
       sx={{
-        borderRadius:0,
+        borderRadius: 0,
         display: "flex",
         height: "100%",
         backgroundColor: "background.default",
@@ -62,13 +66,15 @@ const Dashboard = () => {
       <LeftMenu />
       <Box sx={{ width: "100%" }}>
         <Routes>
-        <Route path='/account' element={<AccountPage />} />
-          <Route path='/gica' element={<GicaPage />} />
-          <Route path='/redirection' element={<RedirectionPage />} />
-          <Route path='/jira' element={<JiraPage />} />
-          <Route path='/shoplist' element={<ShopListPage />} />
-          <Route path='/jobs' element={<JobsPage />} />
-          <Route path='/' element={<HomePage />} />
+          <Route path="/account" element={<AccountPage />} />
+          <Route path="/schedule" element={<SchedulePage />} />
+          <Route path="/schedule/:task" element={<EditSchedulePage />} />
+          <Route path="/gica" element={<GicaPage />} />
+          <Route path="/redirection" element={<RedirectionPage />} />
+          <Route path="/shoplist" element={<ShopListPage />} />
+          <Route path="/jobs" element={<JobsPage />} />
+          <Route path="/logger" element={<LoggerPage />} />
+          <Route path="/" element={<HomePage />} />
         </Routes>
         {!zabbixSnackbarActive && <SnackbarZabbix />}
       </Box>

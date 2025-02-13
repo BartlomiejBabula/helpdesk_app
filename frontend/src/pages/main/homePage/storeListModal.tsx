@@ -119,11 +119,11 @@ export const ModalStoreList = ({
             }}
             onClick={handleCloseModal}
           />
-          <Typography variant='h6' component='h2'>
+          <Typography variant="h6" component="h2">
             Parametry generacji listy sklepów
           </Typography>
           <Typography
-            variant='subtitle2'
+            variant="subtitle2"
             sx={{
               marginBottom: 4,
               marginTop: 3,
@@ -135,23 +135,23 @@ export const ModalStoreList = ({
             zgodną z podanymi poniżej parametrami.
           </Typography>
           <form onSubmit={formikStoreList.handleSubmit}>
-          <FormControl  sx={{ width: 300, marginBottom: 3 }} >
-          <InputLabel >Status</InputLabel>
-            <Select
-              id='type'
-              name='type'
-              label="Status"
-              value={formikStoreList.values.type}
-              onChange={formikStoreList.handleChange}
-              error={
-                formikStoreList.touched.type &&
-                Boolean(formikStoreList.errors.type)
-              }
-            >
-              <MenuItem value="'A'">Aktywne</MenuItem>
-              <MenuItem value="'N'">Nieaktywne</MenuItem>
-              <MenuItem value="'A', 'N'">Wszystkie</MenuItem>
-            </Select>
+            <FormControl sx={{ width: 300, marginBottom: 3 }}>
+              <InputLabel>Status</InputLabel>
+              <Select
+                id="type"
+                name="type"
+                label="Status"
+                value={formikStoreList.values.type}
+                onChange={formikStoreList.handleChange}
+                error={
+                  formikStoreList.touched.type &&
+                  Boolean(formikStoreList.errors.type)
+                }
+              >
+                <MenuItem value="'A'">Aktywne</MenuItem>
+                <MenuItem value="'N'">Nieaktywne</MenuItem>
+                <MenuItem value="'A', 'N'">Wszystkie</MenuItem>
+              </Select>
             </FormControl>
             <FormControl sx={{ width: 300 }}>
               <Select
@@ -172,7 +172,9 @@ export const ModalStoreList = ({
                 ))}
               </Select>
             </FormControl>
-            <Typography sx={{ color: "red", fontSize: 13, marginTop: 1 }}>
+            <Typography
+              sx={{ color: "error.main", fontSize: 13, marginTop: 1 }}
+            >
               {formikStoreList.touched.storeType &&
                 Boolean(formikStoreList.errors.storeType) &&
                 `${formikStoreList.errors.storeType}`}
@@ -184,9 +186,9 @@ export const ModalStoreList = ({
                 width: 200,
                 marginTop: 5,
               }}
-               color="secondary"
-              type='submit'
-              variant='contained'
+              color="secondary"
+              type="submit"
+              variant="contained"
             >
               {loading ? (
                 <CircularProgress sx={{ color: "white" }} size={24} />

@@ -68,7 +68,7 @@ export const JobModal = ({
             }}
           >
             <Typography
-              variant='h6'
+              variant="h6"
               sx={{
                 marginBottom: 2,
               }}
@@ -78,8 +78,8 @@ export const JobModal = ({
             </Typography>
             <Box>
               <Button
-                variant='contained'
-                 color="secondary"
+                variant="contained"
+                color="secondary"
                 style={{
                   width: 70,
                 }}
@@ -90,8 +90,8 @@ export const JobModal = ({
                 TAK
               </Button>
               <Button
-                variant='contained'
-                 color="secondary"
+                variant="contained"
+                color="secondary"
                 style={{
                   marginLeft: 20,
                   width: 70,
@@ -103,13 +103,13 @@ export const JobModal = ({
                 NIE
               </Button>
             </Box>
-            <Typography
-              variant='subtitle2'
-              sx={{ color: "red", marginTop: 3, fontSize: 14 }}
+            {/* <Typography
+              variant="subtitle2"
+              sx={{ color: "error.main", marginTop: 3, fontSize: 14 }}
             >
               Przed wykonaniem operacji upewnij się że masz pobraną aktualną
               listę jobów.
-            </Typography>
+            </Typography> */}
           </Box>
         </Fade>
       </Modal>

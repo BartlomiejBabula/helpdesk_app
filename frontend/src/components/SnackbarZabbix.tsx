@@ -69,11 +69,11 @@ const SnackbarZabbix = () => {
   return (
     <Snackbar open anchorOrigin={{ vertical: "top", horizontal: "center" }}>
       <Alert
-        variant='outlined'
-        severity='error'
+        variant="outlined"
+        severity="error"
         onClose={handleCloseSnackbar}
         sx={{
-          backgroundColor: "white",
+          backgroundColor: "background.paper",
           width: "68vw",
           minWidth: 600,
         }}

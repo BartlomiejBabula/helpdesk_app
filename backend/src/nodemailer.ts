@@ -36,12 +36,3 @@ export const configImap = {
     tlsOptions: { rejectUnauthorized: false },
   },
 };
-
-
-transporter.verify(function (error: any, success: any) {
-  if (error) {
-    console.log(error, );
-  } else {
-    console.log('Server is ready to take our messages');
-  }
-});

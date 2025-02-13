@@ -12,11 +12,11 @@ import {
 } from "../../redux/user/UserSlice";
 import { loginAction } from "../../redux/user/loginUser";
 import { getUserProfile } from "../../redux/user/getUserProfile";
-import { getJira } from "../../redux/jira/getJira";
 import { getJobs } from "../../redux/jobs/getJobs";
 import { getStoreList } from "../../redux/stores/getStoreList";
 import { getGica } from "../../redux/gica/getGica";
 import { getZabbix } from "../../redux/zabbix/getZabbix";
+import { getSchedules } from "../../redux/schedules/getSchedules";
 
 interface LoginValues {
   email: string;
@@ -79,11 +79,11 @@ export const LoginComponent = () => {
     }
     if (selectUserStatus === "succeeded") {
       dispatch(getUserProfile());
-      dispatch(getJira());
       dispatch(getJobs());
       dispatch(getStoreList());
       dispatch(getGica());
       dispatch(getZabbix());
+      dispatch(getSchedules());
       navigate({ pathname: "/dashboard/" });
     }
   }, [navigate, dispatch, selectUserStatus, selectUserError]);
@@ -101,11 +101,12 @@ export const LoginComponent = () => {
         >
           <Stack spacing={2} sx={{ width: 300 }}>
             <TextField
-              label='Email'
-              variant='standard'
-              id='email'
-              name='email'
-              type='text'
+              autoComplete="off"
+              label="Email"
+              variant="standard"
+              id="email"
+              name="email"
+              type="text"
               onChange={formik.handleChange}
               value={formik.values.email}
               onBlur={formik.handleBlur}
@@ -113,12 +114,12 @@ export const LoginComponent = () => {
               helperText={formik.touched.email && formik.errors.email}
             />
             <TextField
-              autoComplete='off'
-              label='Hasło'
-              variant='standard'
-              id='password'
-              name='password'
-              type='password'
+              autoComplete="off"
+              label="Hasło"
+              variant="standard"
+              id="password"
+              name="password"
+              type="password"
               onChange={formik.handleChange}
               value={formik.values.password}
               onBlur={formik.handleBlur}
@@ -127,7 +128,7 @@ export const LoginComponent = () => {
             />
           </Stack>
           <Button
-            size='large'
+            size="large"
             disabled={selectUserStatus === "loading" && true}
             sx={{
               width: 200,
@@ -136,15 +137,15 @@ export const LoginComponent = () => {
               backgroundImage:
                 "linear-gradient(to bottom right, #4fa8e0, #457b9d)",
             }}
-            type='submit'
-            variant='contained'
+            type="submit"
+            variant="contained"
           >
             Zaloguj się
           </Button>
           <Button
-            type='button'
+            type="button"
             sx={{ fontSize: 13, mt: 1, color: "rgba(0, 0, 0, 0.6)" }}
-            variant='text'
+            variant="text"
             onClick={navigateToResetPassword}
           >
             Nie pamiętasz hasła?
@@ -164,8 +165,8 @@ export const LoginComponent = () => {
               Nie masz konta?
             </Typography>
             <Button
-              type='button'
-              variant='text'
+              type="button"
+              variant="text"
               sx={{ fontSize: 14 }}
               onClick={navigateToRegister}
             >

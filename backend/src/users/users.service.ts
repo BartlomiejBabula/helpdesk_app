@@ -2,10 +2,11 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/users.entity';
-import { CreateUserDto } from './dto/createUser';
+import { CreateUserDto, UserRoleType } from './dto/createUser';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UpdateThemeDto } from './dto/updateTheme';
+import { UserProfileType } from './dto/getProfile';
 
 @Injectable()
 export class UsersService {
@@ -20,7 +21,7 @@ export class UsersService {
     const salt = await bcrypt.genSalt();
     user.password = await bcrypt.hash(CreateUserDto.password, salt);
     user.email = CreateUserDto.email;
-    user.role = 'helpdesk';
+    user.role = UserRoleType.HELPDESK;
     return this.usersRepository.save(user).catch((e) => {
       if (e.driverError.code === 'ER_DUP_ENTRY') {
         throw new BadRequestException(
@@ -55,7 +56,7 @@ export class UsersService {
     return this.usersRepository.update(id, updateUserDto);
   }
 
-  async updatePassword(id: number, password: string): Promise<any> {
+  async updatePassword(id: number, password: string): Promise<string> {
     const salt = await bcrypt.genSalt();
     const newPassword = await bcrypt.hash(password, salt);
     this.usersRepository.update(id, { password: newPassword });
@@ -63,7 +64,7 @@ export class UsersService {
     return 'Password Updated';
   }
 
-  async updateTheme(updateThemeDto: UpdateThemeDto): Promise<any> {
+  async updateTheme(updateThemeDto: UpdateThemeDto): Promise<boolean> {
     await this.usersRepository.update(updateThemeDto.id, {
       darkTheme: updateThemeDto.darkTheme,
     });
@@ -73,14 +74,14 @@ export class UsersService {
     return user.darkTheme;
   }
 
-  async getProfile(accessToken: string): Promise<any> {
+  async getProfile(accessToken: string): Promise<UserProfileType> {
     const userToken = this.jwtService.decode(accessToken);
     const fetchedUser = await this.findById(userToken.payload.sub);
-    const user = {
+    const user: UserProfileType = {
       id: fetchedUser.id,
       email: fetchedUser.email,
-      createAt: fetchedUser.createdAt,
-      updateAt: fetchedUser.updatedAt,
+      createdAt: fetchedUser.createdAt,
+      updatedAt: fetchedUser.updatedAt,
       darkTheme: fetchedUser.darkTheme,
       role: fetchedUser.role,
     };

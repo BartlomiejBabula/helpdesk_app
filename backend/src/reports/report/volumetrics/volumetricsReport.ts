@@ -1,3 +1,6 @@
+import { LogTaskType } from 'src/logger/dto/createLog';
+import { LogStatus } from 'src/logger/dto/getLog';
+import { LoggerService } from 'src/logger/logger.service';
 import { EMAIL, transporter } from 'src/nodemailer';
 
 const oracledb = require('oracledb');
@@ -13,17 +16,32 @@ let zabbixUser = process.env.ZABBIX_USER;
 let zabbixPassword = process.env.ZABBIX_PASSWORD;
 let zabbixUrl = process.env.ZABBIX_URL;
 
-export async function generateVolumetrics(email: string) {
+export async function generateVolumetrics(
+  email: string,
+  loggerService: LoggerService,
+  createdBy: string,
+) {
+  const logId = await loggerService.createLog({
+    task: LogTaskType.VOLUMETRIC_REPORT,
+    status: LogStatus.OPEN,
+    orderedBy: createdBy,
+  });
   let child_process = require('child_process');
   const path = require('path');
   const fs = require('fs');
-  child_process.exec(
+  await child_process.exec(
     `python3 /usr/src/app/src/reports/report/volumetrics/Raport_wolumetryka.py ${dbUser} ${dbPassword} ${dbIP} ${dbPort} ${dbSID} ${zabbixUrl} ${zabbixUser} ${zabbixPassword}`,
-    function (err: any, stdout: any, stderr: any) {
+    async function (err: any, stdout: any, stderr: any) {
       if (err) {
-        console.log('child processes failed with error code: ' + err);
+        loggerService.createLog({
+          taskId: logId,
+          task: LogTaskType.VOLUMETRIC_REPORT,
+          status: LogStatus.IN_PROGRESS,
+          orderedBy: createdBy,
+          description: `${err}`,
+        });
       }
-      transporter
+      await transporter
         .sendMail({
           attachments: [
             {
@@ -51,7 +69,6 @@ Artykuł na wiki:</br>
 https://wiki.skg.pl/wiki/index.php/Raport_-_Wolumetryka_serwer%C3%B3w</p>`,
         })
         .then((info: any) => {
-          console.log({ info });
           fs.existsSync(
             '/usr/src/app/src/reports/report/volumetrics/Wolumetryka.xlsx',
           ) &&
@@ -59,13 +76,40 @@ https://wiki.skg.pl/wiki/index.php/Raport_-_Wolumetryka_serwer%C3%B3w</p>`,
               '/usr/src/app/src/reports/report/volumetrics/Wolumetryka.xlsx',
               (err: any) => {
                 if (err) {
-                  console.error(err);
+                  loggerService.createLog({
+                    taskId: logId,
+                    task: LogTaskType.VOLUMETRIC_REPORT,
+                    status: LogStatus.IN_PROGRESS,
+                    orderedBy: createdBy,
+                    description: `${err}`,
+                  });
                   return;
                 }
               },
             );
+          loggerService.createLog({
+            taskId: logId,
+            task: LogTaskType.VOLUMETRIC_REPORT,
+            status: LogStatus.IN_PROGRESS,
+            orderedBy: createdBy,
+            description: `Email sent`,
+          });
         })
-        .catch(console.error);
+        .catch((err) => {
+          loggerService.createLog({
+            taskId: logId,
+            task: LogTaskType.VOLUMETRIC_REPORT,
+            status: LogStatus.IN_PROGRESS,
+            orderedBy: createdBy,
+            description: `${err}`,
+          });
+        });
     },
   );
+  await loggerService.createLog({
+    taskId: logId,
+    task: LogTaskType.VOLUMETRIC_REPORT,
+    status: LogStatus.DONE,
+    orderedBy: createdBy,
+  });
 }

@@ -1,3 +1,5 @@
+import { CronPartsType } from "../function/cron";
+
 export interface UserType {
   id: number;
   email: string;
@@ -24,6 +26,17 @@ export interface JobType {
   TM_FORMAT_RESTART?: Date;
 }
 
+export interface LogType {
+  id: string;
+  taskId: string;
+  task: string;
+  status: string;
+  orderedBy: string;
+  description?: string;
+  createdAt: string;
+  formatedCreatedAt?: Date;
+}
+
 export interface StoreType {
   id: number;
   storeNumber: string;
@@ -32,6 +45,16 @@ export interface StoreType {
   information?: string;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface ScheduleType {
+  id: number;
+  isActive: boolean;
+  task: string;
+  schedule: string;
+  name: string;
+  description?: string;
+  cron: CronPartsType;
 }
 
 export interface JiraType {

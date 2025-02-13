@@ -1,3 +1,6 @@
+import { LogTaskType } from 'src/logger/dto/createLog';
+import { LogStatus } from 'src/logger/dto/getLog';
+import { LoggerService } from 'src/logger/logger.service';
 import { transporter, EMAIL } from 'src/nodemailer';
 
 const SAMBO_TEST_IP = process.env.SAMBO_TEST_IP;
@@ -48,15 +51,30 @@ const deleteFiles = () => {
   }
 };
 
-export async function generateSelenium(email: string) {
+export async function generateSelenium(
+  email: string,
+  loggerService: LoggerService,
+  createdBy: string,
+) {
+  const logId = await loggerService.createLog({
+    task: LogTaskType.SELENIUM_REPORT,
+    status: LogStatus.OPEN,
+    orderedBy: createdBy,
+  });
   let envIP = SAMBO_TEST_IP;
   const path = require('path');
   let child_process = require('child_process');
-  child_process.exec(
+  await child_process.exec(
     `cd src/selenium/tests && robot --variable SERVER:${envIP} --variable BROWSER:headlessfirefox --variable VALID_USER:${SELENIUM_USER} --variable VALID_PASSWORD:${SELENIUM_PASSWORD} --variable FRANCHISE_STORE:${FRANCHISE_STORE} .`,
     function (err: any, stdout: any, stderr: any) {
       if (err) {
-        console.log('child processes failed with error code: ' + err);
+        loggerService.createLog({
+          taskId: logId,
+          task: LogTaskType.SELENIUM_REPORT,
+          status: LogStatus.IN_PROGRESS,
+          orderedBy: createdBy,
+          description: `${err}`,
+        });
       }
       transporter
         .sendMail({
@@ -78,9 +96,29 @@ w załączniku przesyłam raport z wykonania testów selenium</p>`,
         })
         .then((info: any) => {
           deleteFiles();
-          console.log({ info });
+          loggerService.createLog({
+            taskId: logId,
+            task: LogTaskType.SELENIUM_REPORT,
+            status: LogStatus.IN_PROGRESS,
+            orderedBy: createdBy,
+            description: `Email sent`,
+          });
         })
-        .catch(console.error);
+        .catch((err) => {
+          loggerService.createLog({
+            taskId: logId,
+            task: LogTaskType.SELENIUM_REPORT,
+            status: LogStatus.IN_PROGRESS,
+            orderedBy: createdBy,
+            description: `${err}`,
+          });
+        });
     },
   );
+  loggerService.createLog({
+    taskId: logId,
+    task: LogTaskType.SELENIUM_REPORT,
+    status: LogStatus.DONE,
+    orderedBy: createdBy,
+  });
 }

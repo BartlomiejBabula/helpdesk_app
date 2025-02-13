@@ -49,7 +49,7 @@ export const JobsComponent = () => {
                     }}
                   />
                 }
-                label='Restart'
+                label="Restart"
                 onClick={() => {
                   setSelectedRow(item.row);
                   handleOpenModal();
@@ -57,8 +57,8 @@ export const JobsComponent = () => {
                 }}
               />
               <GridActionsCellItem
-                icon={<DeleteIcon sx={{ color: "red" }} />}
-                label='Delete'
+                icon={<DeleteIcon sx={{ color: "error.main" }} />}
+                label="Delete"
                 onClick={() => {
                   setSelectedRow(item.row);
                   handleOpenModal();

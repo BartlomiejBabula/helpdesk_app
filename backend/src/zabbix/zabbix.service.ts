@@ -5,6 +5,9 @@ import { Zabbix } from './entities/zabbix.entity';
 import { ApiZabbix } from './dto/getZabbix';
 import { Cron } from '@nestjs/schedule';
 import axios from 'axios';
+import { LoggerService } from 'src/logger/logger.service';
+import { LogTaskType } from 'src/logger/dto/createLog';
+import { LogStatus } from 'src/logger/dto/getLog';
 
 const ZABBIX_URL = process.env.ZABBIX_URL;
 const ZABBIX_USER = process.env.ZABBIX_USER;
@@ -15,6 +18,7 @@ export class ZabbixService {
   constructor(
     @InjectRepository(Zabbix)
     private zabbixRepository: Repository<Zabbix>,
+    private loggerService: LoggerService,
   ) {}
 
   async findByEventId(eventId: number): Promise<Zabbix | null> {
@@ -36,7 +40,7 @@ export class ZabbixService {
     });
   }
 
-  async zabbixFetchProblem(token: string): Promise<ApiZabbix[]> {
+  async zabbixFetchProblem(token: string, logId: string): Promise<ApiZabbix[]> {
     let date: Date | string = new Date();
     date.setTime(Date.now());
     const timestamp = Math.floor(date.getTime() / 1000 - 17280000); // 3600 1h
@@ -63,12 +67,21 @@ export class ZabbixService {
         retrunData = res.data.result;
       })
       .catch((err) => {
-        console.log('Zabbix - fetch problem');
+        this.loggerService.createLog({
+          taskId: logId,
+          task: LogTaskType.ZABBIX_CHECK,
+          status: LogStatus.IN_PROGRESS,
+          description: `${err}`,
+        });
       });
     return retrunData;
   }
 
-  async getHostName(eventId: string, token: string): Promise<string> {
+  async getHostName(
+    eventId: string,
+    token: string,
+    logId: string,
+  ): Promise<string> {
     const zabbixFetchHostName = {
       jsonrpc: '2.0',
       method: 'event.get',
@@ -87,13 +100,24 @@ export class ZabbixService {
         returnData = res.data.result[0].hosts[0].name;
       })
       .catch((err) => {
-        console.log('Zabbix - fetch host name problem');
+        this.loggerService.createLog({
+          taskId: logId,
+          task: LogTaskType.ZABBIX_CHECK,
+          status: LogStatus.IN_PROGRESS,
+          description: `${err}`,
+        });
       });
     return returnData;
   }
 
-  @Cron('0 */5 * * * *')
+  @Cron('*/5 * * * *', {
+    name: LogTaskType.ZABBIX_CHECK,
+  })
   async automaticCheckProblems() {
+    const logId = await this.loggerService.createLog({
+      task: LogTaskType.ZABBIX_CHECK,
+      status: LogStatus.OPEN,
+    });
     try {
       axios
         .post(ZABBIX_URL, {
@@ -107,8 +131,10 @@ export class ZabbixService {
         })
         .then(async (response) => {
           const token = response.data.result;
-          const zabbixProblems: ApiZabbix[] =
-            await this.zabbixFetchProblem(token);
+          const zabbixProblems: ApiZabbix[] = await this.zabbixFetchProblem(
+            token,
+            logId,
+          );
           if (zabbixProblems.length > 0) {
             zabbixProblems.forEach(async (problem: ApiZabbix, key: number) => {
               let isRegister = await this.findByEventId(
@@ -126,20 +152,50 @@ export class ZabbixService {
                 zabbixProblem.host = await this.getHostName(
                   problem.eventid,
                   token,
+                  logId,
                 );
                 this.zabbixRepository.save(zabbixProblem);
+                await this.loggerService.createLog({
+                  taskId: logId,
+                  task: LogTaskType.ZABBIX_CHECK,
+                  status: LogStatus.IN_PROGRESS,
+                  description: `Zabbix problem - ${zabbixProblem.name}`,
+                });
               }
             });
           }
         })
         .catch((error) => {
-          console.log('Zabbix - loggging error');
+          this.loggerService.createLog({
+            taskId: logId,
+            task: LogTaskType.ZABBIX_CHECK,
+            status: LogStatus.IN_PROGRESS,
+            description: `${error}`,
+          });
         });
-    } catch (error) {}
+    } catch (error) {
+      this.loggerService.createLog({
+        taskId: logId,
+        task: LogTaskType.ZABBIX_CHECK,
+        status: LogStatus.IN_PROGRESS,
+        description: `${error}`,
+      });
+    }
+    this.loggerService.createLog({
+      taskId: logId,
+      task: LogTaskType.ZABBIX_CHECK,
+      status: LogStatus.DONE,
+    });
   }
 
-  @Cron('0 */5 * * * *')
+  @Cron('*/6 * * * *', {
+    name: LogTaskType.ZABBIX_PROBLEM_RECOVERY,
+  })
   async automaticCheckProblemsRecovery() {
+    const logId = await this.loggerService.createLog({
+      task: LogTaskType.ZABBIX_PROBLEM_RECOVERY,
+      status: LogStatus.OPEN,
+    });
     try {
       const problems = await this.zabbixRepository.find({
         where: { recoveryEventId: 0 },
@@ -180,16 +236,44 @@ export class ZabbixService {
                     opdata: res.data.result[0].opdata,
                   };
                   this.update(problem.id, update);
+                  this.loggerService.createLog({
+                    taskId: logId,
+                    task: LogTaskType.ZABBIX_PROBLEM_RECOVERY,
+                    status: LogStatus.IN_PROGRESS,
+                    description: `Updated Zabbix id: ${problem.id}`,
+                  });
                 }
               })
               .catch((err) => {
-                console.log('Zabbix - fetch event problem');
+                this.loggerService.createLog({
+                  taskId: logId,
+                  task: LogTaskType.ZABBIX_PROBLEM_RECOVERY,
+                  status: LogStatus.IN_PROGRESS,
+                  description: `${err}`,
+                });
               });
           });
         })
-        .catch((error) => {
-          console.log('Zabbix - loggging error');
+        .catch((err) => {
+          this.loggerService.createLog({
+            taskId: logId,
+            task: LogTaskType.ZABBIX_PROBLEM_RECOVERY,
+            status: LogStatus.IN_PROGRESS,
+            description: `${err}`,
+          });
         });
-    } catch (error) {}
+    } catch (err) {
+      this.loggerService.createLog({
+        taskId: logId,
+        task: LogTaskType.ZABBIX_PROBLEM_RECOVERY,
+        status: LogStatus.IN_PROGRESS,
+        description: `${err}`,
+      });
+    }
+    this.loggerService.createLog({
+      taskId: logId,
+      task: LogTaskType.ZABBIX_PROBLEM_RECOVERY,
+      status: LogStatus.DONE,
+    });
   }
 }

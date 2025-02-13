@@ -4,6 +4,9 @@ import { Gica } from './entities/gica.entity';
 import { MoreThanOrEqual, Repository } from 'typeorm';
 import { Cron } from '@nestjs/schedule';
 import { samboDbConfig } from 'src/samboDB';
+import { LoggerService } from 'src/logger/logger.service';
+import { LogTaskType } from 'src/logger/dto/createLog';
+import { LogStatus } from 'src/logger/dto/getLog';
 
 const oracledb = require('oracledb');
 
@@ -12,6 +15,7 @@ export class GicaService {
   constructor(
     @InjectRepository(Gica)
     private gicaRepository: Repository<Gica>,
+    private loggerService: LoggerService,
   ) {}
 
   async getGica(): Promise<Gica[]> {
@@ -73,11 +77,16 @@ ORDER BY tm_end DESC fetch first 1 rows only`,
     return parseFloat(((date2.getTime() - date1.getTime()) / 60000).toFixed(2));
   }
 
-  @Cron('0 30 5 * * *')
+  @Cron('50 5 * * *', {
+    name: LogTaskType.GET_GICA,
+  })
   async automaticYesterdayGICA() {
+    const logId = await this.loggerService.createLog({
+      task: LogTaskType.GET_GICA,
+      status: LogStatus.OPEN,
+    });
     try {
       let GICA = new Gica();
-      console.log('automatic get yesterday GICA');
       let date = new Date();
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -120,8 +129,19 @@ ORDER BY tm_end DESC fetch first 1 rows only`,
       );
       GICA.date = new Date(yest);
       this.gicaRepository.save(GICA);
+      await this.loggerService.createLog({
+        taskId: logId,
+        task: LogTaskType.GET_GICA,
+        status: LogStatus.DONE,
+        description: 'Automatic yesterday GICA updated',
+      });
     } catch (error) {
-      console.log(error);
+      await this.loggerService.createLog({
+        taskId: logId,
+        task: LogTaskType.GET_GICA,
+        status: LogStatus.DONE,
+        description: `${error}`,
+      });
     }
   }
 }

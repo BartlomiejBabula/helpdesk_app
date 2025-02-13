@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { JobsService } from './jobs.service';
 import { AccessTokenGuard } from 'src/auth/accessToken.guard';
 import { EndJobDto } from './dto/endJob';
@@ -16,13 +16,15 @@ export class JobsController {
 
   @UseGuards(AccessTokenGuard)
   @Post('end')
-  endJob(@Body() endJobDto: EndJobDto) {
-    return this.jobsService.endJob(endJobDto);
+  endJob(@Body() endJobDto: EndJobDto, @Req() req) {
+    const accessToken = req.headers.authorization;
+    return this.jobsService.endJob(endJobDto, accessToken);
   }
 
   @UseGuards(AccessTokenGuard)
   @Post('restart')
-  restartJob(@Body() restartJobDto: RestartJobDto) {
-    return this.jobsService.restartJob(restartJobDto);
+  restartJob(@Body() restartJobDto: RestartJobDto, @Req() req) {
+    const accessToken = req.headers.authorization;
+    return this.jobsService.restartJob(restartJobDto, accessToken);
   }
 }

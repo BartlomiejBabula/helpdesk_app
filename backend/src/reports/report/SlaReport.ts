@@ -1,6 +1,9 @@
 import axios from 'axios';
 import { EMAIL, transporter } from 'src/nodemailer';
 import xlsx from 'node-xlsx';
+import { LoggerService } from 'src/logger/logger.service';
+import { LogTaskType } from 'src/logger/dto/createLog';
+import { LogStatus } from 'src/logger/dto/getLog';
 
 const oracledb = require('oracledb');
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
@@ -10,7 +13,17 @@ interface JiraUserType {
   value: string;
 }
 
-export async function generateSLARaport(req: any, email: string) {
+export async function generateSLARaport(
+  req: any,
+  email: string,
+  loggerService: LoggerService,
+  createdBy: string,
+) {
+  const logId = await loggerService.createLog({
+    task: LogTaskType.SLA_REPORT,
+    status: LogStatus.OPEN,
+    orderedBy: createdBy,
+  });
   if (req.body.issue !== undefined) {
     const JIRA_USER = process.env.JIRA_USER;
     const JIRA_PASSWORD = process.env.JIRA_PASSWORD;
@@ -32,15 +45,18 @@ export async function generateSLARaport(req: any, email: string) {
             },
           })
           .then(async (response: any) => {
-            if (response.data.fields.subtasks.length > 0)
+            if (response.data.fields.subtasks.length > 0) {
               await createSLAreports(
                 response.data.fields.subtasks,
                 jiraUser,
                 req.body.exceptionsDates,
                 req.body.type,
                 email,
+                logId,
+                loggerService,
+                createdBy,
               );
-            else {
+            } else {
               axiosError = 'The issue does not have subtasks';
             }
           })
@@ -48,10 +64,30 @@ export async function generateSLARaport(req: any, email: string) {
             axiosError = `The issue does not exist in jira`;
           });
       });
-    if (axiosError !== '') console.log(axiosError);
+    if (axiosError !== '') {
+      loggerService.createLog({
+        taskId: logId,
+        task: LogTaskType.SLA_REPORT,
+        status: LogStatus.IN_PROGRESS,
+        orderedBy: createdBy,
+        description: axiosError,
+      });
+    }
   } else {
-    console.log(`Something wrong in SLA request`);
+    loggerService.createLog({
+      taskId: logId,
+      task: LogTaskType.SLA_REPORT,
+      status: LogStatus.IN_PROGRESS,
+      orderedBy: createdBy,
+      description: 'Error',
+    });
   }
+  loggerService.createLog({
+    taskId: logId,
+    task: LogTaskType.SLA_REPORT,
+    status: LogStatus.DONE,
+    orderedBy: createdBy,
+  });
 }
 
 const createSLAreports = async (
@@ -60,6 +96,9 @@ const createSLAreports = async (
   exceptionsDates: string[] | Date[],
   type: 'esambo' | 'qlik',
   email: string,
+  logId: string,
+  loggerService: LoggerService,
+  createdBy: string,
 ) => {
   let newExceptionsDates = exceptionsDates.map((item) => new Date(item));
   let parentKey = '';
@@ -425,7 +464,7 @@ const createSLAreports = async (
     ],
     { parseOptions: { cellStyles: true }, writeOptions: { cellStyles: true } },
   );
-  transporter
+  await transporter
     .sendMail({
       attachments: [
         {
@@ -441,9 +480,23 @@ const createSLAreports = async (
     W załączniku przesyłam raport JIRA SLA.</p>`,
     })
     .then((info: any) => {
-      console.log({ info });
+      loggerService.createLog({
+        taskId: logId,
+        task: LogTaskType.SLA_REPORT,
+        status: LogStatus.IN_PROGRESS,
+        orderedBy: createdBy,
+        description: `Email sent`,
+      });
     })
-    .catch(console.error);
+    .catch((error) => {
+      loggerService.createLog({
+        taskId: logId,
+        task: LogTaskType.SLA_REPORT,
+        status: LogStatus.IN_PROGRESS,
+        orderedBy: createdBy,
+        description: `${error}`,
+      });
+    });
 };
 
 function formatTimeToPrint(ms: number) {

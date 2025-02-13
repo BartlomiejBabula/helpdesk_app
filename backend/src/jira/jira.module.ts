@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common';
 import { JiraService } from './jira.service';
-import { JiraController } from './jira.controller';
-import { Jira } from './entities/jira.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { LoggerModule } from 'src/logger/logger.module';
+import { ScheduleModule } from 'src/schedule/schedule.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Jira])],
+  imports: [LoggerModule, ScheduleModule],
   providers: [JiraService],
-  controllers: [JiraController],
 })
 export class JiraModule {}

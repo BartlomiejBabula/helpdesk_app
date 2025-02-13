@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserRoleType } from '../dto/createUser';
 
 @Entity('Users')
 export class User {
@@ -18,7 +19,7 @@ export class User {
   password: string;
 
   @Column({ nullable: true })
-  role: 'helpdesk' | 'carrefour';
+  role: UserRoleType;
 
   @Column({ nullable: true })
   darkTheme: boolean;

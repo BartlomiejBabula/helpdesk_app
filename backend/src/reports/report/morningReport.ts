@@ -1,5 +1,8 @@
 import { samboDbConfig } from '../../samboDB';
 import xlsx from 'node-xlsx';
+import { LogTaskType } from 'src/logger/dto/createLog';
+import { LogStatus } from 'src/logger/dto/getLog';
+import { LoggerService } from 'src/logger/logger.service';
 import { EMAIL, transporter } from 'src/nodemailer';
 
 const oracledb = require('oracledb');
@@ -233,7 +236,16 @@ function dateToWSFileName() {
   return WSname;
 }
 
-export async function generateMorningReport(email) {
+export async function generateMorningReport(
+  email: string,
+  loggerService: LoggerService,
+  createdBy: string,
+) {
+  const logId = await loggerService.createLog({
+    task: LogTaskType.MORNING_REPORT,
+    status: LogStatus.OPEN,
+    orderedBy: createdBy,
+  });
   try {
     const year = new Date().getFullYear();
     const month = String(new Date().getMonth() + 1).padStart(2, '0');
@@ -255,7 +267,7 @@ export async function generateMorningReport(email) {
     const buffer = await getWS(today, yest);
     const gicaHiperStores = await getGICAEndStores(yest, 'H');
     const gicaNetworkStores = await getGICAEndStores(yest, 'N');
-    transporter
+    await transporter
       .sendMail({
         attachments: [
           {
@@ -273,11 +285,25 @@ export async function generateMorningReport(email) {
   3. Zestawienie przetworzenia WS - załącznik w formacie xlsx</p>`,
       })
       .then((info: any) => {
-        console.log({ info });
+        loggerService.createLog({
+          taskId: logId,
+          orderedBy: createdBy,
+          task: LogTaskType.MORNING_REPORT,
+          status: LogStatus.IN_PROGRESS,
+          description: `Email sent`,
+        });
       })
-      .catch(console.error);
+      .catch((error) => {
+        loggerService.createLog({
+          taskId: logId,
+          orderedBy: createdBy,
+          task: LogTaskType.MORNING_REPORT,
+          status: LogStatus.IN_PROGRESS,
+          description: `${error}`,
+        });
+      });
     if (gica !== null) {
-      transporter
+      await transporter
         .sendMail({
           attachments: [
             {
@@ -294,11 +320,25 @@ export async function generateMorningReport(email) {
   3. Aktualizacja na hipermarketach zakończyła się: ${gicaHiperStores}.`,
         })
         .then((info: any) => {
-          console.log({ info });
+          loggerService.createLog({
+            taskId: logId,
+            orderedBy: createdBy,
+            task: LogTaskType.MORNING_REPORT,
+            status: LogStatus.IN_PROGRESS,
+            description: `Email sent`,
+          });
         })
-        .catch(console.error);
+        .catch((error) => {
+          loggerService.createLog({
+            taskId: logId,
+            orderedBy: createdBy,
+            task: LogTaskType.MORNING_REPORT,
+            status: LogStatus.IN_PROGRESS,
+            description: `${error}`,
+          });
+        });
     } else {
-      transporter
+      await transporter
         .sendMail({
           from: EMAIL,
           to: email,
@@ -308,11 +348,36 @@ export async function generateMorningReport(email) {
   2. Aktualizacja na hipermarketach zakończyła się: ${gicaHiperStores}.`,
         })
         .then((info: any) => {
-          console.log({ info });
+          loggerService.createLog({
+            taskId: logId,
+            orderedBy: createdBy,
+            task: LogTaskType.MORNING_REPORT,
+            status: LogStatus.IN_PROGRESS,
+            description: `Email sent`,
+          });
         })
-        .catch(console.error);
+        .catch((error) => {
+          loggerService.createLog({
+            taskId: logId,
+            orderedBy: createdBy,
+            task: LogTaskType.MORNING_REPORT,
+            status: LogStatus.IN_PROGRESS,
+            description: `${error}`,
+          });
+        });
     }
   } catch (error) {
-    console.error;
+    loggerService.createLog({
+      taskId: logId,
+      orderedBy: createdBy,
+      task: LogTaskType.MORNING_REPORT,
+      status: LogStatus.IN_PROGRESS,
+      description: `${error}`,
+    });
   }
+  loggerService.createLog({
+    task: LogTaskType.MORNING_REPORT,
+    status: LogStatus.DONE,
+    orderedBy: createdBy,
+  });
 }
