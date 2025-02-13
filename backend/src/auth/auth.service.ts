@@ -125,7 +125,6 @@ export class AuthService {
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto) {
-    console.log(resetPasswordDto);
     const user = await this.usersService.findByResetPasswordToken(
       resetPasswordDto.token,
     );

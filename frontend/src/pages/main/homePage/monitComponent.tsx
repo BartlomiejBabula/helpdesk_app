@@ -40,7 +40,7 @@ export const Monitoring = () => {
                     }}
                   />
                 }
-                label='Restart'
+                label="Restart"
                 onClick={() => {
                   setSelectedRow(item.row);
                   handleOpenModal();
@@ -48,8 +48,8 @@ export const Monitoring = () => {
                 }}
               />
               <GridActionsCellItem
-                icon={<DeleteIcon sx={{ color: "red" }} />}
-                label='Delete'
+                icon={<DeleteIcon sx={{ color: "error.main" }} />}
+                label="Delete"
                 onClick={() => {
                   setSelectedRow(item.row);
                   handleOpenModal();
@@ -142,7 +142,7 @@ export const Monitoring = () => {
   return (
     <Box>
       <Typography
-        variant='subtitle1'
+        variant="subtitle1"
         sx={{
           letterSpacing: 1,
           color: "text.primary",

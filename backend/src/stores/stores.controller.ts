@@ -31,14 +31,20 @@ export class StoresController {
 
   @UseGuards(AccessTokenGuard)
   @Post('')
-  createNewStore(@Body() createStoreDto: CreateStoreDto) {
-    return this.storesService.createNewStore(createStoreDto);
+  createNewStore(@Body() createStoreDto: CreateStoreDto, @Req() req) {
+    const accessToken = req.headers.authorization;
+    return this.storesService.createNewStore(createStoreDto, accessToken);
   }
 
   @UseGuards(AccessTokenGuard)
   @Patch(':id')
-  updateStore(@Body() updateStoreDto: UpdateStoreDto, @Req() request) {
-    return this.storesService.updateStore(updateStoreDto, request.params.id);
+  updateStore(@Body() updateStoreDto: UpdateStoreDto, @Req() req) {
+    const accessToken = req.headers.authorization;
+    return this.storesService.updateStore(
+      updateStoreDto,
+      req.params.id,
+      accessToken,
+    );
   }
 
   @UseGuards(AccessTokenGuard)

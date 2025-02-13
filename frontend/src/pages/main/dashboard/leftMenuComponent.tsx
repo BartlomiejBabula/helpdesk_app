@@ -1,11 +1,12 @@
 import MonitIcon from "@mui/icons-material/MonitorHeart";
 import ListIcon from "@mui/icons-material/List";
 import LogoutIcon from "@mui/icons-material/Logout";
-import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
+import LoggerIcon from "@mui/icons-material/LibraryBooks";
 import HomeIcon from "@mui/icons-material/Home";
 import ShortcutIcon from "@mui/icons-material/Shortcut";
 import ChartIcon from "@mui/icons-material/BarChart";
 import AccountIcon from "@mui/icons-material/AccountBox";
+import ScheduleIcon from "@mui/icons-material/Schedule";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -54,9 +55,6 @@ export const LeftMenu = () => {
       case "dashboard":
         navigate({ pathname: "./" });
         break;
-      case "jira":
-        navigate({ pathname: "./jira" });
-        break;
       case "redirection":
         navigate({ pathname: "./redirection" });
         break;
@@ -65,6 +63,12 @@ export const LeftMenu = () => {
         break;
       case "account":
         navigate({ pathname: "./account" });
+        break;
+      case "schedule":
+        navigate({ pathname: "./schedule" });
+        break;
+      case "logger":
+        navigate({ pathname: "./logger" });
         break;
       default:
         break;
@@ -187,24 +191,52 @@ export const LeftMenu = () => {
           disablePadding
           sx={{
             bgcolor:
-              window.location.pathname === "/dashboard/jira"
+              window.location.pathname === "/dashboard/schedule"
                 ? "secondary.main"
                 : "none",
             borderRadius: 1,
             color:
-              window.location.pathname === "/dashboard/jira" ? "white" : "#ccc",
+              window.location.pathname === "/dashboard/schedule"
+                ? "white"
+                : "#ccc",
           }}
         >
           <ListItemButton
             onClick={() => {
-              changeTab("jira");
-              setTab("jira");
+              changeTab("schedule");
+              setTab("schedule");
             }}
           >
             <ListItemIcon>
-              <DriveFileRenameOutlineIcon sx={{ fontSize: 20 }} />
+              <ScheduleIcon sx={{ fontSize: 20 }} />
             </ListItemIcon>
-            <ListItemText primary="Automat JIRA" />
+            <ListItemText primary="Harmonogramy" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem
+          disablePadding
+          sx={{
+            bgcolor:
+              window.location.pathname === "/dashboard/logger"
+                ? "secondary.main"
+                : "none",
+            borderRadius: 1,
+            color:
+              window.location.pathname === "/dashboard/logger"
+                ? "white"
+                : "#ccc",
+          }}
+        >
+          <ListItemButton
+            onClick={() => {
+              changeTab("logger");
+              setTab("logger");
+            }}
+          >
+            <ListItemIcon>
+              <LoggerIcon sx={{ fontSize: 20 }} />
+            </ListItemIcon>
+            <ListItemText primary="Logger" />
           </ListItemButton>
         </ListItem>
         <ListItem

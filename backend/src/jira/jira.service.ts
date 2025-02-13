@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Jira } from './entities/jira.entity';
-import { Repository } from 'typeorm';
-import { UpdateJiraDto } from './dto/updateJira';
 import axios from 'axios';
 import { configImap } from '../nodemailer';
 import { Cron } from '@nestjs/schedule';
+import { LoggerService } from 'src/logger/logger.service';
+import { LogTaskType } from 'src/logger/dto/createLog';
+import { LogStatus } from 'src/logger/dto/getLog';
+import { ScheduleService } from 'src/schedule/schedule.service';
 
 let lastuid: number = 1;
 const JIRA_USER = process.env.JIRA_USER;
@@ -17,42 +17,29 @@ const _ = require('lodash');
 @Injectable()
 export class JiraService {
   constructor(
-    @InjectRepository(Jira)
-    private jiraRepository: Repository<Jira>,
+    private loggerService: LoggerService,
+    private scheduleService: ScheduleService,
   ) {}
 
-  async getJira() {
-    const fetchedJira = await this.jiraRepository.findOne({ where: { id: 1 } });
-    return fetchedJira;
-  }
-
-  async updateJira(newJira: UpdateJiraDto) {
-    const jiraExist = await this.jiraRepository.findOne({ where: { id: 1 } });
-    if (jiraExist === null) {
-      const jira = new Jira();
-      jira.auto = newJira.auto;
-      jira.jiraKey = newJira.jiraKey;
-      this.jiraRepository.save(jira);
-    } else {
-      this.jiraRepository.update(1, newJira);
-    }
-    return newJira;
-  }
-
-  @Cron('0 */5 * * * *')
+  @Cron('*/5 * * * *', {
+    name: LogTaskType.JIRA_REGISTER,
+  })
   async automaticJiraRegister() {
+    const logId = await this.loggerService.createLog({
+      task: LogTaskType.JIRA_REGISTER,
+      status: LogStatus.OPEN,
+    });
     let date: Date | string = new Date();
     date.setTime(Date.now());
     date = date.toISOString();
-    // console.log('automatic jira register');
-    let jira = await this.jiraRepository.findOne({ where: { id: 1 } });
-    if (jira && jira.auto === true) {
+    let jira = await this.scheduleService.getSchedule(
+      LogTaskType.JIRA_REGISTER,
+    );
+    if (jira && jira.isActive === true) {
       imaps
         .connect(configImap)
         .then((connection: any) => {
-          // console.log('Connection - email');
           return connection.openBox('INBOX').then(() => {
-            // console.log('Open INBOX');
             let searchCriteria = [
               ['SINCE', date],
               'UNSEEN',
@@ -107,8 +94,6 @@ export class JiraService {
                           }
                           let startS = body.indexOf('Numer bo:') + 10;
                           let store = body.slice(startS, startS + 3);
-                          console.log(`Read - ${key} : ${store} : ${topic}`);
-
                           axios
                             .post('https://jira.skg.pl/rest/auth/1/session', {
                               username: JIRA_USER,
@@ -144,7 +129,7 @@ export class JiraService {
                                             element.fields.status.id === '3' ||
                                             element.fields.status.id === '1') &&
                                           element.fields.parent.key ===
-                                            jira.jiraKey &&
+                                            jira.description &&
                                           issueFound === false
                                         ) {
                                           issueFound = true;
@@ -172,28 +157,46 @@ export class JiraService {
                                               },
                                             )
                                             .then((response: any) => {
-                                              console.log(
-                                                `Otwarto ponownie zgłoszenie ${element.key}`,
-                                              );
+                                              this.loggerService.createLog({
+                                                taskId: logId,
+                                                task: LogTaskType.JIRA_REGISTER,
+                                                status: LogStatus.IN_PROGRESS,
+                                                description: `Opened ${element.key}`,
+                                              });
                                               connection.addFlags(
                                                 id,
                                                 'Deleted',
                                                 (err: Error) => {
                                                   if (err) {
-                                                    console.log(
-                                                      'Problem marking message for deletion',
+                                                    this.loggerService.createLog(
+                                                      {
+                                                        taskId: logId,
+                                                        task: LogTaskType.JIRA_REGISTER,
+                                                        status:
+                                                          LogStatus.IN_PROGRESS,
+                                                        description: `${err}`,
+                                                      },
                                                     );
                                                     reject(err);
                                                   }
-                                                  // console.log(
-                                                  //   'Delete readed email',
-                                                  // );
-                                                  resolve(); //Final resolve
+                                                  this.loggerService.createLog({
+                                                    taskId: logId,
+                                                    task: LogTaskType.JIRA_REGISTER,
+                                                    status:
+                                                      LogStatus.IN_PROGRESS,
+                                                    description: `Read email deleted`,
+                                                  });
+                                                  resolve();
                                                 },
                                               );
                                             })
                                             .catch((error: Error) => {
-                                              console.log(error);
+                                              this.loggerService.createLog({
+                                                taskId: logId,
+                                                task: LogTaskType.JIRA_REGISTER,
+                                                status: LogStatus.IN_PROGRESS,
+                                                description: `${error}`,
+                                              });
                                             });
                                         }
                                       },
@@ -224,7 +227,7 @@ export class JiraService {
                                                 id: '10690',
                                               },
                                               parent: {
-                                                key: jira.jiraKey,
+                                                key: jira.description,
                                               },
                                               summary: `${key} : ${store} : ${topic}`,
                                               description: IssuesBody,
@@ -246,36 +249,62 @@ export class JiraService {
                                           },
                                         )
                                         .then((response: any) => {
-                                          console.log('Utworzono zgłoszenie');
+                                          this.loggerService.createLog({
+                                            taskId: logId,
+                                            task: LogTaskType.JIRA_REGISTER,
+                                            status: LogStatus.IN_PROGRESS,
+                                            description: `Created ${key}`,
+                                          });
                                           connection.addFlags(
                                             id,
                                             'Deleted',
                                             (err: Error) => {
                                               if (err) {
-                                                console.log(
-                                                  'Problem marking message for deletion',
-                                                );
+                                                this.loggerService.createLog({
+                                                  taskId: logId,
+                                                  task: LogTaskType.JIRA_REGISTER,
+                                                  status: LogStatus.IN_PROGRESS,
+                                                  description: `${err}`,
+                                                });
                                                 reject(err);
                                               }
-                                              // console.log(
-                                              //   'Delete readed email',
-                                              // );
-                                              resolve(); //Final resolve
+                                              this.loggerService.createLog({
+                                                taskId: logId,
+                                                task: LogTaskType.JIRA_REGISTER,
+                                                status: LogStatus.IN_PROGRESS,
+                                                description: `Read email deleted`,
+                                              });
+                                              resolve();
                                             },
                                           );
                                         })
                                         .catch((error: Error) => {
-                                          console.log(error);
+                                          this.loggerService.createLog({
+                                            taskId: logId,
+                                            task: LogTaskType.JIRA_REGISTER,
+                                            status: LogStatus.IN_PROGRESS,
+                                            description: `${error}`,
+                                          });
                                         });
                                     }
                                   }
                                 })
                                 .catch((error: Error) => {
-                                  console.log(error);
+                                  this.loggerService.createLog({
+                                    taskId: logId,
+                                    task: LogTaskType.JIRA_REGISTER,
+                                    status: LogStatus.IN_PROGRESS,
+                                    description: `${error}`,
+                                  });
                                 });
                             })
                             .catch((error: Error) => {
-                              console.log(error);
+                              this.loggerService.createLog({
+                                taskId: logId,
+                                task: LogTaskType.JIRA_REGISTER,
+                                status: LogStatus.IN_PROGRESS,
+                                description: `${error}`,
+                              });
                             });
                         }
                       },
@@ -285,22 +314,40 @@ export class JiraService {
                 return Promise.all(taskList).then(() => {
                   connection.imap.closeBox(true, (err: Error) => {
                     if (err) {
-                      console.log(err);
+                      this.loggerService.createLog({
+                        taskId: logId,
+                        task: LogTaskType.JIRA_REGISTER,
+                        status: LogStatus.IN_PROGRESS,
+                        description: `${err}`,
+                      });
                     }
-                    // console.log('Close INBOX');
                   });
-                  // console.log('Connection close - email');
                   connection.end();
                 });
               })
               .catch((error: any) => {
-                console.log(error);
+                this.loggerService.createLog({
+                  taskId: logId,
+                  task: LogTaskType.JIRA_REGISTER,
+                  status: LogStatus.IN_PROGRESS,
+                  description: `${error}`,
+                });
               });
           });
         })
         .catch((error: any) => {
-          console.log(error);
+          this.loggerService.createLog({
+            taskId: logId,
+            task: LogTaskType.JIRA_REGISTER,
+            status: LogStatus.IN_PROGRESS,
+            description: `${error}`,
+          });
         });
     }
+    this.loggerService.createLog({
+      taskId: logId,
+      task: LogTaskType.JIRA_REGISTER,
+      status: LogStatus.DONE,
+    });
   }
 }

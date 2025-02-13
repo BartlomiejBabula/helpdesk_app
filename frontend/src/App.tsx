@@ -8,11 +8,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "./redux/AppStore";
 import { userSelector } from "./redux/user/UserSlice";
 import { getJobs } from "./redux/jobs/getJobs";
-import { getJira } from "./redux/jira/getJira";
 import { getUserProfile } from "./redux/user/getUserProfile";
 import { getStoreList } from "./redux/stores/getStoreList";
 import { getGica } from "./redux/gica/getGica";
 import { getZabbix } from "./redux/zabbix/getZabbix";
+import { getSchedules } from "./redux/schedules/getSchedules";
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -23,10 +23,10 @@ const App = () => {
     if (window.location.pathname !== "/" && refreshToken !== null) {
       dispatch(getUserProfile());
       dispatch(getGica());
-      dispatch(getJira());
       dispatch(getJobs());
       dispatch(getStoreList());
       dispatch(getZabbix());
+      dispatch(getSchedules());
     } else if (
       !(window.location.href.indexOf("/resetpassword") > -1) &&
       window.location.pathname !== "/" &&

@@ -3,6 +3,9 @@ import { HealthCheckService, HttpHealthIndicator } from '@nestjs/terminus';
 import { Cron } from '@nestjs/schedule';
 import { samboDbConfig } from 'src/samboDB';
 import { EMAIL, transporter } from 'src/nodemailer';
+import { LoggerService } from 'src/logger/logger.service';
+import { LogTaskType } from 'src/logger/dto/createLog';
+import { LogStatus } from 'src/logger/dto/getLog';
 
 const oracledb = require('oracledb');
 
@@ -18,9 +21,17 @@ export class HealthService {
   constructor(
     private health: HealthCheckService,
     private http: HttpHealthIndicator,
+    private loggerService: LoggerService,
   ) {}
-  @Cron('0 */15 * * * *')
+
+  @Cron('*/15 * * * *', {
+    name: LogTaskType.RUNNING_SQL_MONITORING,
+  })
   async automaticRunningSQLMonitoring() {
+    const logId = await this.loggerService.createLog({
+      task: LogTaskType.RUNNING_SQL_MONITORING,
+      status: LogStatus.OPEN,
+    });
     try {
       let conn = await oracledb.getConnection(samboDbConfig);
       const result = await conn.execute(
@@ -58,17 +69,45 @@ export class HealthService {
          ${htmlRawText}</p>`,
           })
           .then((info: any) => {
-            console.log({ info });
+            this.loggerService.createLog({
+              taskId: logId,
+              task: LogTaskType.RUNNING_SQL_MONITORING,
+              status: LogStatus.IN_PROGRESS,
+              description: `${htmlRawText}`,
+            });
           })
-          .catch(console.error);
+          .catch((error) => {
+            this.loggerService.createLog({
+              taskId: logId,
+              task: LogTaskType.RUNNING_SQL_MONITORING,
+              status: LogStatus.IN_PROGRESS,
+              description: `${error}`,
+            });
+          });
       }
+      await this.loggerService.createLog({
+        taskId: logId,
+        task: LogTaskType.RUNNING_SQL_MONITORING,
+        status: LogStatus.DONE,
+      });
     } catch (error) {
-      console.log(error);
+      await this.loggerService.createLog({
+        taskId: logId,
+        task: LogTaskType.RUNNING_SQL_MONITORING,
+        status: LogStatus.DONE,
+        description: `${error}`,
+      });
     }
   }
 
-  @Cron('0 */1 * * *')
+  @Cron('0 */1 * * *', {
+    name: LogTaskType.ARCHIVELOG_PROD_MONITORING,
+  })
   async automaticArchivelogPRODMonitoring() {
+    const logId = await this.loggerService.createLog({
+      task: LogTaskType.ARCHIVELOG_PROD_MONITORING,
+      status: LogStatus.OPEN,
+    });
     try {
       let conn = await oracledb.getConnection(samboDbConfig);
       const result = await conn.execute(
@@ -84,17 +123,46 @@ export class HealthService {
             html: `<p>Problem z archivelog, obecnie ilość plików logów niezaaplikowanych na baze zapasową ${result.rows[0].CNT}.<br /></p>`,
           })
           .then((info: any) => {
-            console.log({ info });
+            this.loggerService.createLog({
+              taskId: logId,
+              task: LogTaskType.ARCHIVELOG_PROD_MONITORING,
+              status: LogStatus.IN_PROGRESS,
+              description: `Archivelog not applied: ${result.rows[0].CNT} count`,
+            });
           })
-          .catch(console.error);
+          .catch((error) => {
+            this.loggerService.createLog({
+              taskId: logId,
+              task: LogTaskType.ARCHIVELOG_PROD_MONITORING,
+              status: LogStatus.IN_PROGRESS,
+              description: `${error}`,
+            });
+          });
       }
+      await this.loggerService.createLog({
+        taskId: logId,
+        task: LogTaskType.ARCHIVELOG_PROD_MONITORING,
+        status: LogStatus.DONE,
+        description: `Archivelog not applied: ${result.rows[0].CNT} count`,
+      });
     } catch (error) {
-      console.log(error);
+      await this.loggerService.createLog({
+        taskId: logId,
+        task: LogTaskType.ARCHIVELOG_PROD_MONITORING,
+        status: LogStatus.DONE,
+        description: `${error}`,
+      });
     }
   }
 
-  @Cron('0 */1 * * *')
+  @Cron('0 */1 * * *', {
+    name: LogTaskType.ARCHIVELOG_PROD_MONITORING2,
+  })
   async automaticArchivelogPRODMonitoring2() {
+    const logId = await this.loggerService.createLog({
+      task: LogTaskType.ARCHIVELOG_PROD_MONITORING2,
+      status: LogStatus.OPEN,
+    });
     try {
       let conn = await oracledb.getConnection(samboDbConfig);
       const result = await conn.execute(
@@ -110,17 +178,46 @@ export class HealthService {
             html: `<p>Problem z archivelog, obecnie opóźnienie to ${Math.round(result.rows[0].LOG_H)} godzin.<br /></p>`,
           })
           .then((info: any) => {
-            console.log({ info });
+            this.loggerService.createLog({
+              taskId: logId,
+              task: LogTaskType.ARCHIVELOG_PROD_MONITORING,
+              status: LogStatus.IN_PROGRESS,
+              description: `Monitoring - delay ${Math.round(result.rows[0].LOG_H)} h`,
+            });
           })
-          .catch(console.error);
+          .catch((error) => {
+            this.loggerService.createLog({
+              taskId: logId,
+              task: LogTaskType.ARCHIVELOG_PROD_MONITORING,
+              status: LogStatus.IN_PROGRESS,
+              description: `${error}`,
+            });
+          });
       }
+      this.loggerService.createLog({
+        taskId: logId,
+        task: LogTaskType.ARCHIVELOG_PROD_MONITORING,
+        status: LogStatus.DONE,
+        description: `Monitoring - delay ${Math.round(result.rows[0].LOG_H)} h`,
+      });
     } catch (error) {
-      console.log(error);
+      this.loggerService.createLog({
+        taskId: logId,
+        task: LogTaskType.ARCHIVELOG_PROD_MONITORING,
+        status: LogStatus.DONE,
+        description: `${error}`,
+      });
     }
   }
 
-  @Cron('0 */1 * * *')
+  @Cron('0 */1 * * *', {
+    name: LogTaskType.ARCHIVELOG_REP_MONITORING,
+  })
   async automaticArchivelogREPMonitoring() {
+    const logId = await this.loggerService.createLog({
+      task: LogTaskType.ARCHIVELOG_REP_MONITORING,
+      status: LogStatus.OPEN,
+    });
     try {
       let conn = await oracledb.getConnection({
         user: 'SYS',
@@ -144,12 +241,35 @@ export class HealthService {
             html: `<p>Problem z archivelog, obecnie opóźnienie to ${Math.round(result.rows[0].LOG_H)} godzin.<br /></p>`,
           })
           .then((info: any) => {
-            console.log({ info });
+            this.loggerService.createLog({
+              taskId: logId,
+              task: LogTaskType.ARCHIVELOG_REP_MONITORING,
+              status: LogStatus.IN_PROGRESS,
+              description: `Replication delay ${Math.round(result.rows[0].LOG_H)} h`,
+            });
           })
-          .catch(console.error);
+          .catch((error) => {
+            this.loggerService.createLog({
+              taskId: logId,
+              task: LogTaskType.ARCHIVELOG_REP_MONITORING,
+              status: LogStatus.IN_PROGRESS,
+              description: `${error}`,
+            });
+          });
       }
+      this.loggerService.createLog({
+        taskId: logId,
+        task: LogTaskType.ARCHIVELOG_REP_MONITORING,
+        status: LogStatus.DONE,
+        description: `Replication delay ${Math.round(result.rows[0].LOG_H)} h`,
+      });
     } catch (error) {
-      console.log(error);
+      this.loggerService.createLog({
+        taskId: logId,
+        task: LogTaskType.ARCHIVELOG_REP_MONITORING,
+        status: LogStatus.DONE,
+        description: `${error}`,
+      });
     }
   }
 }

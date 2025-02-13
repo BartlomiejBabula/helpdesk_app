@@ -8,6 +8,9 @@ import { generateSelenium } from './report/seleniumReport';
 import { generateVolumetrics } from './report/volumetrics/volumetricsReport';
 import { generateSLARaport } from './report/SlaReport';
 import { JwtService } from '@nestjs/jwt';
+import { LoggerService } from 'src/logger/logger.service';
+import { LogTaskType } from 'src/logger/dto/createLog';
+import { LogStatus } from 'src/logger/dto/getLog';
 
 @Injectable()
 export class ReportsService {
@@ -15,42 +18,60 @@ export class ReportsService {
     @InjectRepository(Reports)
     private reportsRepository: Repository<Reports>,
     private jwtService: JwtService,
+    private loggerService: LoggerService,
   ) {}
 
   async getBlockedReports(): Promise<Reports[]> | null {
     return this.reportsRepository.find({ where: { block: true } });
   }
 
-  async getUserEmail(jwt): Promise<string> {
+  async getUserEmail(jwt: string): Promise<string> {
     const user = this.jwtService.decode(jwt.slice(7));
     return user.payload.email;
   }
 
-  async generateMorningReport(jwt: string) {
+  async getMorningReport(jwt: string) {
     this.blockReport('morning');
     const email = await this.getUserEmail(jwt);
-    await generateMorningReport(email);
+    await generateMorningReport(
+      email,
+      this.loggerService,
+      email.replace('@asseco.pl', ''),
+    );
     this.unBlockReport('morning');
   }
 
   async generateSeleniumReport(jwt: string) {
     this.blockReport('selenium');
     const email = await this.getUserEmail(jwt);
-    await generateSelenium(email);
+    await generateSelenium(
+      email,
+      this.loggerService,
+      email.replace('@asseco.pl', ''),
+    );
     this.unBlockReport('selenium');
   }
 
   async generateVolumetricsReport(jwt: string) {
     this.blockReport('volumetrics');
     const email = await this.getUserEmail(jwt);
-    await generateVolumetrics(email);
+    await generateVolumetrics(
+      email,
+      this.loggerService,
+      email.replace('@asseco.pl', ''),
+    );
     this.unBlockReport('volumetrics');
   }
 
   async generateSLAReport(req: any, jwt: string) {
     this.blockReport('sla');
     const email = await this.getUserEmail(jwt);
-    await generateSLARaport(req, email);
+    await generateSLARaport(
+      req,
+      email,
+      this.loggerService,
+      email.replace('@asseco.pl', ''),
+    );
     this.unBlockReport('sla');
   }
 
@@ -83,8 +104,9 @@ export class ReportsService {
     if (ReportFound === null) {
       return false;
     } else {
-      if (ReportFound.block === false) return false;
-      else {
+      if (ReportFound.block === false) {
+        return false;
+      } else {
         await this.reportsRepository.update(
           { id: ReportFound.id },
           { block: false },
@@ -92,11 +114,16 @@ export class ReportsService {
         return true;
       }
     }
-    return true;
   }
 
-  @Cron('30 * * * * *')
+  @Cron('*/1 * * * *', {
+    name: LogTaskType.UNBLOCK_REPORT,
+  })
   async automaticUnblockReport() {
+    const logId = await this.loggerService.createLog({
+      task: LogTaskType.UNBLOCK_REPORT,
+      status: LogStatus.OPEN,
+    });
     const blockedReports = await this.getBlockedReports();
     const currentDate = new Date();
     if (blockedReports.length > 0) {
@@ -104,22 +131,34 @@ export class ReportsService {
         let compareDate = report.updatedAt;
         compareDate.setMinutes(compareDate.getMinutes() + 130); // 10min+
         if (report.block === true && compareDate < currentDate) {
-          console.log(`automatic report ${report.name} unblock`);
           this.reportsRepository.update({ id: report.id }, { block: false });
+          this.loggerService.createLog({
+            taskId: logId,
+            task: LogTaskType.UNBLOCK_REPORT,
+            status: LogStatus.IN_PROGRESS,
+            description: `automatic report ${report.name} unblock`,
+          });
         }
       });
     }
+    this.loggerService.createLog({
+      taskId: logId,
+      task: LogTaskType.UNBLOCK_REPORT,
+      status: LogStatus.DONE,
+    });
   }
 
-  @Cron('0 45 5 * * *')
+  @Cron('45 5 * * *', {
+    name: LogTaskType.MORNING_REPORT,
+  })
   async automaticMorningReport() {
-    console.log('automatic morning report');
-    generateMorningReport('esambo_hd@asseco.pl');
+    generateMorningReport('esambo_hd@asseco.pl', this.loggerService, 'system');
   }
 
-  @Cron('0 45 5 * * 6')
+  @Cron('45 5 * * 6', {
+    name: LogTaskType.VOLUMETRIC_REPORT,
+  })
   async automaticVolumetricReport() {
-    console.log('automatic volumetric report');
-    generateVolumetrics('esambo_hd@asseco.pl');
+    generateVolumetrics('esambo_hd@asseco.pl', this.loggerService, 'system');
   }
 }

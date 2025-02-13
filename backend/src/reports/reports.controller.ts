@@ -15,7 +15,7 @@ export class ReportsController {
   @UseGuards(AccessTokenGuard)
   @Get('/morning')
   getMorningReports(@Request() req) {
-    this.reportsService.generateMorningReport(req.headers.authorization);
+    this.reportsService.getMorningReport(req.headers.authorization);
     return 'Zlecono raport poranny';
   }
 
