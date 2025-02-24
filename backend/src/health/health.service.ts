@@ -114,7 +114,7 @@ export class HealthService {
         `select count(1) as cnt from v$archived_log where standby_dest = 'YES' and applied = 'NO'`,
       );
       await conn.close();
-      if (result.rows[0].CNT >= 2) {
+      if (result.rows[0].CNT >= 3) {
         transporter
           .sendMail({
             from: EMAIL,
@@ -169,7 +169,7 @@ export class HealthService {
         `select (sysdate - min(first_time)) * 24 as log_h from v$archived_log where name is not null and standby_dest = 'NO'`,
       );
       await conn.close();
-      if (Math.round(result.rows[0].LOG_H) >= 24) {
+      if (Math.round(result.rows[0].LOG_H) >= 30) {
         transporter
           .sendMail({
             from: EMAIL,
@@ -232,7 +232,7 @@ export class HealthService {
         `select (sysdate - min(first_time)) * 24 as log_h from v$archived_log where name is not null and standby_dest = 'NO'`,
       );
       await conn.close();
-      if (Math.round(result.rows[0].LOG_H) >= 26) {
+      if (Math.round(result.rows[0].LOG_H) >= 30) {
         transporter
           .sendMail({
             from: EMAIL,
