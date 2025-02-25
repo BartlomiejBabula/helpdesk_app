@@ -236,12 +236,6 @@ export class ZabbixService {
                     opdata: res.data.result[0].opdata,
                   };
                   this.update(problem.id, update);
-                  this.loggerService.createLog({
-                    taskId: logId,
-                    task: LogTaskType.ZABBIX_PROBLEM_RECOVERY,
-                    status: LogStatus.IN_PROGRESS,
-                    description: `Updated Zabbix id: ${problem.id}`,
-                  });
                 }
               })
               .catch((err) => {
