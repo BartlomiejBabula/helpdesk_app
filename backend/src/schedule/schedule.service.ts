@@ -44,7 +44,7 @@ export class ScheduleService {
       const CronTime = require('cron').CronTime;
       task.setTime(new CronTime(updateScheduleDto.schedule));
       if (updateScheduleDto.isActive === true) task.start();
-      await this.scheduleRepository.update(databaseTask.id, updateScheduleDto);
+      await this.scheduleRepository.update(databaseTask._id, updateScheduleDto);
       this.loggerService.createLog({
         taskId: logId,
         task: LogTaskType.UPDATE_SCHEDULE,

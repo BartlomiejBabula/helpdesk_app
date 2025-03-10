@@ -44,7 +44,7 @@ export const schedulesSlice = createSlice({
     builder.addCase(editSchedule.fulfilled, (state, { payload }) => {
       state.status = "succeeded";
       state.schedules = state.schedules.map((schedule: ScheduleType) =>
-        schedule.id === payload.id ? payload : schedule
+        schedule._id === payload._id ? payload : schedule
       );
     });
     builder.addCase(editSchedule.rejected, (state, { payload }) => {

@@ -110,7 +110,7 @@ const GicaPage = () => {
       }}
     >
       <Typography
-        variant='h6'
+        variant="h6"
         sx={{
           letterSpacing: 2,
           color: "text.primary",

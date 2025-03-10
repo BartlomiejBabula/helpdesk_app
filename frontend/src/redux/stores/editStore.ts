@@ -19,7 +19,7 @@ export const editStore = createAsyncThunk<
 
   async (store, { rejectWithValue }) => {
     const editStore = await api
-      .patch(`/stores/${store.id}`, store)
+      .patch(`/stores/${store._id}`, store)
       .then((response) => {
         return store;
       })

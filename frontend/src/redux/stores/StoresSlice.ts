@@ -59,7 +59,7 @@ export const storesSlice = createSlice({
     builder.addCase(editStore.fulfilled, (state, { payload }) => {
       state.status = "succeeded";
       state.storeList = state.storeList.map((store: StoreType) =>
-        store.id === payload.id ? payload : store
+        store._id === payload._id ? payload : store
       );
     });
     builder.addCase(editStore.rejected, (state, { payload }) => {

@@ -1,16 +1,17 @@
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
+  ObjectIdColumn,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { UserRoleType } from '../dto/createUser';
+import { ObjectId } from 'mongodb';
 
 @Entity('Users')
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  _id: ObjectId;
 
   @Column({ unique: true })
   email: string;

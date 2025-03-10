@@ -17,15 +17,19 @@ export class LoggerService {
   ) {}
 
   async getLogs(filterDto: GetLogFilterDto) {
-    const { taskId, status, orderedBy } = filterDto;
-    const query = this.loggerRepository.createQueryBuilder('logger');
-    if (status) query.where('logger.status = :status', { status });
-    if (taskId) query.andWhere('logger.taskId = :taskId', { taskId });
-    if (orderedBy)
-      query.andWhere('logger.orderedBy = :orderedBy', { orderedBy });
+    const { taskId, status, orderedBy, task } = filterDto;
+    const query: any = {};
+
+    if (status) query['status'] = status;
+    if (taskId) query['taskId'] = taskId;
+    if (orderedBy) query['orderedBy'] = orderedBy;
+    if (task) query['task'] = task;
+
     try {
-      const log = await query.getMany();
-      return log;
+      const logs = await this.loggerRepository.find({
+        where: query,
+      });
+      return logs;
     } catch (error) {
       throw new InternalServerErrorException();
     }
@@ -52,7 +56,8 @@ export class LoggerService {
       const user = this.jwtService.decode(createlogDto.accessToken.slice(7));
       log.orderedBy = user.payload.email.replace('@asseco.pl', '');
     }
-    await this.loggerRepository.save(log);
+    log.createdAt = new Date();
+    await this.loggerRepository.insert(log);
     return log.taskId;
   }
 

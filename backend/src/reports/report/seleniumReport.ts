@@ -2,53 +2,48 @@ import { LogTaskType } from 'src/logger/dto/createLog';
 import { LogStatus } from 'src/logger/dto/getLog';
 import { LoggerService } from 'src/logger/logger.service';
 import { transporter, EMAIL } from 'src/nodemailer';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as archiver from 'archiver';
 
-const SAMBO_TEST_IP = process.env.SAMBO_TEST_IP;
-const SELENIUM_USER = process.env.SELENIUM_USER;
-const SELENIUM_PASSWORD = process.env.SELENIUM_PASSWORD;
-const FRANCHISE_STORE = process.env.FRANCHISE_STORE;
+const getFilesInFolder = async (folderPath: string) => {
+  try {
+    return fs
+      .readdirSync(folderPath)
+      .filter((file) => fs.statSync(path.join(folderPath, file)).isFile())
+      .map((file) => ({
+        filename: file,
+        path: path.join(folderPath, file),
+      }));
+  } catch (error) {
+    console.error(`Playwright getFilesInFolder: ${error.message}`);
+    return [];
+  }
+};
 
-const deleteFiles = () => {
-  const fs = require('fs');
-  const files = [
-    '/usr/src/app/src/selenium/tests/report.html',
-    '/usr/src/app/src/selenium/tests/log.html',
-    // "/usr/src/app/src/selenium/tests/geckodriver-1.log",
-    // "/usr/src/app/src/selenium/tests/selenium-screenshot-1.png",
-    '/usr/src/app/src/selenium/tests/output.xml',
-  ];
-  files.forEach(
-    (path) =>
-      fs.existsSync(path) &&
-      fs.unlink(path, (err: any) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
-      }),
-  );
-  for (let i = 1; i < 100; i++) {
-    let deleteGecko = `/usr/src/app/src/selenium/tests/geckodriver-${i}.log`;
-    if (fs.existsSync(deleteGecko)) {
-      fs.unlink(deleteGecko, (err: any) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
-      });
-    } else break;
+const createZip = async (zipPath: string, folder: string) => {
+  const output = fs.createWriteStream(zipPath);
+  const archive = archiver('zip', {
+    zlib: { level: 9 },
+  });
+  archive.on('error', (err) => {
+    console.error(`Error ZIP: ${err.message}`);
+    throw err;
+  });
+
+  output.on('close', () => {});
+
+  archive.pipe(output);
+
+  archive.file(path.join(folder, 'index.html'), { name: 'index.html' });
+
+  const filesInDataFolder = await getFilesInFolder(path.join(folder, 'data'));
+  for (const file of filesInDataFolder) {
+    if (file.filename.endsWith('.png')) {
+      archive.file(file.path, { name: path.join('data', file.filename) });
+    }
   }
-  for (let i = 1; i < 200; i++) {
-    let deleteScreenshot = `/usr/src/app/src/selenium/tests/selenium-screenshot-${i}.png`;
-    if (fs.existsSync(deleteScreenshot)) {
-      fs.unlink(deleteScreenshot, (err: any) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
-      });
-    } else break;
-  }
+  await archive.finalize();
 };
 
 export async function generateSelenium(
@@ -61,41 +56,29 @@ export async function generateSelenium(
     status: LogStatus.OPEN,
     orderedBy: createdBy,
   });
-  let envIP = SAMBO_TEST_IP;
-  const path = require('path');
+
   let child_process = require('child_process');
   await child_process.exec(
-    `cd src/selenium/tests && robot --variable SERVER:${envIP} --variable BROWSER:headlessfirefox --variable VALID_USER:${SELENIUM_USER} --variable VALID_PASSWORD:${SELENIUM_PASSWORD} --variable FRANCHISE_STORE:${FRANCHISE_STORE} .`,
-    function (err: any, stdout: any, stderr: any) {
-      if (err) {
-        loggerService.createLog({
-          taskId: logId,
-          task: LogTaskType.SELENIUM_REPORT,
-          status: LogStatus.IN_PROGRESS,
-          orderedBy: createdBy,
-          description: `${err}`,
-        });
-      }
+    `cd playwright && npx playwright test`,
+    async function (err: any, stdout: any, stderr: any) {
+      const folderPath = '/usr/src/app/playwright/test-results/report';
+      const zipPath = path.join(folderPath, 'report.zip');
+      await createZip(zipPath, folderPath);
       transporter
         .sendMail({
           attachments: [
             {
-              filename: `report.html`,
-              path: path.join('/usr/src/app/src/selenium/tests/report.html'),
-            },
-            {
-              filename: `log.html`,
-              path: path.join('/usr/src/app/src/selenium/tests/log.html'),
+              filename: 'report.zip',
+              path: zipPath,
             },
           ],
           from: EMAIL,
           to: email,
-          subject: `Selenium środowisko TEST`,
+          subject: `Selenium`,
           html: `<p>Cześć,</br>
 w załączniku przesyłam raport z wykonania testów selenium</p>`,
         })
         .then((info: any) => {
-          deleteFiles();
           loggerService.createLog({
             taskId: logId,
             task: LogTaskType.SELENIUM_REPORT,

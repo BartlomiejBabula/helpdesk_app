@@ -7,7 +7,6 @@ import { updateDarkTheme } from "./updateDarkTheme";
 type initialStateType = {
   error: null | string;
   status: "loading" | "succeeded" | "failed" | null;
-  id?: number;
   email?: string;
   createdAt?: string;
   isLogged: boolean;
@@ -62,7 +61,6 @@ export const userSlice = createSlice({
     });
     builder.addCase(getUserProfile.fulfilled, (state, { payload }) => {
       state.status = "succeeded";
-      state.id = payload.id;
       state.createdAt = payload.createdAt;
       state.email = payload.email;
       state.isLogged = true;

@@ -1,9 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { ObjectId } from 'mongodb';
+import { Entity, Column, ObjectIdColumn } from 'typeorm';
 
 @Entity('Zabbix')
 export class Zabbix {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  _id: ObjectId;
 
   @Column()
   eventId: number;
@@ -23,9 +24,9 @@ export class Zabbix {
   @Column()
   host: string;
 
-  @Column({ type: 'longtext' })
+  @Column({})
   name: string;
 
-  @Column({ type: 'longtext' })
+  @Column({})
   opdata: string;
 }

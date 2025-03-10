@@ -11,6 +11,7 @@ import xlsx from 'node-xlsx';
 import { LoggerService } from 'src/logger/logger.service';
 import { LogStatus } from 'src/logger/dto/getLog';
 import { LogTaskType } from 'src/logger/dto/createLog';
+import { ObjectId } from 'mongodb';
 
 const oracledb = require('oracledb');
 
@@ -26,8 +27,8 @@ export class StoresService {
     return this.storesRepository.find();
   }
 
-  async getStoreById(id: number): Promise<Stores | null> {
-    return this.storesRepository.findOne({ where: { id } });
+  async getStoreById(id: ObjectId): Promise<Stores | null> {
+    return this.storesRepository.findOne({ where: { _id: id } });
   }
 
   async createNewStore(
@@ -58,7 +59,7 @@ export class StoresService {
       store.status = newStore.status;
       store.storeNumber = newStore.storeNumber;
       store.storeType = newStore.storeType;
-      await this.storesRepository.save(store);
+      await this.storesRepository.insert(store);
       await this.loggerService.createLog({
         accessToken: accessToken,
         task: LogTaskType.CREATE_STORE,
@@ -81,16 +82,21 @@ export class StoresService {
       accessToken: accessToken,
     });
     const storeSelected = await this.storesRepository.findOne({
-      where: { id },
+      where: { _id: new ObjectId(id) },
     });
     if (storeSelected) {
       if (
         updateStoreDto.storeType !== storeSelected.storeType ||
         updateStoreDto.status !== storeSelected.status ||
-        (updateStoreDto.information &&
-          updateStoreDto.information !== storeSelected.information)
+        updateStoreDto.information !== storeSelected.information
       ) {
-        await this.storesRepository.update({ id }, updateStoreDto);
+        const newStore = {
+          storeNumber: updateStoreDto.storeNumber,
+          storeType: updateStoreDto.storeType,
+          status: updateStoreDto.status,
+          information: updateStoreDto.information,
+        };
+        await this.storesRepository.update({ _id: new ObjectId(id) }, newStore);
         await this.loggerService.createLog({
           taskId: logId,
           task: LogTaskType.UPDATE_STORE_LIST,
@@ -99,7 +105,7 @@ export class StoresService {
           description: `Store ${storeSelected.storeNumber} updated`,
         });
         return await this.storesRepository.findOne({
-          where: { id },
+          where: { _id: new ObjectId(id) },
         });
       } else {
         await this.loggerService.createLog({
@@ -157,7 +163,7 @@ export class StoresService {
             status: store[3],
             information: store[1] ? store[1] : '',
           };
-          this.storesRepository.save(newStore);
+          this.storesRepository.insert(newStore);
         }
       });
       const fs = require('fs');

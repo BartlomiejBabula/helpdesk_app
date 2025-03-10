@@ -1,9 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { ObjectId } from 'mongodb';
+import { Entity, Column, ObjectIdColumn } from 'typeorm';
 
 @Entity('Jobs')
 export class Jobs {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @ObjectIdColumn()
+  _id!: ObjectId;
 
   @Column({ nullable: true })
   jobId: number;
@@ -35,9 +36,9 @@ export class Jobs {
   @Column({ nullable: true })
   tmRestart: Date | null;
 
-  @Column({ nullable: true, type: 'longtext' })
+  @Column({ nullable: true })
   infoMessage: string | null;
 
-  @Column({ nullable: true, type: 'longtext' })
+  @Column({ nullable: true })
   errorMessage: string | null;
 }

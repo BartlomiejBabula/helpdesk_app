@@ -1,5 +1,13 @@
 import * as React from "react";
-import { Paper, Stack, Button, TextField, MenuItem, InputLabel, FormControl } from "@mui/material";
+import {
+  Paper,
+  Stack,
+  Button,
+  TextField,
+  MenuItem,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
 import Select from "@mui/material/Select";
 import { AlertProps } from "@mui/material/Alert";
 import { useFormik } from "formik";
@@ -45,7 +53,6 @@ export const AddShop = () => {
 
     onSubmit: async (values: formikValues, { resetForm }) => {
       let newStore = {
-        id: storeList.length + 1,
         storeNumber: values.storeNumber,
         storeType: values.storeType,
         status: values.status,
@@ -74,7 +81,7 @@ export const AddShop = () => {
   });
 
   return (
-    <Paper variant='outlined' sx={{ padding: 2, marginBottom: 4 }}>
+    <Paper variant="outlined" sx={{ padding: 2, marginBottom: 4 }}>
       <form onSubmit={formikAddShop.handleSubmit}>
         <Stack
           direction={"row"}
@@ -82,12 +89,12 @@ export const AddShop = () => {
           sx={{ display: "flex", alignItems: "baseline" }}
         >
           <TextField
-            autoComplete='off'
-            label='Sklep'
-            size='small'
-            id='storeNumber'
-            name='storeNumber'
-            type='text'
+            autoComplete="off"
+            label="Sklep"
+            size="small"
+            id="storeNumber"
+            name="storeNumber"
+            type="text"
             onChange={formikAddShop.handleChange}
             value={formikAddShop.values.storeNumber}
             onBlur={formikAddShop.handleBlur}
@@ -102,51 +109,51 @@ export const AddShop = () => {
             sx={{ width: 205 }}
           />
           <FormControl sx={{ width: 130, height: 1 }} size="small">
-          <InputLabel>Status</InputLabel>
-          <Select
-            size='small'
-            id='status'
-            name='status'
-            label="Status"
-            value={formikAddShop.values.status}
-            onChange={formikAddShop.handleChange}
-            error={
-              formikAddShop.touched.status &&
-              Boolean(formikAddShop.errors.status)
-            }
-          >
-            <MenuItem value='Nowy'>Nowy</MenuItem>
-            <MenuItem value='Otwarty'>Otwarty</MenuItem>
-            <MenuItem value='Zamknięty'>Zamknięty</MenuItem>
-          </Select>
+            <InputLabel>Status</InputLabel>
+            <Select
+              size="small"
+              id="status"
+              name="status"
+              label="Status"
+              value={formikAddShop.values.status}
+              onChange={formikAddShop.handleChange}
+              error={
+                formikAddShop.touched.status &&
+                Boolean(formikAddShop.errors.status)
+              }
+            >
+              <MenuItem value="Nowy">Nowy</MenuItem>
+              <MenuItem value="Otwarty">Otwarty</MenuItem>
+              <MenuItem value="Zamknięty">Zamknięty</MenuItem>
+            </Select>
           </FormControl>
           <FormControl sx={{ width: 200, height: 1 }} size="small">
-          <InputLabel>Typ sklepu</InputLabel>
-          <Select
-            size='small'
-            id='storeType'
-            name='storeType'
-            label="Typ sklepu"
-            value={formikAddShop.values.storeType}
-            onChange={formikAddShop.handleChange}
-            error={
-              formikAddShop.touched.storeType &&
-              Boolean(formikAddShop.errors.storeType)
-            }
-          >
-            <MenuItem value='Franczyza'>Franczyza</MenuItem>
-            <MenuItem value='Sklep sieciowy'>Sklep sieciowy</MenuItem>
-            <MenuItem value='Multisambo'>Multisambo</MenuItem>
-            <MenuItem value='Centrala'>Centrala</MenuItem>
-          </Select>
+            <InputLabel>Typ sklepu</InputLabel>
+            <Select
+              size="small"
+              id="storeType"
+              name="storeType"
+              label="Typ sklepu"
+              value={formikAddShop.values.storeType}
+              onChange={formikAddShop.handleChange}
+              error={
+                formikAddShop.touched.storeType &&
+                Boolean(formikAddShop.errors.storeType)
+              }
+            >
+              <MenuItem value="Franczyza">Franczyza</MenuItem>
+              <MenuItem value="Sklep sieciowy">Sklep sieciowy</MenuItem>
+              <MenuItem value="Multisambo">Multisambo</MenuItem>
+              <MenuItem value="Centrala">Centrala</MenuItem>
+            </Select>
           </FormControl>
           <TextField
-            autoComplete='off'
-            label='Informacje'
-            size='small'
-            id='information'
-            name='information'
-            type='text'
+            autoComplete="off"
+            label="Informacje"
+            size="small"
+            id="information"
+            name="information"
+            type="text"
             onChange={formikAddShop.handleChange}
             value={formikAddShop.values.information}
             onBlur={formikAddShop.handleBlur}
@@ -168,8 +175,8 @@ export const AddShop = () => {
             width: 200,
           }}
           color="secondary"
-          type='submit'
-          variant='contained'
+          type="submit"
+          variant="contained"
         >
           Dodaj sklep
         </Button>

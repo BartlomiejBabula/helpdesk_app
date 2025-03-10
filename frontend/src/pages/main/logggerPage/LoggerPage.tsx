@@ -12,7 +12,7 @@ const LoggerPage = () => {
     api.get(`/logger/`).then((response) => {
       let formatedLogs = response.data.map((log: LogType) => {
         let formatedCreatedAt = new Date(log.createdAt);
-        formatedCreatedAt.setHours(formatedCreatedAt.getHours() + 1);
+        formatedCreatedAt.setHours(formatedCreatedAt.getHours());
         log = { ...log, formatedCreatedAt };
         return log;
       });
@@ -23,6 +23,10 @@ const LoggerPage = () => {
   useEffect(() => {
     getLogs();
   }, []);
+
+  function getRowId(row: LogType) {
+    return row._id;
+  }
 
   const columnsProcess: GridColDef[] = [
     {
@@ -92,6 +96,7 @@ const LoggerPage = () => {
         </Button>
       </Box>
       <DataGrid
+        getRowId={getRowId}
         sx={{ bgcolor: "background.paper", height: "90vh" }}
         rows={logs}
         columns={columnsProcess}
