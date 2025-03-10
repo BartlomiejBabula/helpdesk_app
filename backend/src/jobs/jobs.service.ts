@@ -103,7 +103,7 @@ export class JobsService {
           infoMessage: job.INFO_MESSAGE,
           errorMessage: job.ERROR_MESSAGE,
         };
-        this.jobsRepository.save(newJob);
+        this.jobsRepository.insert(newJob);
       });
     } catch (error) {
       this.loggerService.createLog({

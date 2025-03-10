@@ -7,7 +7,7 @@ import { GetLogFilterDto } from './dto/getLog';
 export class LoggerController {
   constructor(private readonly loggerService: LoggerService) {}
 
-  //@UseGuards(AccessTokenGuard)
+  @UseGuards(AccessTokenGuard)
   @Get()
   getLogs(@Query() filterDto: GetLogFilterDto) {
     return this.loggerService.getLogs(filterDto);

@@ -1,16 +1,17 @@
+import { ObjectId } from 'mongodb';
 import { LogTaskType } from 'src/logger/dto/createLog';
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
+  ObjectIdColumn,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('Schedule')
 export class Schedule {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  _id: ObjectId;
 
   @Column()
   isActive: boolean;
@@ -24,7 +25,7 @@ export class Schedule {
   @Column()
   name: string;
 
-  @Column({ nullable: true, type: 'longtext' })
+  @Column({ nullable: true })
   description: string | null;
 
   @CreateDateColumn()

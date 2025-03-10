@@ -108,6 +108,10 @@ export const JobsComponent = () => {
     },
   ];
 
+  function getRowId(row: JobType) {
+    return row._id;
+  }
+
   return (
     <Box style={{ height: "78vh", minHeight: 560 }}>
       <DataGrid
@@ -115,6 +119,7 @@ export const JobsComponent = () => {
         rows={jobs ? formatedJobs : []}
         columns={columnsProcess}
         disableColumnMenu={true}
+        getRowId={getRowId}
         initialState={{
           sorting: {
             sortModel: [{ field: "col4", sort: "asc" }],

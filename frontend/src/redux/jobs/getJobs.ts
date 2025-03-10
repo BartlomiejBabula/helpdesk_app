@@ -23,7 +23,7 @@ export const getJobs = createAsyncThunk<
           (job: JobType, i: number) => {
             return (job = {
               ...job,
-              id: i + 1,
+              _id: i + 1,
             });
           }
         );

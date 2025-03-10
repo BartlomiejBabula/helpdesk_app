@@ -8,6 +8,7 @@ import axios from 'axios';
 import { LoggerService } from 'src/logger/logger.service';
 import { LogTaskType } from 'src/logger/dto/createLog';
 import { LogStatus } from 'src/logger/dto/getLog';
+import { ObjectId } from 'mongodb';
 
 const ZABBIX_URL = process.env.ZABBIX_URL;
 const ZABBIX_USER = process.env.ZABBIX_USER;
@@ -25,7 +26,7 @@ export class ZabbixService {
     return this.zabbixRepository.findOne({ where: { eventId } });
   }
 
-  async update(id: number, updateZabbixDto: any): Promise<any> {
+  async update(id: ObjectId, updateZabbixDto: any): Promise<any> {
     return this.zabbixRepository.update(id, updateZabbixDto);
   }
 
@@ -154,7 +155,7 @@ export class ZabbixService {
                   token,
                   logId,
                 );
-                this.zabbixRepository.save(zabbixProblem);
+                this.zabbixRepository.insert(zabbixProblem);
                 await this.loggerService.createLog({
                   taskId: logId,
                   task: LogTaskType.ZABBIX_CHECK,
@@ -235,7 +236,7 @@ export class ZabbixService {
                     recoveryEventId: res.data.result[0].r_eventid,
                     opdata: res.data.result[0].opdata,
                   };
-                  this.update(problem.id, update);
+                  this.update(new ObjectId(problem._id), update);
                 }
               })
               .catch((err) => {

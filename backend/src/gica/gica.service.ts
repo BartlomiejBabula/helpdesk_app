@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Gica } from './entities/gica.entity';
-import { MoreThanOrEqual, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Cron } from '@nestjs/schedule';
 import { samboDbConfig } from 'src/samboDB';
 import { LoggerService } from 'src/logger/logger.service';
@@ -19,12 +19,11 @@ export class GicaService {
   ) {}
 
   async getGica(): Promise<Gica[]> {
-    let date = new Date();
-    date.setMonth(date.getMonth() - 1);
-    date.setHours(0, 0, 0, 0);
-    return await this.gicaRepository.find({
-      where: { date: MoreThanOrEqual(date) },
+    const gica = await this.gicaRepository.find({
+      order: { date: 'DESC' },
+      take: 30,
     });
+    return gica;
   }
 
   async getGicaTimeByStoreType(
@@ -128,7 +127,7 @@ ORDER BY tm_end DESC fetch first 1 rows only`,
         gicaTimeHypermarket.TM_END,
       );
       GICA.date = new Date(yest);
-      this.gicaRepository.save(GICA);
+      this.gicaRepository.insert(GICA);
       await this.loggerService.createLog({
         taskId: logId,
         task: LogTaskType.GET_GICA,

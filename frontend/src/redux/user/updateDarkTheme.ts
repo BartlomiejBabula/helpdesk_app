@@ -8,7 +8,6 @@ type updateDarkThemeErrorType = {
 type updateDarkThemeType = boolean;
 
 type PostDarkThemeType = {
-  id: number;
   darkTheme: boolean;
 };
 

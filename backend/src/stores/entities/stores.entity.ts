@@ -1,15 +1,16 @@
+import { ObjectId } from 'mongodb';
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
+  ObjectIdColumn,
   UpdateDateColumn,
   CreateDateColumn,
 } from 'typeorm';
 
 @Entity('Stores')
 export class Stores {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  _id: ObjectId;
 
   @Column({ nullable: true })
   storeNumber: string | null;
@@ -20,7 +21,7 @@ export class Stores {
   @Column({ nullable: true })
   status: string | null;
 
-  @Column({ nullable: true, type: 'longtext' })
+  @Column({ nullable: true })
   information: string | null;
 
   @CreateDateColumn()

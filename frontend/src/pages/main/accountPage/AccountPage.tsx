@@ -23,9 +23,8 @@ const AccountPage = () => {
   let status = useSelector(userSelectorStatus);
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (user.id !== undefined && status === "succeeded") {
+    if (user !== undefined && status === "succeeded") {
       const theme = {
-        id: user.id,
         darkTheme: event.target.checked,
       };
       await dispatch(updateDarkTheme(theme));

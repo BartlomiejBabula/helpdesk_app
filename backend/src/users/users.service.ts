@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UpdateThemeDto } from './dto/updateTheme';
 import { UserProfileType } from './dto/getProfile';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class UsersService {
@@ -22,7 +23,7 @@ export class UsersService {
     user.password = await bcrypt.hash(CreateUserDto.password, salt);
     user.email = CreateUserDto.email;
     user.role = UserRoleType.HELPDESK;
-    return this.usersRepository.save(user).catch((e) => {
+    return this.usersRepository.insert(user).catch((e) => {
       if (e.driverError.code === 'ER_DUP_ENTRY') {
         throw new BadRequestException(
           'Account with this email address already exists.',
@@ -43,20 +44,25 @@ export class UsersService {
   }
 
   async findById(id: string): Promise<User | null> {
-    return this.usersRepository.findOne({ where: { id: parseInt(id) } });
+    const user = await this.usersRepository.findOne({
+      where: { _id: new ObjectId(id) },
+    });
+    return user;
   }
 
-  async deleteById(id: number): Promise<string> {
-    const user = await this.usersRepository.delete(id);
-    if (user.affected === 0) return `No user with id: ${id}`;
-    else return `Deleted user id: ${id}`;
+  async deleteById(id: string): Promise<string> {
+    const result = await this.usersRepository.delete({ _id: new ObjectId(id) });
+    if (result.affected === 0) {
+      return `No user with id: ${id}`;
+    }
+    return `Deleted user id: ${id}`;
   }
 
-  async update(id: number, updateUserDto: any): Promise<any> {
-    return this.usersRepository.update(id, updateUserDto);
+  async update(_id: ObjectId, updateUserDto: any): Promise<any> {
+    return this.usersRepository.update(_id, updateUserDto);
   }
 
-  async updatePassword(id: number, password: string): Promise<string> {
+  async updatePassword(id: ObjectId, password: string): Promise<string> {
     const salt = await bcrypt.genSalt();
     const newPassword = await bcrypt.hash(password, salt);
     this.usersRepository.update(id, { password: newPassword });
@@ -64,12 +70,19 @@ export class UsersService {
     return 'Password Updated';
   }
 
-  async updateTheme(updateThemeDto: UpdateThemeDto): Promise<boolean> {
-    await this.usersRepository.update(updateThemeDto.id, {
-      darkTheme: updateThemeDto.darkTheme,
-    });
+  async updateTheme(
+    updateThemeDto: UpdateThemeDto,
+    accessToken: string,
+  ): Promise<boolean> {
+    const userToken = this.jwtService.decode(accessToken);
+    await this.usersRepository.update(
+      { _id: new ObjectId(userToken.payload.sub) },
+      {
+        darkTheme: updateThemeDto.darkTheme,
+      },
+    );
     const user = await this.usersRepository.findOne({
-      where: { id: updateThemeDto.id },
+      where: { _id: new ObjectId(userToken.payload.sub) },
     });
     return user.darkTheme;
   }
@@ -78,7 +91,7 @@ export class UsersService {
     const userToken = this.jwtService.decode(accessToken);
     const fetchedUser = await this.findById(userToken.payload.sub);
     const user: UserProfileType = {
-      id: fetchedUser.id,
+      _id: new ObjectId(fetchedUser._id),
       email: fetchedUser.email,
       createdAt: fetchedUser.createdAt,
       updatedAt: fetchedUser.updatedAt,

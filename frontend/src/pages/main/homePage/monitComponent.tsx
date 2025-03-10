@@ -139,6 +139,10 @@ export const Monitoring = () => {
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
 
+  function getRowId(row: JobType) {
+    return row._id;
+  }
+
   return (
     <Box>
       <Typography
@@ -156,6 +160,7 @@ export const Monitoring = () => {
       <DataGrid
         sx={{ height: "54vh", minHeight: 360, bgcolor: "background.paper" }}
         rows={filteredJobs ? filteredJobs : []}
+        getRowId={getRowId}
         columns={columnsProcess}
         disableColumnMenu={true}
         initialState={{

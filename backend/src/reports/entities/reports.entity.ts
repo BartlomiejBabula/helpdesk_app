@@ -1,15 +1,16 @@
+import { ObjectId } from 'mongodb';
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
+  ObjectIdColumn,
   UpdateDateColumn,
   CreateDateColumn,
 } from 'typeorm';
 
 @Entity('Reports')
 export class Reports {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  _id: ObjectId;
 
   @Column()
   name: string;

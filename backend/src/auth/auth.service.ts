@@ -12,6 +12,7 @@ import {
   SendEmailForgotPasswordDto,
 } from './dto/resetPassword';
 import { EMAIL, transporter } from 'src/nodemailer';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class AuthService {
@@ -33,7 +34,7 @@ export class AuthService {
     return null;
   }
 
-  async updateRefreshToken(userId: number, refreshToken: string) {
+  async updateRefreshToken(userId: ObjectId, refreshToken: string) {
     const salt = await bcrypt.genSalt();
     const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
     await this.usersService.update(userId, {
@@ -41,7 +42,7 @@ export class AuthService {
     });
   }
 
-  async getTokens(userId: number, email: string) {
+  async getTokens(userId: ObjectId, email: string) {
     const payload = { email: email, sub: userId };
     return {
       accessToken: this.jwtService.sign(
@@ -65,13 +66,13 @@ export class AuthService {
     };
   }
 
-  async login(user: User): Promise<any> {
-    const TOKENS = await this.getTokens(user.id, user.email);
-    await this.updateRefreshToken(user.id, TOKENS.refreshToken);
+  async login(user: User) {
+    const TOKENS = await this.getTokens(user._id, user.email);
+    await this.updateRefreshToken(user._id, TOKENS.refreshToken);
     return TOKENS;
   }
 
-  async logout(userId: number) {
+  async logout(userId: ObjectId) {
     await this.usersService.update(userId, { refreshToken: null });
     return 'User has been logged out';
   }
@@ -85,8 +86,8 @@ export class AuthService {
       user.refreshToken,
     );
     if (!refreshTokenMatches) throw new ForbiddenException('Access Denied');
-    const TOKENS = await this.getTokens(user.id, user.email);
-    await this.updateRefreshToken(user.id, TOKENS.refreshToken);
+    const TOKENS = await this.getTokens(user._id, user.email);
+    await this.updateRefreshToken(user._id, TOKENS.refreshToken);
     return TOKENS;
   }
 
@@ -103,7 +104,7 @@ export class AuthService {
         resetPasswordToken.toString(),
         salt,
       );
-      await this.usersService.update(user.id, {
+      await this.usersService.update(user._id, {
         resetPasswordToken: hashedResetPasswordToken,
       });
       const resetPasswordLink = `https://esambohd.skg.pl/resetpassword/${hashedResetPasswordToken}`;
@@ -138,7 +139,7 @@ export class AuthService {
         );
       } else {
         await this.usersService.updatePassword(
-          user.id,
+          user._id,
           resetPasswordDto.password,
         );
         return 'Password has been reset';

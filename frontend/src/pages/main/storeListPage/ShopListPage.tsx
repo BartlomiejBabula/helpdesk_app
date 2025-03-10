@@ -46,7 +46,7 @@ const ShopListPage = () => {
       <Select
         value={value}
         onChange={handleChange}
-        size='small'
+        size="small"
         sx={{ height: 1 }}
         native
         autoFocus
@@ -71,7 +71,7 @@ const ShopListPage = () => {
       <Select
         value={value}
         onChange={handleChange}
-        size='small'
+        size="small"
         sx={{ height: 1 }}
         native
         autoFocus
@@ -117,9 +117,9 @@ const ShopListPage = () => {
   ];
 
   const processRowUpdate = React.useCallback(
-    async (editRow: GridRowModel) => {
+    async (editRow: StoreType) => {
       let newStore: StoreType = {
-        id: editRow.id,
+        _id: editRow._id,
         storeNumber: editRow.storeNumber,
         storeType: editRow.storeType,
         status: editRow.status,
@@ -141,6 +141,12 @@ const ShopListPage = () => {
     setSnackbar({ children: error.message, severity: "error" });
   }, []);
 
+  function getRowId(row: StoreType) {
+    if (row._id !== undefined) {
+      return row._id;
+    } else return row.storeNumber;
+  }
+
   return (
     <Box
       sx={{
@@ -152,7 +158,7 @@ const ShopListPage = () => {
       }}
     >
       <Typography
-        variant='h6'
+        variant="h6"
         sx={{
           letterSpacing: 2,
           color: "text.primary",
@@ -179,6 +185,7 @@ const ShopListPage = () => {
         <DataGrid
           sx={{ bgcolor: "background.paper" }}
           rows={storeList}
+          getRowId={getRowId}
           columns={columns}
           density={"compact"}
           components={{ Toolbar: GridToolbar }}

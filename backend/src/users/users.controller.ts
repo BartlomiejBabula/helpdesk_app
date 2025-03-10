@@ -20,7 +20,7 @@ export class UsersController {
   @UseGuards(AccessTokenGuard)
   @Delete('delete/:id')
   deleteById(@Param('id') id: string) {
-    return this.userService.deleteById(Number(id));
+    return this.userService.deleteById(id);
   }
 
   @UseGuards(AccessTokenGuard)
@@ -32,8 +32,9 @@ export class UsersController {
 
   @UseGuards(AccessTokenGuard)
   @Post('theme')
-  updateDarkTheme(@Body() updateDarkTheme: UpdateThemeDto) {
-    return this.userService.updateTheme(updateDarkTheme);
+  updateDarkTheme(@Body() updateDarkTheme: UpdateThemeDto, @Req() req) {
+    const accessToken = req.get('Authorization').replace('Bearer', '').trim();
+    return this.userService.updateTheme(updateDarkTheme, accessToken);
   }
 
   @Post('create')

@@ -106,6 +106,9 @@ export const JobsWithErrorComponent = () => {
     job = { ...job, TM_FORMAT_START, TM_FORMAT_RESTART };
     return job;
   });
+  function getRowId(row: JobType) {
+    return row._id;
+  }
 
   return (
     <Box style={{ height: "78vh", minHeight: 560 }}>
@@ -114,6 +117,7 @@ export const JobsWithErrorComponent = () => {
         rows={jobs ? formatedJobs : []}
         columns={columnsProcess}
         disableColumnMenu={true}
+        getRowId={getRowId}
         density={"compact"}
       />
       <JobModal

@@ -1,7 +1,8 @@
+import { ObjectId } from 'mongodb';
 import { UserRoleType } from './createUser';
 
 export interface UserProfileType {
-  id: number;
+  _id: ObjectId;
   email: string;
   createdAt: Date;
   updatedAt: Date;

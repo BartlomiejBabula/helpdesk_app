@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { LoggerService } from 'src/logger/logger.service';
 import { LogTaskType } from 'src/logger/dto/createLog';
 import { LogStatus } from 'src/logger/dto/getLog';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class ReportsService {
@@ -83,13 +84,13 @@ export class ReportsService {
       const report = new Reports();
       report.block = true;
       report.name = reportName;
-      await this.reportsRepository.save(report);
+      await this.reportsRepository.insert(report);
       return true;
     } else {
       if (ReportFound.block === true) return false;
       else {
         await this.reportsRepository.update(
-          { id: ReportFound.id },
+          { _id: ReportFound._id },
           { block: true },
         );
         return true;
@@ -108,7 +109,7 @@ export class ReportsService {
         return false;
       } else {
         await this.reportsRepository.update(
-          { id: ReportFound.id },
+          { _id: ReportFound._id },
           { block: false },
         );
         return true;
@@ -131,7 +132,7 @@ export class ReportsService {
         let compareDate = report.updatedAt;
         compareDate.setMinutes(compareDate.getMinutes() + 130); // 10min+
         if (report.block === true && compareDate < currentDate) {
-          this.reportsRepository.update({ id: report.id }, { block: false });
+          this.reportsRepository.update({ _id: report._id }, { block: false });
           this.loggerService.createLog({
             taskId: logId,
             task: LogTaskType.UNBLOCK_REPORT,

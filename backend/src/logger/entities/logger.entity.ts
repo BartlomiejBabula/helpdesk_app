@@ -1,16 +1,12 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-} from 'typeorm';
+import { Entity, Column, ObjectIdColumn, CreateDateColumn } from 'typeorm';
 import { LogStatus } from '../dto/getLog';
 import { LogTaskType } from '../dto/createLog';
+import { ObjectId } from 'mongodb';
 
 @Entity('Logger')
 export class Logger {
-  @PrimaryGeneratedColumn({ type: 'bigint' })
-  id!: number;
+  @ObjectIdColumn()
+  _id!: ObjectId;
 
   @Column()
   taskId: string;
@@ -24,7 +20,7 @@ export class Logger {
   @Column()
   orderedBy: string;
 
-  @Column({ nullable: true, type: 'longtext' })
+  @Column({ nullable: true })
   description: string | null;
 
   @CreateDateColumn()

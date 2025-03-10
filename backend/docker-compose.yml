@@ -1,19 +1,22 @@
-version: '3.6'
+version: '3.8'
 
 services:
-  mysqldb:
-    image: mysql:8.0
+  mongodb:
+    image: mongo
+    container_name: database
     restart: unless-stopped
     env_file: ./.env
     environment:
-      - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
-      - MYSQL_DATABASE=$MYSQLDB_DATABASE
+      - MONGO_INITDB_ROOT_USERNAME=$DATABASE_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$DATABASE_PASSWORD
+      - MONGO_INITDB_DATABASE=$DATABASE_NAME
     ports:
-      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+      - $DATABASE_LOCAL_PORT:$DATABASE_DOCKER_PORT
     volumes:
-      - db:/var/lib/mysql
+      - db:/data/db
 
   api:
+    container_name: api
     build:
       context: .
       target: development
@@ -24,14 +27,15 @@ services:
     ports:
       - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
     environment:
-      - DB_HOST=mysqldb
-      - DB_USER=$MYSQLDB_USER
-      - DB_PASSWORD=$MYSQLDB_ROOT_PASSWORD
-      - DB_NAME=$MYSQLDB_DATABASE
-      - DB_PORT=$MYSQLDB_DOCKER_PORT
+      - DB_HOST=mongodb
+      - DB_USER=$DATABASE_USER
+      - DB_PASSWORD=$DATABASE_PASSWORD
+      - DB_NAME=$DATABASE_NAME
+      - DB_PORT=$DATABASE_DOCKER_PORT
     stdin_open: true
     tty: true
-    #command: npm run start:prod
+    # command: bash -c "npm i -D @playwright/test && npx -y playwright install --with-deps --only-shell firefox && npm run build && npm run start:prod"
+    # command: npm run start:prod
     command: npm run start:dev
 volumes:
   db:

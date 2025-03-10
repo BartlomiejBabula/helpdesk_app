@@ -1,7 +1,7 @@
 import { CronPartsType } from "../function/cron";
 
 export interface UserType {
-  id: number;
+  _id: string;
   email: string;
   createdAt: string;
   darkTheme: boolean;
@@ -9,7 +9,7 @@ export interface UserType {
 }
 
 export interface JobType {
-  id: number;
+  _id: number;
   jobId: number;
   storeNumber: string;
   queue: string;
@@ -27,7 +27,7 @@ export interface JobType {
 }
 
 export interface LogType {
-  id: string;
+  _id: string;
   taskId: string;
   task: string;
   status: string;
@@ -38,7 +38,7 @@ export interface LogType {
 }
 
 export interface StoreType {
-  id: number;
+  _id?: string;
   storeNumber: string;
   storeType: string;
   status: string;
@@ -48,7 +48,7 @@ export interface StoreType {
 }
 
 export interface ScheduleType {
-  id: number;
+  _id: string;
   isActive: boolean;
   task: string;
   schedule: string;
@@ -58,7 +58,7 @@ export interface ScheduleType {
 }
 
 export interface JiraType {
-  id?: number;
+  _id?: string;
   jiraKey: string;
   auto: boolean;
   createdAt?: Date;
@@ -92,7 +92,7 @@ export interface ChartGicaType {
 }
 
 export interface ApiZabbixType {
-  id: number;
+  _id: string;
   eventId: number;
   recoveryEventId: number;
   objectId: number;
