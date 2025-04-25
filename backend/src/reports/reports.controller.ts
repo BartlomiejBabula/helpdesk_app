@@ -20,13 +20,6 @@ export class ReportsController {
   }
 
   @UseGuards(AccessTokenGuard)
-  @Get('/selenium')
-  getSeleniumReports(@Request() req) {
-    this.reportsService.generateSeleniumReport(req.headers.authorization);
-    return 'Zlecono raport selenium';
-  }
-
-  @UseGuards(AccessTokenGuard)
   @Get('/volumetrics')
   getVolumetricsReports(@Request() req) {
     this.reportsService.generateVolumetricsReport(req.headers.authorization);

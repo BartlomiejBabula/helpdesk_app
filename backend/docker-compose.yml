@@ -34,7 +34,6 @@ services:
       - DB_PORT=$DATABASE_DOCKER_PORT
     stdin_open: true
     tty: true
-    # command: bash -c "npm i -D @playwright/test && npx -y playwright install --with-deps --only-shell firefox && npm run build && npm run start:prod"
     # command: npm run start:prod
     command: npm run start:dev
 volumes:
