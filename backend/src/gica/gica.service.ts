@@ -21,7 +21,7 @@ export class GicaService {
   async getGica(): Promise<Gica[]> {
     const gica = await this.gicaRepository.find({
       order: { date: 'DESC' },
-      take: 30,
+      take: 31,
     });
     return gica;
   }
