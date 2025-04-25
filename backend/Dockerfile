@@ -10,13 +10,17 @@ COPY package*.json .
 # Update Ubuntu Software repository
 RUN apt update
 RUN apt upgrade -y
+RUN apt-get update
 RUN apt-get install -yq tzdata && \
     ln -fs /usr/share/zoneinfo/Europe/Warsaw /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata
 
 # Install node and npm
-RUN apt install -y nodejs
-RUN apt install -y npm
+RUN apt-get update && apt-get install -y curl
+RUN curl -fsSL https://deb.nodesource.com/setup_current.x | bash - && \
+    apt-get update && \
+    apt-get install -y nodejs && \
+    npm install -g npm@latest
 RUN rm -rf /var/lib/apt/lists/*
 RUN apt clean
 
@@ -27,14 +31,15 @@ RUN npm i -g @nestjs/cli
 RUN npm install
 
 # Oracle database
-RUN apt-get update
 # RUN apt-get install -y libaio1
-RUN apt-get install -y unzip
+# RUN apt-get install -y unzip
 # RUN cd /usr/src/app/src/oracle && unzip instantclient -d /usr/src/app/src/oracle
 RUN sh -c "echo /usr/src/app/src/oracle/instantclient_19_19 > /etc/ld.so.conf.d/oracle-instantclient.conf"
 
 #CLEAR
 RUN apt autoremove -y
+RUN apt-get clean -y
+RUN apt-get autoremove -y
 
 RUN ldconfig
 COPY . .

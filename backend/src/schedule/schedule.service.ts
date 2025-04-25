@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Schedule } from './entities/schedule.entity';
 import { Repository } from 'typeorm';
@@ -9,7 +9,7 @@ import { LogTaskType } from 'src/logger/dto/createLog';
 import { LogStatus } from 'src/logger/dto/getLog';
 
 @Injectable()
-export class ScheduleService {
+export class ScheduleService implements OnModuleInit {
   constructor(
     @InjectRepository(Schedule)
     private scheduleRepository: Repository<Schedule>,
@@ -67,26 +67,27 @@ export class ScheduleService {
     }
   }
 
-  @Timeout(1000)
-  async onStartUpdateCron() {
-    const logId = await this.loggerService.createLog({
-      task: LogTaskType.UPDATE_SCHEDULE,
-      status: LogStatus.OPEN,
-      description: `Automatic update schedule`,
-    });
-    const schedules = await this.scheduleRepository.find();
-    schedules.map((schedule) => {
-      const task = this.schedulerRegistry.getCronJob(schedule.task);
-      task.stop();
-      const CronTime = require('cron').CronTime;
-      task.setTime(new CronTime(schedule.schedule));
-      if (schedule.isActive === true) task.start();
-    });
-    this.loggerService.createLog({
-      task: LogTaskType.UPDATE_SCHEDULE,
-      status: LogStatus.DONE,
-      taskId: logId,
-      description: `Automatic update schedule`,
-    });
+  async onModuleInit() {
+    setTimeout(async () => {
+      const logId = await this.loggerService.createLog({
+        task: LogTaskType.UPDATE_SCHEDULE,
+        status: LogStatus.OPEN,
+        description: `Automatic update schedule`,
+      });
+      const schedules = await this.scheduleRepository.find();
+      schedules.map((schedule) => {
+        const task = this.schedulerRegistry.getCronJob(schedule.task);
+        task.stop();
+        const CronTime = require('cron').CronTime;
+        task.setTime(new CronTime(schedule.schedule));
+        if (schedule.isActive === true) task.start();
+      });
+      this.loggerService.createLog({
+        task: LogTaskType.UPDATE_SCHEDULE,
+        status: LogStatus.DONE,
+        taskId: logId,
+        description: `Automatic update schedule`,
+      });
+    }, 10000);
   }
 }
