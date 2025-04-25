@@ -17,7 +17,6 @@ export enum LogTaskType {
   ZABBIX_PROBLEM_RECOVERY = 'ZabbixCheckProblemsRecovery',
   MORNING_REPORT = 'GenerateMorningReport',
   VOLUMETRIC_REPORT = 'GenerateVolumetricReport',
-  SELENIUM_REPORT = 'GenerateSeleniumReport',
   SLA_REPORT = 'GenerateSLAReport',
   UNBLOCK_REPORT = 'UnblockReport',
   DELETE_OLD_LOGS = 'DeleteOldLogs',

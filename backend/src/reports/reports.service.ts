@@ -4,7 +4,6 @@ import { Reports } from './entities/reports.entity';
 import { Repository } from 'typeorm';
 import { Cron } from '@nestjs/schedule';
 import { generateMorningReport } from './report/morningReport';
-import { generateSelenium } from './report/seleniumReport';
 import { generateVolumetrics } from './report/volumetrics/volumetricsReport';
 import { generateSLARaport } from './report/SlaReport';
 import { JwtService } from '@nestjs/jwt';
@@ -40,17 +39,6 @@ export class ReportsService {
       email.replace('@asseco.pl', ''),
     );
     this.unBlockReport('morning');
-  }
-
-  async generateSeleniumReport(jwt: string) {
-    this.blockReport('selenium');
-    const email = await this.getUserEmail(jwt);
-    await generateSelenium(
-      email,
-      this.loggerService,
-      email.replace('@asseco.pl', ''),
-    );
-    this.unBlockReport('selenium');
   }
 
   async generateVolumetricsReport(jwt: string) {

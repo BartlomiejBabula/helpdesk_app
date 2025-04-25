@@ -36,10 +36,6 @@ RUN sh -c "echo /usr/src/app/src/oracle/instantclient_19_19 > /etc/ld.so.conf.d/
 #CLEAR
 RUN apt autoremove -y
 
-#SELENIUM
-RUN npm i -D @playwright/test
-RUN npx -y playwright install --with-deps --only-shell firefox
-
 RUN ldconfig
 COPY . .
 

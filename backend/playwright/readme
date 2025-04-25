@@ -1,6 +1,0 @@
-npx playwright codegen http://100.106.215.3:17013/esambo/login?0 ---- start test
-
-npx playwright show-report
-
-npx playwright test
-

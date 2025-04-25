@@ -13,7 +13,6 @@ const raportList: { name: string; btt: string }[] = [
   { name: "RAPORT PORANNY", btt: "morning" },
   { name: "RAPORT WOLUMETRYKA", btt: "volumetrics" },
   { name: "RAPORT JIRA SLA", btt: "sla" },
-  { name: "TESTY SELENIUM", btt: "selenium" },
   { name: "LISTA SKLEPÓW", btt: "storeList" },
 ];
 
@@ -58,15 +57,6 @@ export const Report = () => {
       case "RAPORT JIRA SLA":
         handleOpenModal();
         break;
-      case "TESTY SELENIUM":
-        await api.get(`/reports/selenium`); // dla dev /reports/selenium-dev
-        dispatch(getBlockedReports());
-        setSnackbar({
-          children:
-            "Uruchomiono selenium - raport zostanie wysłany na twojego maila",
-          severity: "success",
-        });
-        break;
       case "LISTA SKLEPÓW":
         handleOpenModalStoreList();
         break;
@@ -81,7 +71,7 @@ export const Report = () => {
 
   return (
     <Paper
-      variant='outlined'
+      variant="outlined"
       sx={{
         padding: 1,
         marginTop: 4,
@@ -90,7 +80,7 @@ export const Report = () => {
       }}
     >
       <Typography
-        variant='subtitle1'
+        variant="subtitle1"
         sx={{
           marginLeft: 1,
           letterSpacing: 1,
@@ -101,13 +91,13 @@ export const Report = () => {
       >
         Generowanie ręczne
       </Typography>
-      <Grid sx={{ paddingLeft: 3 }} container rowSpacing={1.5} flexWrap='wrap'>
+      <Grid sx={{ paddingLeft: 3 }} container rowSpacing={1.5} flexWrap="wrap">
         {raportList.map((raport, id) => (
           <Grid item key={id} xs={4}>
             <Button
               key={id}
-              variant='contained'
-              size='large'
+              variant="contained"
+              size="large"
               color="secondary"
               style={{
                 marginBottom: 10,
