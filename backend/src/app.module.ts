@@ -24,7 +24,7 @@ import { ScheduleModule as Schedule } from './schedule/schedule.module';
     TypeOrmModule.forRoot({
       type: 'mongodb',
       host: 'mongodb',
-      url: `mongodb://admin:Haselko123!@database:27017/helpdeskApp_db?authSource=admin`,
+      url: `mongodb://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@database:${process.env.DATABASE_DOCKER_PORT}/${process.env.DATABASE_NAME}?authSource=admin`,
       database: process.env.DATABASE_NAME,
       synchronize: true,
       logging: false,
