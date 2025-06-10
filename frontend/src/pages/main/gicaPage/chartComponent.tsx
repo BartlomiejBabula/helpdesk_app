@@ -33,15 +33,15 @@ const ChartComponent = ({ GICA, setSelectedData }: ChartComponentType) => {
     });
     element.href = URL.createObjectURL(file);
     element.download = "GICA.csv";
-    document.body.appendChild(element); // Required for this to work in FireFox
+    document.body.appendChild(element);
     element.click();
   };
 
   return (
     <Paper
-      variant='outlined'
+      variant="outlined"
       sx={{
-        height: 430,
+        height: 425,
         marginTop: 2,
         padding: 1,
         paddingLeft: 2,
@@ -55,7 +55,7 @@ const ChartComponent = ({ GICA, setSelectedData }: ChartComponentType) => {
         Pobierz dane do pliku .csv
       </Button>
       <Typography
-        variant='subtitle1'
+        variant="subtitle1"
         sx={{
           letterSpacing: 1,
           color: "text.primary",

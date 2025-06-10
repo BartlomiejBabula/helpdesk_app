@@ -158,7 +158,7 @@ export const Monitoring = () => {
         Długo przetwarzające się procesy
       </Typography>
       <DataGrid
-        sx={{ height: "54vh", minHeight: 360, bgcolor: "background.paper" }}
+        sx={{ height: "61vh", minHeight: 360, bgcolor: "background.paper" }}
         rows={filteredJobs ? filteredJobs : []}
         getRowId={getRowId}
         columns={columnsProcess}

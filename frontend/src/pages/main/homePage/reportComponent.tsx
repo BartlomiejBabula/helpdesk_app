@@ -77,6 +77,7 @@ export const Report = () => {
         marginTop: 4,
         display: "flex",
         flexDirection: "column",
+        paddingBottom: 2,
       }}
     >
       <Typography
@@ -93,7 +94,7 @@ export const Report = () => {
       </Typography>
       <Grid sx={{ paddingLeft: 3 }} container rowSpacing={1.5} flexWrap="wrap">
         {raportList.map((raport, id) => (
-          <Grid item key={id} xs={4}>
+          <Grid item key={id} xs={3}>
             <Button
               key={id}
               variant="contained"
@@ -101,8 +102,8 @@ export const Report = () => {
               color="secondary"
               style={{
                 marginBottom: 10,
-                width: "24vw",
-                minWidth: 250,
+                width: "18vw",
+                minWidth: 200,
               }}
               disabled={
                 blockReports.blocked?.includes(raport.btt) ? true : false

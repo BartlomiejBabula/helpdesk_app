@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LessThanOrEqual, Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
 import { Logger } from './entities/logger.entity';
 import { GetLogFilterDto, LogStatus } from './dto/getLog';
 import { CreateLogDto, LogTaskType } from './dto/createLog';
@@ -12,7 +12,7 @@ import { Cron } from '@nestjs/schedule';
 export class LoggerService {
   constructor(
     @InjectRepository(Logger)
-    private loggerRepository: Repository<Logger>,
+    private loggerRepository: MongoRepository<Logger>,
     private jwtService: JwtService,
   ) {}
 
@@ -71,8 +71,8 @@ export class LoggerService {
     });
     let date = new Date();
     date.setDate(date.getDate() - 14);
-    await this.loggerRepository.delete({
-      createdAt: LessThanOrEqual(date),
+    await this.loggerRepository.deleteMany({
+      createdAt: { $lte: new Date(date) },
     });
     this.createLog({
       taskId: logId,
