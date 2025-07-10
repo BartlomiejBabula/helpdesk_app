@@ -43,7 +43,19 @@ const getOrders = async () => {
 const getMandala = async () => {
   let conn = await oracledb.getConnection(samboDbConfig);
   const mandalaRequest = await conn.execute(
-    `select s.store_number, 'brak sprzedazy' as braki from es_stores s where not exists (select 1 from mandala_gen_counter m where s.store_number = m.store and m.gen_date = trunc(sysdate-1) and m.type in ('mov1SALES')) and s.store_type = 'N' and s.status = 'A'`,
+    `select s.store_number, 'brak sprzedazy' as braki
+    from es_stores s
+    join EP_ORG_UNIT_PARMS a on a.ORG_ID = s.ORG_ID
+    where s.status = 'A'
+    and s.store_type in ('N', 'H')
+    and a.VALUE = 'true'
+    and a.KEYWORD = 'activeEsambo'
+    and not exists (
+    select 1
+    from mandala_gen_counter m
+    where s.store_number = m.store
+      and m.gen_date = trunc(sysdate - 1)
+      and m.type in ('mov1SALES'))`,
     [],
     {
       resultSet: true,
@@ -76,13 +88,11 @@ const getWS = async (today: string, yest: string) => {
   const WSRequest = await conn.execute(
     `select h.store_number, h.create_date, h.close_op_date,h.doc_symbol
       from es_doc_headers h
-      -- where h.store_number in (select store_number from es_stores where org_id in (select org_id from ep_org_units where master_org_id in (18279650, 18361650)))
-      where h.store_number in (select store_number from es_stores where store_type = 'N' and status = 'A')
+      where h.store_number in (select store_number from es_stores where store_type in ('N', 'H') and status = 'A')
       and h.id_doc_type = 'WS'
       and h.issue_date >= add_months('${today}', -1)
       and h.issue_date < '${today}'
       and h.status = 'C'
-      --   and h.close_op_date >= '2018.05.01'
       and exists (select 1 from logging_event le where le.doc_id = h.doc_id and le.dtimestmp > '${yest} 18:00:00')
       order by h.store_number, h.doc_id`,
     [],
@@ -136,7 +146,7 @@ const getGICA = async (today: string, yest: string) => {
       and tm_start >= '${yest}'
      )
       and s_jobs.org_id = es_stores.org_id
-      and es_stores.store_type ='N'
+      and es_stores.store_type in ('N','H')
       and s_jobs.TM_END >= '${today}'`,
     [],
     {
